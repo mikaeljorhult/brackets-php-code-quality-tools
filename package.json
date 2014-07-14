@@ -1,0 +1,24 @@
+{
+  "name": "mikaeljorhult.brackets-phpcs",
+  "title": "PHP CodeSniffer",
+  "description": "Lint PHP against coding standards using PHP CodeSniffer.",
+  "homepage": "https://github.com/mikaeljorhult/brackets-phpcs",
+  "version": "0.1.0",
+  "author": "Mikael Jorhult <mikael@jorhult.se> (http://jorhult.se)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mikaeljorhult/brackets-phpcs"
+  },
+  "license": {
+    "type": "MIT",
+    "url": "http://mikaeljorhult.mit-license.org/"
+  },
+  "engines": {
+    "brackets": ">=0.37.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.6",
+    "gulp-jshint": "^1.7.1",
+    "gulp-load-plugins": "^0.5.3"
+  }
+}
