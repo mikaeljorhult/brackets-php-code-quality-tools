@@ -9,12 +9,10 @@ define( function( require, exports, module ) {
 	'use strict';
 	
 	// Get module dependencies.
-	var AppInit = brackets.getModule( 'utils/AppInit' ),
-		CodeInspection = brackets.getModule( 'language/CodeInspection' ),
+	var CodeInspection = brackets.getModule( 'language/CodeInspection' ),
 		DocumentManager = brackets.getModule( 'document/DocumentManager' ),
 		ExtensionUtils = brackets.getModule( 'utils/ExtensionUtils' ),
-		NodeConnection = brackets.getModule( 'utils/NodeConnection' ),
-    	nodeConnection = new NodeConnection(),
+		CommandRunner = require( 'modules/CommandRunner' ),
 		
 		// Variables.
 		phpcsPath = 'php ' + ExtensionUtils.getModulePath( module, 'modules/vendor/phpcs/phpcs.phar' ).replace( ' ', '\\ ' ),
@@ -25,31 +23,34 @@ define( function( require, exports, module ) {
 		var command = phpcsPath + ' ' + fullPath.replace( new RegExp( ' ', 'g' ), '\\ ' );
 		
 		// Run command using Node.
-		nodeConnection.domains.phpcs.commander( command ).done( function( data ) {
-			var regularExpression = /(\d+)\s\|\s(.*)\s\|.*] (.*)/g,
-				matches,
-				type;
+		CommandRunner.run( command, parseErrors );
+	}
+	
+	// Parse message returned from CodeSniffer for errors.
+	function parseErrors( data ) {
+		var regularExpression = /(\d+)\s\|\s(.*)\s\|.*] (.*)/g,
+			matches,
+			type;
+		
+		// Assume no errors.
+		codeStyleErrors = [];
+		
+		// Go through all matching rows in result.
+		while ( ( matches = regularExpression.exec( data ) ) !== null ) {
+			type = matches[ 2 ].match( 'ERROR' ) ? CodeInspection.Type.ERROR : CodeInspection.Type.WARNING;
 			
-			// Assume no errors.
-			codeStyleErrors = [];
-			
-			// Go through all matching rows in result.
-			while ( ( matches = regularExpression.exec( data ) ) !== null ) {
-				type = matches[ 2 ].match( 'ERROR' ) ? CodeInspection.Type.ERROR : CodeInspection.Type.WARNING;
-				
-				// Add each error to array of errors.
-				codeStyleErrors.push( {
-					pos: {
-						line: parseInt( matches[ 1 ], 10 ) - 1
-					},
-					message: matches[ 3 ],
-					type: type
-				} );
-			}
-			
-			// Run CodeInspection.
-			CodeInspection.requestRun();
-		} );
+			// Add each error to array of errors.
+			codeStyleErrors.push( {
+				pos: {
+					line: parseInt( matches[ 1 ], 10 ) - 1
+				},
+				message: matches[ 3 ],
+				type: type
+			} );
+		}
+		
+		// Run CodeInspection.
+		CodeInspection.requestRun();
 	}
 	
 	// Run CodeInspection when a file is saved.
@@ -57,27 +58,13 @@ define( function( require, exports, module ) {
 		getErrors( fileEntry.file.fullPath );
 	} );
 	
-	// Register panel and setup event listeners.
-	AppInit.appReady( function() {
-		// Connect to Node.
-		nodeConnection.connect( true ).done( function() {
-			// Load terminal domain.
-			var path = ExtensionUtils.getModulePath( module, 'node/commander' );
-			
-			// Load commander into Node.
-			nodeConnection.loadDomains( [ path ], true ).done( function() {
-				// Loaded.
-			} );
-		} );
-		
-		// Register linting service.
-		CodeInspection.register( 'php', {
-			name: 'PHP CodeSniffer',
-			scanFile: function() {
-				return {
-					errors: codeStyleErrors
-				};
-			}
-		} );
+	// Register linting service.
+	CodeInspection.register( 'php', {
+		name: 'PHP CodeSniffer',
+		scanFile: function() {
+			return {
+				errors: codeStyleErrors
+			};
+		}
 	} );
 } );
