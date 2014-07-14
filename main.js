@@ -13,44 +13,21 @@ define( function( require, exports, module ) {
 		DocumentManager = brackets.getModule( 'document/DocumentManager' ),
 		ExtensionUtils = brackets.getModule( 'utils/ExtensionUtils' ),
 		CommandRunner = require( 'modules/CommandRunner' ),
+		Parsers = require( 'modules/Parsers' ),
 		
 		// Variables.
-		phpcsPath = 'php ' + ExtensionUtils.getModulePath( module, 'modules/vendor/phpcs/phpcs.phar' ).replace( ' ', '\\ ' ),
-		codeStyleErrors = [];
+		basePath = ExtensionUtils.getModulePath( module, 'modules/vendor/' ).replace( ' ', '\\ ' ),
+		paths = {
+			phpcs: 'php ' + basePath + 'phpcs/phpcs.phar',
+			phpmd: 'php ' + basePath + 'phpmd/phpmd.phar'
+		};
 	
 	// Lint path and return found errors.
 	function getErrors( fullPath ) {
-		var command = phpcsPath + ' ' + fullPath.replace( new RegExp( ' ', 'g' ), '\\ ' );
+		var command = paths.phpcs + ' ' + fullPath.replace( new RegExp( ' ', 'g' ), '\\ ' );
 		
 		// Run command using Node.
-		CommandRunner.run( command, parseErrors );
-	}
-	
-	// Parse message returned from CodeSniffer for errors.
-	function parseErrors( data ) {
-		var regularExpression = /(\d+)\s\|\s(.*)\s\|.*] (.*)/g,
-			matches,
-			type;
-		
-		// Assume no errors.
-		codeStyleErrors = [];
-		
-		// Go through all matching rows in result.
-		while ( ( matches = regularExpression.exec( data ) ) !== null ) {
-			type = matches[ 2 ].match( 'ERROR' ) ? CodeInspection.Type.ERROR : CodeInspection.Type.WARNING;
-			
-			// Add each error to array of errors.
-			codeStyleErrors.push( {
-				pos: {
-					line: parseInt( matches[ 1 ], 10 ) - 1
-				},
-				message: matches[ 3 ],
-				type: type
-			} );
-		}
-		
-		// Run CodeInspection.
-		CodeInspection.requestRun();
+		CommandRunner.run( command, Parsers.phpcs );
 	}
 	
 	// Run CodeInspection when a file is saved.
@@ -63,7 +40,7 @@ define( function( require, exports, module ) {
 		name: 'PHP CodeSniffer',
 		scanFile: function() {
 			return {
-				errors: codeStyleErrors
+				errors: Parsers.errors().phpcs
 			};
 		}
 	} );
