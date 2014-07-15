@@ -24,14 +24,17 @@ define( function( require, exports, module ) {
 	
 	// Lint path and return found errors.
 	function getErrors( fullPath ) {
-		var command = paths.phpcs + ' ' + fullPath.replace( new RegExp( ' ', 'g' ), '\\ ' );
+		var filePath = fullPath.replace( new RegExp( ' ', 'g' ), '\\ ' ),
+			phpcsCommand = paths.phpcs + ' ' + filePath,
+			phpmdCommand = paths.phpmd + ' ' + filePath + ' text cleancode,codesize,controversial,design,naming,unusedcode';
 		
 		// Run command using Node.
-		CommandRunner.run( command, Parsers.phpcs );
+		CommandRunner.run( phpcsCommand, Parsers.phpcs );
+		CommandRunner.run( phpmdCommand, Parsers.phpmd );
 	}
 	
 	// Run CodeInspection when a file is saved.
-	$( DocumentManager ).on( 'documentSaved.phpcs', function( event, fileEntry ) {
+	$( DocumentManager ).on( 'documentSaved', function( event, fileEntry ) {
 		getErrors( fileEntry.file.fullPath );
 	} );
 	
@@ -41,6 +44,15 @@ define( function( require, exports, module ) {
 		scanFile: function() {
 			return {
 				errors: Parsers.errors().phpcs
+			};
+		}
+	} );
+	
+	CodeInspection.register( 'php', {
+		name: 'PHP Mess Detector',
+		scanFile: function() {
+			return {
+				errors: Parsers.errors().phpmd
 			};
 		}
 	} );
