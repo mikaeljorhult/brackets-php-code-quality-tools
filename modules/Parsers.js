@@ -6,9 +6,37 @@ define( function() {
 		
 		// Variables.
 		errors = {
+			phpcpd: [],
 			phpcs: [],
 			phpmd: []
 		};
+	
+	// Parse message returned from Copy/Paste Detector for errors.
+	function phpcpd( data ) {
+		var regularExpression = /-\s(?:.*):((\d+)-(\d+))[\s\S]\s+(?:.*):((\d+)-(\d+))/g,
+			matches,
+			type;
+		
+		// Assume no errors.
+		errors.phpcs = [];
+		
+		// Go through all matching rows in result.
+		while ( ( matches = regularExpression.exec( data ) ) !== null ) {
+			var message = 'Code duplication on lines ' + matches[ 1 ] + ' and ' + matches[ 4 ] + '.'
+			
+			// Add each error to array of errors.
+			errors.phpcpd.push( {
+				pos: {
+					line: parseInt( matches[ 1 ], 10 ) - 1
+				},
+				message: message,
+				type: CodeInspection.Type.WARNING
+			} );
+		}
+		
+		// Run CodeInspection.
+		CodeInspection.requestRun();
+	}
 	
 	// Parse message returned from CodeSniffer for errors.
 	function phpcs( data ) {
@@ -67,6 +95,7 @@ define( function() {
 	
 	return {
 		errors: returnErrors,
+		phpcpd: phpcpd,
 		phpcs: phpcs,
 		phpmd: phpmd
 	};

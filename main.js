@@ -18,6 +18,7 @@ define( function( require, exports, module ) {
 		// Variables.
 		basePath = ExtensionUtils.getModulePath( module, 'modules/vendor/' ).replace( ' ', '\\ ' ),
 		paths = {
+			phpcpd: 'php ' + basePath + 'phpcpd/phpcpd.phar',
 			phpcs: 'php ' + basePath + 'phpcs/phpcs.phar',
 			phpmd: 'php ' + basePath + 'phpmd/phpmd.phar'
 		};
@@ -25,10 +26,12 @@ define( function( require, exports, module ) {
 	// Lint path and return found errors.
 	function getErrors( fullPath ) {
 		var filePath = fullPath.replace( new RegExp( ' ', 'g' ), '\\ ' ),
+			phpcpdCommand = paths.phpcpd + ' ' + filePath,
 			phpcsCommand = paths.phpcs + ' ' + filePath,
 			phpmdCommand = paths.phpmd + ' ' + filePath + ' text cleancode,codesize,controversial,design,naming,unusedcode';
 		
 		// Run command using Node.
+		CommandRunner.run( phpcpdCommand, Parsers.phpcpd );
 		CommandRunner.run( phpcsCommand, Parsers.phpcs );
 		CommandRunner.run( phpmdCommand, Parsers.phpmd );
 	}
@@ -39,6 +42,15 @@ define( function( require, exports, module ) {
 	} );
 	
 	// Register linting service.
+	CodeInspection.register( 'php', {
+		name: 'PHP Copy/Paste Detector',
+		scanFile: function() {
+			return {
+				errors: Parsers.errors().phpcpd
+			};
+		}
+	} );
+	
 	CodeInspection.register( 'php', {
 		name: 'PHP CodeSniffer',
 		scanFile: function() {
