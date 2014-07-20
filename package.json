@@ -1,13 +1,13 @@
 {
-  "name": "mikaeljorhult.brackets-phpcs",
-  "title": "PHP CodeSniffer",
-  "description": "Lint PHP against coding standards using PHP CodeSniffer.",
-  "homepage": "https://github.com/mikaeljorhult/brackets-phpcs",
+  "name": "mikaeljorhult.brackets-php-lint-tools",
+  "title": "PHP Lint Tools",
+  "description": "Lint PHP using several code analysis tools.",
+  "homepage": "https://github.com/mikaeljorhult/brackets-php-lint-tools",
   "version": "0.1.0",
   "author": "Mikael Jorhult <mikael@jorhult.se> (http://jorhult.se)",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mikaeljorhult/brackets-phpcs"
+    "url": "https://github.com/mikaeljorhult/brackets-php-lint-tools"
   },
   "license": {
     "type": "MIT",

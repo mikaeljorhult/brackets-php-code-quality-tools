@@ -1,6 +1,6 @@
-# Brackets PHP CodeSniffer
+# Brackets PHP Lint Tools
 
-Brackets/Edge Code extension that lint PHP files against code standards using PHP CodeSniffer.
+Brackets/Edge Code extension that lint PHP files using several code analysis tools.
 
 
 ### Install using Extension Manager

@@ -1,6 +1,6 @@
 /*!
- * Brackets PHP CodeSniffer 0.1.0
- * Lint PHP against coding standards using PHP CodeSniffer.
+ * Brackets PHP Lint Tools 0.1.0
+ * Lint PHP using several code analysis tools.
  *
  * @author Mikael Jorhult
  * @license http://mikaeljorhult.mit-license.org MIT

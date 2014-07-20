@@ -1,16 +1,15 @@
 ( function() {
-	
 	var childProcess = require( 'child_process' );
 	
 	exports.init = function( manager ) {
-		if ( !manager.hasDomain( 'phpcs' ) ) {
-			manager.registerDomain( 'phpcs', {
+		if ( !manager.hasDomain( 'phplinttools' ) ) {
+			manager.registerDomain( 'phplinttools', {
 				major: 1,
 				minor: 0
 			} );
 		}
 	
-		manager.registerCommand( 'phpcs', 'commander', commander, true );
+		manager.registerCommand( 'phplinttools', 'commander', commander, true );
 	};
 	
 	function commander( exec, cb ) {
