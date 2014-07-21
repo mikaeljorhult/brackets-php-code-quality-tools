@@ -9,7 +9,7 @@ define( function( require, exports, module ) {
 	
 	// Run commands.
 	function run( command, callback ) {
-		nodeConnection.domains.phpcs.commander( command ).done( callback );
+		nodeConnection.domains.phplinttools.commander( command ).done( callback );
 	}
 	
 	// Register panel and setup event listeners.

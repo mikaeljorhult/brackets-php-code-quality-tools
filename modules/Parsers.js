@@ -18,7 +18,7 @@ define( function() {
 			type;
 		
 		// Assume no errors.
-		errors.phpcs = [];
+		errors.phpcpd = [];
 		
 		// Go through all matching rows in result.
 		while ( ( matches = regularExpression.exec( data ) ) !== null ) {
