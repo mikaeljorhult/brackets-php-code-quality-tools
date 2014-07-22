@@ -10,10 +10,20 @@ define( function( require, exports, module ) {
 	
 	// Get module dependencies.
 	var CodeInspection = brackets.getModule( 'language/CodeInspection' ),
+		CommandManager = brackets.getModule( 'command/CommandManager' ),
 		DocumentManager = brackets.getModule( 'document/DocumentManager' ),
 		ExtensionUtils = brackets.getModule( 'utils/ExtensionUtils' ),
+		Menus = brackets.getModule( 'command/Menus' ),
+		PreferencesManager = brackets.getModule( 'preferences/PreferencesManager' ),
+		
+		// Extension Modules.
 		CommandRunner = require( 'modules/CommandRunner' ),
 		Parsers = require( 'modules/Parsers' ),
+		SettingsDialog = require( 'modules/SettingsDialog' ),
+		
+		// Setup extension.
+		COMMAND_ID_SETTINGS = 'mikaeljorhult.bracketsPHPLintTools.settings',
+		preferences = PreferencesManager.getExtensionPrefs( 'mikaeljorhult.bracketsPHPLintTools' ),
 		
 		// Variables.
 		basePath = ExtensionUtils.getModulePath( module, 'modules/vendor/' ).replace( ' ', '\\ ' ),
@@ -21,7 +31,24 @@ define( function( require, exports, module ) {
 			phpcpd: 'php ' + basePath + 'phpcpd/phpcpd.phar',
 			phpcs: 'php ' + basePath + 'phpcs/phpcs.phar',
 			phpmd: 'php ' + basePath + 'phpmd/phpmd.phar'
-		};
+		},
+		
+		// Hook into menus.
+		menu = Menus.getMenu( Menus.AppMenuBar.VIEW_MENU );
+	
+	// Register extension.
+	CommandManager.register( 'PHP Lint Tools', COMMAND_ID_SETTINGS, showSettingsDialog );
+	
+	// Add command to menu.
+	if ( menu !== undefined ) {
+		menu.addMenuDivider();
+		menu.addMenuItem( COMMAND_ID_SETTINGS );
+	}
+	
+	// Show settings dialog.
+	function showSettingsDialog() {
+		SettingsDialog.show( preferences );
+	}
 	
 	// Lint path and return found errors.
 	function getErrors( fullPath ) {
