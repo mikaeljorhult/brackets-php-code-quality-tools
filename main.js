@@ -36,6 +36,10 @@ define( function( require, exports, module ) {
 		// Hook into menus.
 		menu = Menus.getMenu( Menus.AppMenuBar.VIEW_MENU );
 	
+	// Define preferences.
+	preferences.definePreference( 'enabled-tools', 'array', [ 'phpcs', 'phpcpd', 'phpmd' ] );
+	preferences.definePreference( 'phpcs-standards', 'array', [ 'MySource', 'PEAR', 'PHPCS', 'PSR1', 'PSR2', 'Squiz', 'Zend' ] );
+	
 	// Register extension.
 	CommandManager.register( 'PHP Lint Tools', COMMAND_ID_SETTINGS, showSettingsDialog );
 	
@@ -53,14 +57,28 @@ define( function( require, exports, module ) {
 	// Lint path and return found errors.
 	function getErrors( fullPath ) {
 		var filePath = fullPath.replace( new RegExp( ' ', 'g' ), '\\ ' ),
+			phpcsStandards = concatenateArray( preferences.get( 'phpcs-standards' ), ' --standard=' ),
+			
+			// Commands.
 			phpcpdCommand = paths.phpcpd + ' ' + filePath,
-			phpcsCommand = paths.phpcs + ' ' + filePath,
+			phpcsCommand = paths.phpcs + phpcsStandards + ' ' + filePath,
 			phpmdCommand = paths.phpmd + ' ' + filePath + ' text cleancode,codesize,controversial,design,naming,unusedcode';
 		
 		// Run command using Node.
 		CommandRunner.run( phpcpdCommand, Parsers.phpcpd );
 		CommandRunner.run( phpcsCommand, Parsers.phpcs );
 		CommandRunner.run( phpmdCommand, Parsers.phpmd );
+	}
+	
+	// Concatenate a array of values to a comma separated string.
+	function concatenateArray( valueArray, prefix ) {
+		var returnValue = false;
+		
+		if ( valueArray.length > 0 ) {
+			returnValue = ( prefix !== undefined ? prefix : '' ) + valueArray.join( ',' );
+		}
+		
+		return returnValue;
 	}
 	
 	// Run CodeInspection when a file is saved.
