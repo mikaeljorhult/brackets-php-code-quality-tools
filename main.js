@@ -17,7 +17,6 @@ define( function( require, exports, module ) {
 		PreferencesManager = brackets.getModule( 'preferences/PreferencesManager' ),
 		
 		// Extension Modules.
-		CommandRunner = require( 'modules/CommandRunner' ),
 		Parsers = require( 'modules/Parsers' ),
 		SettingsDialog = require( 'modules/SettingsDialog' ),
 		
@@ -69,10 +68,21 @@ define( function( require, exports, module ) {
 			phpcsCommand = paths.phpcs + phpcsStandards + ' ' + filePath,
 			phpmdCommand = paths.phpmd + ' ' + filePath + ' text ' + phpmdRulesets;
 		
-		// Run command using Node.
-		CommandRunner.run( phpcpdCommand, Parsers.phpcpd );
-		CommandRunner.run( phpcsCommand, Parsers.phpcs );
-		CommandRunner.run( phpmdCommand, Parsers.phpmd );
+		// Pass command to parser.
+		Parsers.run( {
+			name: 'phpcs',
+			command: phpcsCommand
+		} );
+		
+		Parsers.run( {
+			name: 'phpcpd',
+			command: phpcpdCommand
+		} );
+		
+		Parsers.run( {
+			name: 'phpmd',
+			command: phpmdCommand
+		} );
 	}
 	
 	// Concatenate a array of values to a comma separated string.

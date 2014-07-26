@@ -1,8 +1,13 @@
-define( function() {
+define( function( require ) {
 	'use strict';
 	
 	// Get module dependencies.
 	var CodeInspection = brackets.getModule( 'language/CodeInspection' ),
+		PreferencesManager = brackets.getModule( 'preferences/PreferencesManager' ),
+		
+		// Extension Modules.
+		CommandRunner = require( 'modules/CommandRunner' ),
+		preferences = PreferencesManager.getExtensionPrefs( 'mikaeljorhult.bracketsPHPLintTools' ),
 		
 		// Variables.
 		errors = {
@@ -11,13 +16,23 @@ define( function() {
 			phpmd: []
 		};
 	
+	// Run tool.
+	function runTool( tool ) {
+		var enabledTools = preferences.get( 'enabled-tools' );
+		
+		// Assume no errors.
+		errors[ tool.name ] = [];
+		
+		// Run tool if it's enabled in settings.
+		if ( enabledTools.indexOf( tool.name ) !== -1 ) {
+			CommandRunner.run( tool.command, this[ tool.name ] );
+		}
+	}
+	
 	// Parse message returned from Copy/Paste Detector for errors.
 	function phpcpd( data ) {
 		var regularExpression = /-\s(?:.*):((\d+)-(\d+))[\s\S]\s+(?:.*):((\d+)-(\d+))/g,
 			matches;
-		
-		// Assume no errors.
-		errors.phpcpd = [];
 		
 		// Go through all matching rows in result.
 		while ( ( matches = regularExpression.exec( data ) ) !== null ) {
@@ -43,9 +58,6 @@ define( function() {
 			matches,
 			type;
 		
-		// Assume no errors.
-		errors.phpcs = [];
-		
 		// Go through all matching rows in result.
 		while ( ( matches = regularExpression.exec( data ) ) !== null ) {
 			type = matches[ 2 ].match( 'ERROR' ) ? CodeInspection.Type.ERROR : CodeInspection.Type.WARNING;
@@ -68,9 +80,6 @@ define( function() {
 	function phpmd( data ) {
 		var regularExpression = /(?:.*):(\d+)\s+(.*)/g,
 			matches;
-		
-		// Assume no errors.
-		errors.phpmd = [];
 		
 		// Go through all matching rows in result.
 		while ( ( matches = regularExpression.exec( data ) ) !== null ) {
@@ -96,6 +105,7 @@ define( function() {
 		errors: returnErrors,
 		phpcpd: phpcpd,
 		phpcs: phpcs,
-		phpmd: phpmd
+		phpmd: phpmd,
+		run: runTool
 	};
 } );
