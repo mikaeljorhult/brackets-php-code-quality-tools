@@ -20,6 +20,7 @@ define( function( require, exports, module ) {
 		Defaults = require( 'modules/Defaults' ),
 		Parsers = require( 'modules/Parsers' ),
 		SettingsDialog = require( 'modules/SettingsDialog' ),
+		Strings = require( 'modules/Strings' ),
 		
 		// Setup extension.
 		COMMAND_ID_SETTINGS = 'mikaeljorhult.bracketsPHPLintTools.settings',
@@ -42,7 +43,7 @@ define( function( require, exports, module ) {
 	preferences.definePreference( 'phpmd-rulesets', 'array', Defaults.phpmdRulesets );
 	
 	// Register extension.
-	CommandManager.register( 'PHP Lint Tools', COMMAND_ID_SETTINGS, showSettingsDialog );
+	CommandManager.register( Strings.EXTENSION_NAME, COMMAND_ID_SETTINGS, showSettingsDialog );
 	
 	// Add command to menu.
 	if ( menu !== undefined ) {

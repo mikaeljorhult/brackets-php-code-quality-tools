@@ -6,6 +6,7 @@ define( function( require, exports ) {
 		
 		// Extension Modules.
 		Defaults = require( 'modules/Defaults' ),
+		Strings = require( 'modules/Strings' ),
 		
 		// Templates.
 		settingsDialogTemplate = require( 'text!../html/settings-dialog.html' ),
@@ -86,7 +87,9 @@ define( function( require, exports ) {
 	 */
 	exports.show = function( prefs ) {
 		// Compile dialog template.
-		var compiledTemplate = Mustache.render( settingsDialogTemplate, {} );
+		var compiledTemplate = Mustache.render( settingsDialogTemplate, {
+			Strings: Strings
+		} );
 		
 		// Save dialog to variable.
 		dialog = Dialogs.showModalDialogUsingTemplate( compiledTemplate );
