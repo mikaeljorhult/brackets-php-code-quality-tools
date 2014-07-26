@@ -17,6 +17,7 @@ define( function( require, exports, module ) {
 		PreferencesManager = brackets.getModule( 'preferences/PreferencesManager' ),
 		
 		// Extension Modules.
+		Defaults = require( 'modules/Defaults' ),
 		Parsers = require( 'modules/Parsers' ),
 		SettingsDialog = require( 'modules/SettingsDialog' ),
 		
@@ -36,9 +37,9 @@ define( function( require, exports, module ) {
 		menu = Menus.getMenu( Menus.AppMenuBar.VIEW_MENU );
 	
 	// Define preferences.
-	preferences.definePreference( 'enabled-tools', 'array', [ 'phpcs', 'phpcpd' ] );
-	preferences.definePreference( 'phpcs-standards', 'array', [ 'MySource', 'PEAR', 'PHPCS', 'PSR1', 'PSR2', 'Squiz', 'Zend' ] );
-	preferences.definePreference( 'phpmd-rulesets', 'array', [ 'cleancode', 'codesize', 'controversial', 'design', 'naming', 'unusedcode' ] );
+	preferences.definePreference( 'enabled-tools', 'array', Defaults.enabledTools );
+	preferences.definePreference( 'phpcs-standards', 'array', Defaults.phpcsStandards );
+	preferences.definePreference( 'phpmd-rulesets', 'array', Defaults.phpmdRulesets );
 	
 	// Register extension.
 	CommandManager.register( 'PHP Lint Tools', COMMAND_ID_SETTINGS, showSettingsDialog );
