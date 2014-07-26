@@ -49,6 +49,9 @@ define( function( require, exports, module ) {
 		menu.addMenuItem( COMMAND_ID_SETTINGS );
 	}
 	
+	// Load stylesheet.
+	ExtensionUtils.loadStyleSheet( module, 'phplinttools.css' );
+	
 	// Show settings dialog.
 	function showSettingsDialog() {
 		SettingsDialog.show( preferences );
