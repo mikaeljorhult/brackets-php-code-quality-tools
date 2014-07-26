@@ -21,3 +21,8 @@
 	-webkit-columns: 3;
 	columns: 3;
 }
+
+/*--- HIDE MESS DETECTOR ---*/
+.php-lint-settings-dialog .tool-phpmd {
+	display: none;
+}

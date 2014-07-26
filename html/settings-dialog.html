@@ -4,18 +4,7 @@
 	</div>
 	
 	<div class="modal-body tab-content">
-		<fieldset>
-			<legend>Copy/Paste Detector</legend>
-			
-			<p>
-				<label>
-					<input type="checkbox" name="enabled[]" value="phpcpd" />
-					Enable
-				</label>
-			</p>
-		</fieldset>
-		
-		<fieldset>
+		<fieldset class="tool-phpcs">
 			<legend>CodeSniffer</legend>
 			
 			<p>
@@ -63,7 +52,18 @@
 			</p>
 		</fieldset>
 		
-		<fieldset>
+		<fieldset class="tool-phpcpd">
+			<legend>Copy/Paste Detector</legend>
+			
+			<p>
+				<label>
+					<input type="checkbox" name="enabled[]" value="phpcpd" />
+					Enable
+				</label>
+			</p>
+		</fieldset>
+		
+		<fieldset class="tool-phpmd">
 			<legend>Mess Detector</legend>
 			
 			<p>
