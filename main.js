@@ -36,7 +36,7 @@ define( function( require, exports, module ) {
 		menu = Menus.getMenu( Menus.AppMenuBar.VIEW_MENU );
 	
 	// Define preferences.
-	preferences.definePreference( 'enabled-tools', 'array', [ 'phpcs', 'phpcpd' ] );
+	preferences.definePreference( 'enabled-tools', 'array', [ 'phpcs', 'phpcpd', 'phpmd' ] );
 	preferences.definePreference( 'phpcs-standards', 'array', [ 'MySource', 'PEAR', 'PHPCS', 'PSR1', 'PSR2', 'Squiz', 'Zend' ] );
 	preferences.definePreference( 'phpmd-rulesets', 'array', [ 'cleancode', 'codesize', 'controversial', 'design', 'naming', 'unusedcode' ] );
 	
