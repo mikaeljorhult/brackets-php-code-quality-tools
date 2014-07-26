@@ -4,6 +4,9 @@ define( function( require, exports ) {
 	// Get module dependencies.
 	var Dialogs = brackets.getModule( 'widgets/Dialogs' ),
 		
+		// Extension Modules.
+		Defaults = require( 'modules/Defaults' ),
+		
 		// Templates.
 		settingsDialogTemplate = require( 'text!../html/settings-dialog.html' ),
 		
@@ -16,6 +19,8 @@ define( function( require, exports ) {
 	 * Reset all preferences to defaults.
 	 */
 	function resetValues() {
+		setValues( Defaults );
+		
 		preferences.save();
 	}
 	

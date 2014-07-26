@@ -1,4 +1,4 @@
-define( function( require ) {
+define( function( require, exports ) {
 	'use strict';
 	
 	// Get module dependencies.
@@ -25,7 +25,7 @@ define( function( require ) {
 		
 		// Run tool if it's enabled in settings.
 		if ( enabledTools.indexOf( tool.name ) !== -1 ) {
-			CommandRunner.run( tool.command, this[ tool.name ] );
+			CommandRunner.run( tool.command, exports[ tool.name ] );
 		}
 	}
 	
@@ -101,11 +101,9 @@ define( function( require ) {
 		return errors;
 	}
 	
-	return {
-		errors: returnErrors,
-		phpcpd: phpcpd,
-		phpcs: phpcs,
-		phpmd: phpmd,
-		run: runTool
-	};
+	exports.errors = returnErrors;
+	exports.phpcpd = phpcpd;
+	exports.phpcs = phpcs;
+	exports.phpmd = phpmd;
+	exports.run = runTool;
 } );
