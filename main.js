@@ -39,6 +39,7 @@ define( function( require, exports, module ) {
 	// Define preferences.
 	preferences.definePreference( 'enabled-tools', 'array', [ 'phpcs', 'phpcpd', 'phpmd' ] );
 	preferences.definePreference( 'phpcs-standards', 'array', [ 'MySource', 'PEAR', 'PHPCS', 'PSR1', 'PSR2', 'Squiz', 'Zend' ] );
+	preferences.definePreference( 'phpmd-rulesets', 'array', [ 'cleancode', 'codesize', 'controversial', 'design', 'naming', 'unusedcode' ] );
 	
 	// Register extension.
 	CommandManager.register( 'PHP Lint Tools', COMMAND_ID_SETTINGS, showSettingsDialog );
@@ -61,11 +62,12 @@ define( function( require, exports, module ) {
 	function getErrors( fullPath ) {
 		var filePath = fullPath.replace( new RegExp( ' ', 'g' ), '\\ ' ),
 			phpcsStandards = concatenateArray( preferences.get( 'phpcs-standards' ), ' --standard=' ),
+			phpmdRulesets = concatenateArray( preferences.get( 'phpmd-rulesets' ) ),
 			
 			// Commands.
 			phpcpdCommand = paths.phpcpd + ' ' + filePath,
 			phpcsCommand = paths.phpcs + phpcsStandards + ' ' + filePath,
-			phpmdCommand = paths.phpmd + ' ' + filePath + ' text cleancode,codesize,controversial,design,naming,unusedcode';
+			phpmdCommand = paths.phpmd + ' ' + filePath + ' text ' + phpmdRulesets;
 		
 		// Run command using Node.
 		CommandRunner.run( phpcpdCommand, Parsers.phpcpd );
