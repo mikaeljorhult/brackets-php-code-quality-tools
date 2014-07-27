@@ -19,6 +19,7 @@ define( function( require, exports, module ) {
 		PreferencesManager = brackets.getModule( 'preferences/PreferencesManager' ),
 		
 		// Extension Modules.
+		CommandRunner = require( 'modules/CommandRunner' ),
 		Defaults = require( 'modules/Defaults' ),
 		Parsers = require( 'modules/Parsers' ),
 		SettingsDialog = require( 'modules/SettingsDialog' ),
@@ -107,52 +108,60 @@ define( function( require, exports, module ) {
 		return returnValue;
 	}
 	
-	// Register linting service.
-	CodeInspection.register( 'php', {
-		name: 'PHP Copy/Paste Detector',
-		scanFile: function() {
-			return {
-				errors: Parsers.errors().phpcpd
-			};
-		}
-	} );
-	
-	CodeInspection.register( 'php', {
-		name: 'PHP CodeSniffer',
-		scanFile: function() {
-			return {
-				errors: Parsers.errors().phpcs
-			};
-		}
-	} );
-	
-	CodeInspection.register( 'php', {
-		name: 'PHP Lint',
-		scanFile: function() {
-			return {
-				errors: Parsers.errors().phpl
-			};
-		}
-	} );
-	
-	CodeInspection.register( 'php', {
-		name: 'PHP Mess Detector',
-		scanFile: function() {
-			return {
-				errors: Parsers.errors().phpmd
-			};
-		}
-	} );
-	
 	// Register event listeners.
 	AppInit.appReady( function() {
-		// Run CodeInspection when a file is saved or other file get focus.
-		$( DocumentManager ).on( 'documentSaved.phpLintTools', function( event, fileEntry ) {
-			getErrors( fileEntry.file.fullPath );
-		} );
-		
-		$( EditorManager ).on( 'activeEditorChange', function( event, editor ) {
-			getErrors( editor.document.file.fullPath );
+		// Test for PHP.
+		CommandRunner.run( 'php -v', function( data ) {
+			// Only register linters and listeners if PHP is available on machine.
+			if ( data.indexOf( 'PHP' ) > -1 ) {
+				// Register linting service.
+				CodeInspection.register( 'php', {
+					name: 'PHP Copy/Paste Detector',
+					scanFile: function() {
+						return {
+							errors: Parsers.errors().phpcpd
+						};
+					}
+				} );
+				
+				CodeInspection.register( 'php', {
+					name: 'PHP CodeSniffer',
+					scanFile: function() {
+						return {
+							errors: Parsers.errors().phpcs
+						};
+					}
+				} );
+				
+				CodeInspection.register( 'php', {
+					name: 'PHP Lint',
+					scanFile: function() {
+						return {
+							errors: Parsers.errors().phpl
+						};
+					}
+				} );
+				
+				CodeInspection.register( 'php', {
+					name: 'PHP Mess Detector',
+					scanFile: function() {
+						return {
+							errors: Parsers.errors().phpmd
+						};
+					}
+				} );
+				
+				// Run CodeInspection when a file is saved or other file get focus.
+				$( DocumentManager ).on( 'documentSaved.phpLintTools', function( event, fileEntry ) {
+					getErrors( fileEntry.file.fullPath );
+				} );
+				
+				$( EditorManager ).on( 'activeEditorChange', function( event, editor ) {
+					getErrors( editor.document.file.fullPath );
+				} );
+			} else {
+				// PHP is not available. Display error.
+			}
 		} );
 	} );
 } );

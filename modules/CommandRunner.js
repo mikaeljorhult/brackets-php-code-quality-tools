@@ -12,17 +12,14 @@ define( function( require, exports, module ) {
 		nodeConnection.domains.phplinttools.commander( command ).done( callback );
 	}
 	
-	// Register panel and setup event listeners.
-	AppInit.appReady( function() {
-		// Connect to Node.
-		nodeConnection.connect( true ).done( function() {
-			// Load terminal domain.
-			var path = ExtensionUtils.getModulePath( module, '../node/commander' );
-			
-			// Load commander into Node.
-			nodeConnection.loadDomains( [ path ], true ).done( function() {
-				// Loaded.
-			} );
+	// Connect to Node.
+	nodeConnection.connect( true ).done( function() {
+		// Load terminal domain.
+		var path = ExtensionUtils.getModulePath( module, '../node/commander' );
+		
+		// Load commander into Node.
+		nodeConnection.loadDomains( [ path ], true ).done( function() {
+			// Loaded.
 		} );
 	} );
 	
