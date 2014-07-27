@@ -9,9 +9,11 @@ define( function( require, exports, module ) {
 	'use strict';
 	
 	// Get module dependencies.
-	var CodeInspection = brackets.getModule( 'language/CodeInspection' ),
+	var AppInit = brackets.getModule( 'utils/AppInit' ),
+		CodeInspection = brackets.getModule( 'language/CodeInspection' ),
 		CommandManager = brackets.getModule( 'command/CommandManager' ),
 		DocumentManager = brackets.getModule( 'document/DocumentManager' ),
+		EditorManager = brackets.getModule( 'editor/EditorManager' ),
 		ExtensionUtils = brackets.getModule( 'utils/ExtensionUtils' ),
 		Menus = brackets.getModule( 'command/Menus' ),
 		PreferencesManager = brackets.getModule( 'preferences/PreferencesManager' ),
@@ -98,11 +100,6 @@ define( function( require, exports, module ) {
 		return returnValue;
 	}
 	
-	// Run CodeInspection when a file is saved.
-	$( DocumentManager ).on( 'documentSaved', function( event, fileEntry ) {
-		getErrors( fileEntry.file.fullPath );
-	} );
-	
 	// Register linting service.
 	CodeInspection.register( 'php', {
 		name: 'PHP Copy/Paste Detector',
@@ -129,5 +126,17 @@ define( function( require, exports, module ) {
 				errors: Parsers.errors().phpmd
 			};
 		}
+	} );
+	
+	// Register event listeners.
+	AppInit.appReady( function() {
+		// Run CodeInspection when a file is saved or other file get focus.
+		$( DocumentManager ).on( 'documentSaved.phpLintTools', function( event, fileEntry ) {
+			getErrors( fileEntry.file.fullPath );
+		} );
+		
+		$( EditorManager ).on( 'activeEditorChange', function( event, editor ) {
+			getErrors( editor.document.file.fullPath );
+		} );
 	} );
 } );
