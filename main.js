@@ -33,6 +33,7 @@ define( function( require, exports, module ) {
 		paths = {
 			phpcpd: 'php ' + basePath + 'phpcpd/phpcpd.phar',
 			phpcs: 'php ' + basePath + 'phpcs/phpcs.phar',
+			phpl: 'php',
 			phpmd: 'php ' + basePath + 'phpmd/phpmd.phar'
 		},
 		
@@ -70,6 +71,7 @@ define( function( require, exports, module ) {
 			// Commands.
 			phpcpdCommand = paths.phpcpd + ' ' + filePath,
 			phpcsCommand = paths.phpcs + phpcsStandards + ' ' + filePath,
+			phplCommand = paths.phpl + ' -d display_errors=1 -d error_reporting=-1 -l ' + filePath,
 			phpmdCommand = paths.phpmd + ' ' + filePath + ' text ' + phpmdRulesets;
 		
 		// Pass command to parser.
@@ -81,6 +83,11 @@ define( function( require, exports, module ) {
 		Parsers.run( {
 			name: 'phpcpd',
 			command: phpcpdCommand
+		} );
+		
+		Parsers.run( {
+			name: 'phpl',
+			command: phplCommand
 		} );
 		
 		Parsers.run( {
@@ -115,6 +122,15 @@ define( function( require, exports, module ) {
 		scanFile: function() {
 			return {
 				errors: Parsers.errors().phpcs
+			};
+		}
+	} );
+	
+	CodeInspection.register( 'php', {
+		name: 'PHP Lint',
+		scanFile: function() {
+			return {
+				errors: Parsers.errors().phpl
 			};
 		}
 	} );
