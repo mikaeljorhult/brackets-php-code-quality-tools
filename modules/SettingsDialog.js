@@ -64,9 +64,7 @@ define( function( require, exports ) {
 			var $this = $( element );
 			
 			// Make checkbox checked if its value is in array.
-			if ( valueArray.indexOf( $this.attr( 'value' ) ) !== -1 ) {
-				$this.prop( 'checked', true );
-			}
+			$this.prop( 'checked', valueArray.indexOf( $this.attr( 'value' ) ) !== -1 );
 		} );
 	}
 	

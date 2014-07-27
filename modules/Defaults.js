@@ -3,7 +3,7 @@ define( function() {
 	
 	return {
 		enabledTools: [ 'phpcs', 'phpcpd', 'phpl' ],
-		phpcsStandards: [ 'MySource', 'PEAR', 'PHPCS', 'PSR1', 'PSR2', 'Squiz', 'Zend' ],
+		phpcsStandards: [ 'PSR1', 'PSR2' ],
 		phpmdRulesets: [ 'cleancode', 'codesize', 'controversial', 'design', 'naming', 'unusedcode' ]
 	};
 } );
