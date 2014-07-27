@@ -1,5 +1,5 @@
 /*!
- * Brackets PHP Lint Tools 0.1.0
+ * Brackets PHP Code Quality Tools 0.1.0
  * Lint PHP using several code analysis tools.
  *
  * @author Mikael Jorhult
@@ -55,7 +55,7 @@ define( function( require, exports, module ) {
 	}
 	
 	// Load stylesheet.
-	ExtensionUtils.loadStyleSheet( module, 'phplinttools.css' );
+	ExtensionUtils.loadStyleSheet( module, 'php-tools.css' );
 	
 	// Show settings dialog.
 	function showSettingsDialog() {
