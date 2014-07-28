@@ -86,7 +86,8 @@ define( function( require, exports ) {
 	exports.show = function( prefs ) {
 		// Compile dialog template.
 		var compiledTemplate = Mustache.render( settingsDialogTemplate, {
-			Strings: Strings
+			Strings: Strings,
+			phpAvailable: prefs.get( 'php-available' )
 		} );
 		
 		// Save dialog to variable.

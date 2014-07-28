@@ -1,10 +1,16 @@
-<div id="php-lint-settings-dialog" class="modal php-lint-settings-dialog">
+<div id="php-lint-settings-dialog" class="modal php-lint-settings-dialog {{ ^phpAvailable }}error{{ /phpAvailable }}">
 	<div class="modal-header">
 		<h1 class="dialog-title">{{ Strings.SETTINGS_DIALOG_TITLE }}</h1>
 	</div>
 	
 	<div class="modal-body tab-content">
-		<fieldset class="tool-phpcs">
+		{{ ^phpAvailable }}
+			<fieldset class="error">
+				{{ Strings.SETTINGS_DIALOG_NOT_AVAILABLE }}
+			</fieldset>
+		{{ /phpAvailable }}
+		
+		<fieldset class="tool tool-phpcs">
 			<legend>CodeSniffer</legend>
 			
 			<p>
@@ -54,7 +60,7 @@
 			</p>
 		</fieldset>
 		
-		<fieldset class="tool-phpcpd">
+		<fieldset class="tool tool-phpcpd">
 			<legend>Copy/Paste Detector</legend>
 			
 			<p>
@@ -65,7 +71,7 @@
 			</p>
 		</fieldset>
 		
-		<fieldset class="tool-phpl">
+		<fieldset class="tool tool-phpl">
 			<legend>PHP Lint</legend>
 			
 			<p>
@@ -76,7 +82,7 @@
 			</p>
 		</fieldset>
 		
-		<fieldset class="tool-phpmd">
+		<fieldset class="tool tool-phpmd">
 			<legend>Mess Detector</legend>
 			
 			<p>

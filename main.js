@@ -166,8 +166,6 @@ define( function( require, exports, module ) {
 				$( EditorManager ).on( 'activeEditorChange', function( event, editor ) {
 					getErrors( editor.document.file.fullPath );
 				} );
-			} else {
-				// PHP is not available. Display error.
 			}
 		} );
 	} );

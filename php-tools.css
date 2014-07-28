@@ -22,6 +22,14 @@
 	columns: 3;
 }
 
+.php-lint-settings-dialog .error {
+	color: #c95353;
+}
+
+.php-lint-settings-dialog.error .tool {
+	display: none;
+}
+
 /*--- HIDE MESS DETECTOR ---*/
 .php-lint-settings-dialog .tool-phpmd {
 	display: none;
