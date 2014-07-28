@@ -42,6 +42,7 @@ define( function( require, exports, module ) {
 		menu = Menus.getMenu( Menus.AppMenuBar.VIEW_MENU );
 	
 	// Define preferences.
+	preferences.definePreference( 'php-available', 'boolean', false );
 	preferences.definePreference( 'enabled-tools', 'array', Defaults.enabledTools );
 	preferences.definePreference( 'phpcs-standards', 'array', Defaults.phpcsStandards );
 	preferences.definePreference( 'phpmd-rulesets', 'array', Defaults.phpmdRulesets );
@@ -112,8 +113,14 @@ define( function( require, exports, module ) {
 	AppInit.appReady( function() {
 		// Test for PHP.
 		CommandRunner.run( 'php -v', function( data ) {
+			var phpAvailable = data.indexOf( 'PHP' ) > -1;
+			
+			// Save PHP state
+			preferences.set( 'php-available', phpAvailable );
+			preferences.save();
+			
 			// Only register linters and listeners if PHP is available on machine.
-			if ( data.indexOf( 'PHP' ) > -1 ) {
+			if ( phpAvailable ) {
 				// Register linting service.
 				CodeInspection.register( 'php', {
 					name: 'PHP Copy/Paste Detector',
