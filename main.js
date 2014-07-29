@@ -66,7 +66,7 @@ define( function( require, exports, module ) {
 	
 	// Lint path and return found errors.
 	function getErrors( fullPath ) {
-		var filePath = fullPath.replace( new RegExp( ' ', 'g' ), '\\ ' ),
+		var filePath = normalizePath( fullPath ),
 			phpcsStandards = concatenateArray( preferences.get( 'phpcs-standards' ), ' --standard=' ),
 			phpmdRulesets = concatenateArray( preferences.get( 'phpmd-rulesets' ) ),
 			
@@ -107,6 +107,18 @@ define( function( require, exports, module ) {
 		}
 		
 		return returnValue;
+	}
+	
+	
+	// Escape paths on different systems.
+	function normalizePath( fullPath ) {
+		if ( brackets.platform === 'win' ) {
+			fullPath = '"' + fullPath + '"';
+		} else {
+			fullPath = fullPath.replace( new RegExp( ' ', 'g' ), '\\ ' );
+		}
+		
+		return fullPath;
 	}
 	
 	// Register event listeners.
