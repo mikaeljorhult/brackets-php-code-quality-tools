@@ -5,21 +5,27 @@ define( function( require, exports, module ) {
 	var AppInit = brackets.getModule( 'utils/AppInit' ),
 		ExtensionUtils = brackets.getModule( 'utils/ExtensionUtils' ),
 		NodeConnection = brackets.getModule( 'utils/NodeConnection' ),
-		nodeConnection = new NodeConnection();
+		nodeConnection = new NodeConnection(),
+		
+		// Extension modules.
+		Events = require( 'modules/Events' );
 	
 	// Run commands.
 	function run( command, callback ) {
 		nodeConnection.domains.phplinttools.commander( command ).done( callback );
 	}
 	
-	// Connect to Node.
-	nodeConnection.connect( true ).done( function() {
-		// Load terminal domain.
-		var path = ExtensionUtils.getModulePath( module, '../node/commander' );
-		
-		// Load commander into Node.
-		nodeConnection.loadDomains( [ path ], true ).done( function() {
-			// Loaded.
+	AppInit.appReady( function() {
+		// Connect to Node.
+		nodeConnection.connect( true ).done( function() {
+			// Load terminal domain.
+			var path = ExtensionUtils.getModulePath( module, '../node/commander' );
+			
+			// Load commander into Node.
+			nodeConnection.loadDomains( [ path ], true ).done( function() {
+				// Publish event.
+				Events.publish( 'node:connected' );
+			} );
 		} );
 	} );
 	

@@ -1,5 +1,5 @@
 /*!
- * Brackets PHP Code Quality Tools 0.1.0
+ * Brackets PHP Code Quality Tools 0.1.1
  * Lint PHP using several code analysis tools.
  *
  * @author Mikael Jorhult
@@ -9,8 +9,7 @@ define( function( require, exports, module ) {
 	'use strict';
 	
 	// Get module dependencies.
-	var AppInit = brackets.getModule( 'utils/AppInit' ),
-		CodeInspection = brackets.getModule( 'language/CodeInspection' ),
+	var CodeInspection = brackets.getModule( 'language/CodeInspection' ),
 		CommandManager = brackets.getModule( 'command/CommandManager' ),
 		DocumentManager = brackets.getModule( 'document/DocumentManager' ),
 		EditorManager = brackets.getModule( 'editor/EditorManager' ),
@@ -21,6 +20,7 @@ define( function( require, exports, module ) {
 		// Extension Modules.
 		CommandRunner = require( 'modules/CommandRunner' ),
 		Defaults = require( 'modules/Defaults' ),
+		Events = require( 'modules/Events' ),
 		Parsers = require( 'modules/Parsers' ),
 		SettingsDialog = require( 'modules/SettingsDialog' ),
 		Strings = require( 'modules/Strings' ),
@@ -110,7 +110,7 @@ define( function( require, exports, module ) {
 	}
 	
 	// Register event listeners.
-	AppInit.appReady( function() {
+	Events.subscribe( 'node:connected', function() {
 		// Test for PHP.
 		CommandRunner.run( 'php -v', function( data ) {
 			var phpAvailable = data.indexOf( 'PHP' ) > -1;
