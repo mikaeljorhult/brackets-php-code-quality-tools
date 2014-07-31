@@ -132,11 +132,11 @@ define( function( require, exports, module ) {
 				} );
 				
 				// Run CodeInspection when a file is saved or other file get focus.
-				$( DocumentManager ).on( 'documentSaved.phpLintTools', function( event, fileEntry ) {
+				$( DocumentManager ).on( 'documentSaved.phpCodeQualityTools', function( event, fileEntry ) {
 					getErrors( fileEntry.file.fullPath );
 				} );
 				
-				$( EditorManager ).on( 'activeEditorChange', function( event, editor ) {
+				$( EditorManager ).on( 'activeEditorChange.phpCodeQualityTools', function( event, editor ) {
 					getErrors( editor.document.file.fullPath );
 				} );
 			}
@@ -148,5 +148,9 @@ define( function( require, exports, module ) {
 		registerEvents();
 	} else {
 		Events.subscribe( 'node:connected', registerEvents );
+	}
+	
+	return {
+		_paths: paths
 	}
 } );
