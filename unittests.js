@@ -7,6 +7,7 @@ define( function( require, exports, module ) {
 		// Get Todo modules.
 		Defaults = require( 'modules/Defaults' ),
 		CommandRunner = require( 'modules/CommandRunner' ),
+		Paths = require( 'modules/Paths' ),
 	
 		// Setup paths and other variables.
 		extensionPath = FileUtils.getNativeModuleDirectoryPath( module ),
@@ -59,7 +60,6 @@ define( function( require, exports, module ) {
 			it( 'should expose initialized getter', function() {
 				expect( CommandRunner.initialized ).toBeDefined();
 				expect( CommandRunner.initialized ).toEqual( jasmine.any( Function ) );
-				expect( CommandRunner.initialized() ).toEqual( true );
 			} );
 			
 			// Node domain should be setup.
@@ -67,6 +67,90 @@ define( function( require, exports, module ) {
 				expect( CommandRunner._nodeConnection).toBeDefined();
 				expect( CommandRunner._nodeConnection ).toEqual( jasmine.any( Object ) );
 				expect( CommandRunner._nodeConnection.domains.phplinttools ).not.toBeNull();
+			} );
+			
+			// Run PHP executable.
+			it( 'should be able to run php executable', function() {
+				var response = null;
+				
+				runs( function() {
+					CommandRunner.run( 'php -v', function( data ) {
+						response = data;
+					} );
+				} );
+				
+				waitsFor( function() {
+					return ( response !== null );
+				}, 'Command output should be returned.', 100 );
+				
+				// Run expectations on returned comments.
+				runs( function() {
+					expect( response ).toEqual( jasmine.any( String ) );
+					expect( response ).toMatch( 'PHP' );
+				} );
+			} );
+			
+			// Run CodeSniffer.
+			it( 'should be able to run CodeSniffer through PHP', function() {
+				var response = null;
+				
+				runs( function() {
+					CommandRunner.run( 'php ' + Paths.get( 'phpcs' ) + ' --version', function( data ) {
+						response = data;
+					} );
+				} );
+				
+				waitsFor( function() {
+					return ( response !== null );
+				}, 'Command output should be returned.', 100 );
+				
+				// Run expectations on returned comments.
+				runs( function() {
+					expect( response ).toEqual( jasmine.any( String ) );
+					expect( response ).toMatch( 'PHP_CodeSniffer' );
+				} );
+			} );
+			
+			// Run Copy/Paste Detector.
+			it( 'should be able to run Copy/Paste Detector through PHP', function() {
+				var response = null;
+				
+				runs( function() {
+					CommandRunner.run( 'php ' + Paths.get( 'phpcpd' ) + ' --version', function( data ) {
+						response = data;
+					} );
+				} );
+				
+				waitsFor( function() {
+					return ( response !== null );
+				}, 'Command output should be returned.', 100 );
+				
+				// Run expectations on returned comments.
+				runs( function() {
+					expect( response ).toEqual( jasmine.any( String ) );
+					expect( response ).toMatch( 'Bergmann' );
+				} );
+			} );
+			
+			// Run Mess Detector.
+			it( 'should be able to run Mess Detetctor through PHP', function() {
+				var response = null;
+				
+				runs( function() {
+					CommandRunner.run( 'php ' + Paths.get( 'phpmd' ) + ' --version', function( data ) {
+						response = data;
+					} );
+				} );
+				
+				waitsFor( function() {
+					return ( response !== null );
+				}, 'Command output should be returned.', 100 );
+				
+				// Run expectations on returned comments.
+				runs( function() {
+					expect( response ).toEqual( jasmine.any( String ) );
+					expect( response ).toMatch( 'PHPMD' );
+				} );
 			} );
 		} );
 	} );
