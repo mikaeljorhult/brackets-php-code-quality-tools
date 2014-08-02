@@ -133,11 +133,15 @@ define( function( require, exports, module ) {
 				
 				// Run CodeInspection when a file is saved or other file get focus.
 				$( DocumentManager ).on( 'documentSaved.phpCodeQualityTools', function( event, fileEntry ) {
-					getErrors( fileEntry.file.fullPath );
+					if ( fileEntry.language.getName() === 'PHP' ) {
+						getErrors( fileEntry.file.fullPath );
+					}
 				} );
 				
 				$( EditorManager ).on( 'activeEditorChange.phpCodeQualityTools', function( event, editor ) {
-					getErrors( editor.document.file.fullPath );
+					if ( editor !== null ) {
+						getErrors( editor.document.file.fullPath );
+					}
 				} );
 			}
 		} );
@@ -152,5 +156,5 @@ define( function( require, exports, module ) {
 	
 	return {
 		_paths: paths
-	}
+	};
 } );
