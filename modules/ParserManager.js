@@ -12,18 +12,10 @@ define( function( require, exports, module ) {
 		CommandRunner = require( 'modules/CommandRunner' ),
 		Events = require( 'modules/Events' ),
 		Parsers = require( 'modules/Parsers' ),
+		Paths = require( 'modules/Paths' ),
 		
 		// Setup extension.
-		preferences = PreferencesManager.getExtensionPrefs( 'mikaeljorhult.bracketsPHPLintTools' ),
-		
-		// Variables.
-		basePath = ExtensionUtils.getModulePath( module, 'vendor/' ).replace( ' ', '\\ ' ),
-		paths = {
-			phpcpd: 'php ' + basePath + 'phpcpd/phpcpd.phar',
-			phpcs: 'php ' + basePath + 'phpcs/phpcs.phar',
-			phpl: 'php',
-			phpmd: 'php ' + basePath + 'phpmd/phpmd.phar'
-		};
+		preferences = PreferencesManager.getExtensionPrefs( 'mikaeljorhult.bracketsPHPLintTools' );
 	
 	// Lint path and return found errors.
 	function getErrors( fullPath ) {
@@ -32,10 +24,10 @@ define( function( require, exports, module ) {
 			phpmdRulesets = concatenateArray( preferences.get( 'phpmd-rulesets' ) ),
 			
 			// Commands.
-			phpcpdCommand = paths.phpcpd + ' ' + filePath,
-			phpcsCommand = paths.phpcs + phpcsStandards + ' ' + filePath,
-			phplCommand = paths.phpl + ' -d display_errors=1 -d error_reporting=-1 -l ' + filePath,
-			phpmdCommand = paths.phpmd + ' ' + filePath + ' text ' + phpmdRulesets;
+			phpcpdCommand = 'php ' + Paths.get( 'phpcpd' ) + ' ' + filePath,
+			phpcsCommand = 'php ' + Paths.get( 'phpcs' ) + phpcsStandards + ' ' + filePath,
+			phplCommand = 'php ' + ' -d display_errors=1 -d error_reporting=-1 -l ' + filePath,
+			phpmdCommand = 'php ' + Paths.get( 'phpmd' ) + ' ' + filePath + ' text ' + phpmdRulesets;
 		
 		// Pass command to parser.
 		Parsers.run( {
@@ -69,7 +61,6 @@ define( function( require, exports, module ) {
 		
 		return returnValue;
 	}
-	
 	
 	// Escape paths on different systems.
 	function normalizePath( fullPath ) {
@@ -153,8 +144,4 @@ define( function( require, exports, module ) {
 	} else {
 		Events.subscribe( 'node:connected', registerEvents );
 	}
-	
-	return {
-		_paths: paths
-	};
 } );
