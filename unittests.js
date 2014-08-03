@@ -6,6 +6,7 @@ define( function( require, exports, module ) {
 	
 		// Get Todo modules.
 		Defaults = require( 'modules/Defaults' ),
+		Events = require( 'modules/Events' ),
 		CommandRunner = require( 'modules/CommandRunner' ),
 		Paths = require( 'modules/Paths' ),
 	
@@ -150,6 +151,81 @@ define( function( require, exports, module ) {
 				runs( function() {
 					expect( response ).toEqual( jasmine.any( String ) );
 					expect( response ).toMatch( 'PHPMD' );
+				} );
+			} );
+		} );
+		
+		// Test module holding default values.
+		describe( 'Events Module', function() {
+			// Events should be in the form of a object.
+			it( 'should be an object', function() {
+				expect( Events ).toBeDefined();
+				expect( Events ).toEqual( jasmine.any( Object ) );
+			} );
+			
+			// Events should have a publish method.
+			it( 'should expose publish method', function() {
+				expect( Events.publish ).toBeDefined();
+				expect( Events.publish ).toEqual( jasmine.any( Function ) );
+			} );
+			
+			// Events should have a subscribe method.
+			it( 'should expose subscribe method', function() {
+				expect( Events.subscribe ).toBeDefined();
+				expect( Events.subscribe ).toEqual( jasmine.any( Function ) );
+			} );
+			
+			// Events should have a subscribe method.
+			it( 'should expose unsubscribe method', function() {
+				expect( Events.unsubscribe ).toBeDefined();
+				expect( Events.unsubscribe ).toEqual( jasmine.any( Function ) );
+			} );
+			
+			// Events should have a cache object.
+			it( 'should expose cache object', function() {
+				expect( Events.cache ).toBeDefined();
+				expect( Events.cache ).toEqual( jasmine.any( Object ) );
+			} );
+			
+			// Callbacks should be added to the cache array.
+			it( 'should add events to cache', function() {
+				Events.subscribe( 'test', function() {} );
+				
+				expect( Events.cache[ 'test' ] ).toBeDefined();
+				expect( Events.cache[ 'test' ] ).toEqual( jasmine.any( Array ) );
+				expect( Events.cache[ 'test' ].length ).toEqual( 1 );
+			} );
+			
+			// Callbacks should be removed from cache array.
+			it( 'should remove events to cache', function() {
+				var handle = Events.subscribe( 'test', function() {} );
+				Events.unsubscribe( handle );
+				
+				expect( Events.cache[ 'test' ] ).toBeDefined();
+				expect( Events.cache[ 'test' ] ).toEqual( jasmine.any( Array ) );
+				expect( Events.cache[ 'test' ].length ).toEqual( 0 );
+			} );
+			
+			// Callbacks should be triggered when Events subscribed to are triggered.
+			it( 'should run triggered events', function() {
+				var response = null;
+				
+				Events.subscribe( 'test', function() {
+					response = 'test';
+				} );
+				
+				runs( function() {
+					Events.publish( 'test' );
+				} );
+				
+				waitsFor( function() {
+					return ( response !== null );
+				}, 'Event should be triggered.', 100 );
+				
+				// Run expectations on returned value.
+				runs( function() {
+					expect( response ).toEqual( jasmine.any( String ) );
+					expect( response ).toMatch( 'test' );
 				} );
 			} );
 		} );
