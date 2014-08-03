@@ -9,6 +9,7 @@ define( function( require, exports, module ) {
 		Events = require( 'modules/Events' ),
 		CommandRunner = require( 'modules/CommandRunner' ),
 		Paths = require( 'modules/Paths' ),
+		Strings = require( 'modules/Strings' ),
 	
 		// Setup paths and other variables.
 		extensionPath = FileUtils.getNativeModuleDirectoryPath( module ),
@@ -19,7 +20,7 @@ define( function( require, exports, module ) {
 		// Test module holding default values.
 		describe( 'Defaults Module', function() {
 			// Defaults should be in the form of a object.
-			it( 'should expose enabledTools value', function() {
+			it( 'should be an object', function() {
 				expect( Defaults ).toBeDefined();
 				expect( Defaults ).toEqual( jasmine.any( Object ) );
 			} );
@@ -227,6 +228,22 @@ define( function( require, exports, module ) {
 					expect( response ).toEqual( jasmine.any( String ) );
 					expect( response ).toMatch( 'test' );
 				} );
+			} );
+		} );
+		
+		// Test module holding string values.
+		describe( 'Strings Module', function() {
+			// Strings should be in the form of a object.
+			it( 'should be an object', function() {
+				expect( Strings ).toBeDefined();
+				expect( Strings ).toEqual( jasmine.any( Object ) );
+			} );
+			
+			// Make sure strings are returned.
+			it( 'should expose EXTENSION_NAME property', function() {
+				expect( Strings.EXTENSION_NAME ).toBeDefined();
+				expect( Strings.EXTENSION_NAME ).toEqual( jasmine.any( String ) );
+				expect( Strings.EXTENSION_NAME ).toMatch( 'PHP Code Quality Tools' );
 			} );
 		} );
 	} );
