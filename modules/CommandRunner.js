@@ -5,14 +5,25 @@ define( function( require, exports, module ) {
 	var AppInit = brackets.getModule( 'utils/AppInit' ),
 		ExtensionUtils = brackets.getModule( 'utils/ExtensionUtils' ),
 		NodeConnection = brackets.getModule( 'utils/NodeConnection' ),
-		nodeConnection = new NodeConnection();
+		nodeConnection = new NodeConnection(),
+		
+		// Extension modules.
+		Events = require( 'modules/Events' ),
+		
+		// Variables.
+		initialized = false;
 	
 	// Run commands.
 	function run( command, callback ) {
 		nodeConnection.domains.phplinttools.commander( command ).done( callback );
 	}
 	
-	// Register panel and setup event listeners.
+	// Return initialization status.
+	function getInitialized() {
+		return initialized;
+	}
+	
+	// Connect to Node.
 	AppInit.appReady( function() {
 		// Connect to Node.
 		nodeConnection.connect( true ).done( function() {
@@ -21,13 +32,19 @@ define( function( require, exports, module ) {
 			
 			// Load commander into Node.
 			nodeConnection.loadDomains( [ path ], true ).done( function() {
-				// Loaded.
+				// Set initialization status.
+				initialized = true;
+				
+				// Publish event.
+				Events.publish( 'node:connected' );
 			} );
 		} );
 	} );
 	
 	// Return public functions.
 	return {
-		run: run
+		initialized: getInitialized,
+		run: run,
+		_nodeConnection: nodeConnection
 	};
 } );

@@ -2,8 +2,8 @@ define( function() {
 	'use strict';
 	
 	return {
-		enabledTools: [ 'phpcs', 'phpcpd' ],
-		phpcsStandards: [ 'MySource', 'PEAR', 'PHPCS', 'PSR1', 'PSR2', 'Squiz', 'Zend' ],
+		enabledTools: [ 'phpcs', 'phpcpd', 'phpl' ],
+		phpcsStandards: [ 'PSR1', 'PSR2' ],
 		phpmdRulesets: [ 'cleancode', 'codesize', 'controversial', 'design', 'naming', 'unusedcode' ]
 	};
 } );

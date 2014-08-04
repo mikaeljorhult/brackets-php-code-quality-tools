@@ -13,6 +13,7 @@ define( function( require, exports ) {
 		errors = {
 			phpcpd: [],
 			phpcs: [],
+			phpl: [],
 			phpmd: []
 		};
 	
@@ -76,7 +77,31 @@ define( function( require, exports ) {
 		CodeInspection.requestRun();
 	}
 	
-	// Parse message returned from CodeSniffer for errors.
+	// Parse message returned from PHP -l for errors.
+	function phpl( data ) {
+		var regularExpression = /(.*) in (?:.*) on line (\d+)/g,
+			matches,
+			type;
+		
+		// Go through all matching rows in result.
+		while ( ( matches = regularExpression.exec( data ) ) !== null ) {
+			type = matches[ 1 ].indexOf( 'error' ) > -1 ? CodeInspection.Type.ERROR : CodeInspection.Type.WARNING;
+			
+			// Add each error to array of errors.
+			errors.phpl.push( {
+				pos: {
+					line: parseInt( matches[ 2 ], 10 ) - 1
+				},
+				message: matches[ 1 ],
+				type: type
+			} );
+		}
+		
+		// Run CodeInspection.
+		CodeInspection.requestRun();
+	}
+	
+	// Parse message returned from Mess Detector for errors.
 	function phpmd( data ) {
 		var regularExpression = /(?:.*):(\d+)\s+(.*)/g,
 			matches;
@@ -104,6 +129,7 @@ define( function( require, exports ) {
 	exports.errors = returnErrors;
 	exports.phpcpd = phpcpd;
 	exports.phpcs = phpcs;
+	exports.phpl = phpl;
 	exports.phpmd = phpmd;
 	exports.run = runTool;
 } );
