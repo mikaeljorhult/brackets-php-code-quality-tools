@@ -1,4 +1,4 @@
-define( function( require, exports, module ) {
+define( function( require ) {
 	'use strict';
 	
 	// Get module dependencies.
@@ -6,7 +6,6 @@ define( function( require, exports, module ) {
 		CodeInspection = brackets.getModule( 'language/CodeInspection' ),
 		DocumentManager = brackets.getModule( 'document/DocumentManager' ),
 		EditorManager = brackets.getModule( 'editor/EditorManager' ),
-		ExtensionUtils = brackets.getModule( 'utils/ExtensionUtils' ),
 		PreferencesManager = brackets.getModule( 'preferences/PreferencesManager' ),
 		
 		// Extension Modules.
@@ -139,10 +138,10 @@ define( function( require, exports, module ) {
 	
 	// Receive, or use active editor, to get current file.
 	function getErrorsFromEditor( event, editor ) {
-		var editor = editor || EditorManager.getCurrentFullEditor();
+		editor = editor || EditorManager.getCurrentFullEditor();
 		
 		if ( editor ) {
-			getErrorsFromDocument( event, editor.document )
+			getErrorsFromDocument( event, editor.document );
 		}
 	}
 	

@@ -2,12 +2,7 @@ define( function( require, exports, module ) {
 	'use strict';
 	
 	// Get module dependencies.
-	var AppInit = brackets.getModule( 'utils/AppInit' ),
-		ExtensionUtils = brackets.getModule( 'utils/ExtensionUtils' ),
-		ProjectManager = brackets.getModule( 'project/ProjectManager' ),
-		
-		// Extension modules.
-		Paths = require( 'modules/Paths' ),
+	var ExtensionUtils = brackets.getModule( 'utils/ExtensionUtils' ),
 		
 		// Variables.
 		basePath = ExtensionUtils.getModulePath( module, 'vendor/' ),
