@@ -29,8 +29,3 @@
 .php-lint-settings-dialog.error .tool {
 	display: none;
 }
-
-/*--- HIDE MESS DETECTOR ---*/
-.php-lint-settings-dialog .tool-phpmd {
-	display: none;
-}
