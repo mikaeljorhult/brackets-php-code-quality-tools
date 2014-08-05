@@ -30,10 +30,13 @@ define( function( require, exports, module ) {
 			phpmdCommand = 'php ' + Paths.get( 'phpmd' ) + ' ' + filePath + ' text ' + phpmdRulesets;
 		
 		// Pass command to parser.
-		Parsers.run( {
-			name: 'phpcs',
-			command: phpcsCommand
-		} );
+		if ( phpcsStandards !== false ) {
+			// Only run parser if any CodeSniffer standards has been actived.
+			Parsers.run( {
+				name: 'phpcs',
+				command: phpcsCommand
+			} );
+		}
 		
 		Parsers.run( {
 			name: 'phpcpd',
@@ -45,10 +48,13 @@ define( function( require, exports, module ) {
 			command: phplCommand
 		} );
 		
-		Parsers.run( {
-			name: 'phpmd',
-			command: phpmdCommand
-		} );
+		if ( phpmdRulesets !== false ) {
+			// Only run parser if any CodeSniffer standards has been actived.
+			Parsers.run( {
+				name: 'phpmd',
+				command: phpmdCommand
+			} );
+		}
 	}
 	
 	// Concatenate a array of values to a comma separated string.
