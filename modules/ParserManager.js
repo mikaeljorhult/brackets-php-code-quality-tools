@@ -2,7 +2,8 @@ define( function( require, exports, module ) {
 	'use strict';
 	
 	// Get module dependencies.
-	var CodeInspection = brackets.getModule( 'language/CodeInspection' ),
+	var AppInit = brackets.getModule( 'utils/AppInit' ),
+		CodeInspection = brackets.getModule( 'language/CodeInspection' ),
 		DocumentManager = brackets.getModule( 'document/DocumentManager' ),
 		EditorManager = brackets.getModule( 'editor/EditorManager' ),
 		ExtensionUtils = brackets.getModule( 'utils/ExtensionUtils' ),
@@ -128,20 +129,28 @@ define( function( require, exports, module ) {
 					}
 				} );
 				
-				// Run CodeInspection when a file is saved or other file get focus.
-				$( DocumentManager ).on( 'documentSaved.phpCodeQualityTools', function( event, fileEntry ) {
-					if ( fileEntry.language.getName() === 'PHP' ) {
-						getErrors( fileEntry.file.fullPath );
-					}
-				} );
-				
-				$( EditorManager ).on( 'activeEditorChange.phpCodeQualityTools', function( event, editor ) {
-					if ( editor !== null ) {
-						getErrors( editor.document.file.fullPath );
-					}
-				} );
+				// Run CodeInspection when a file is saved, a file gets focus or on startup.
+				$( DocumentManager ).on( 'documentSaved.phpCodeQualityTools', getErrorsFromDocument );
+				$( EditorManager ).on( 'activeEditorChange.phpCodeQualityTools', getErrorsFromEditor );
+				AppInit.appReady( getErrorsFromEditor );
 			}
 		} );
+	}
+	
+	// Receive, or use active editor, to get current file.
+	function getErrorsFromEditor( event, editor ) {
+		var editor = editor || EditorManager.getCurrentFullEditor();
+		
+		if ( editor ) {
+			getErrorsFromDocument( event, editor.document )
+		}
+	}
+	
+	// Trigger function to get errors if file is PHP.
+	function getErrorsFromDocument( event, fileEntry ) {
+		if ( fileEntry.language.getName() === 'PHP' ) {
+			getErrors( fileEntry.file.fullPath );
+		}
 	}
 	
 	// Register event listeners.
