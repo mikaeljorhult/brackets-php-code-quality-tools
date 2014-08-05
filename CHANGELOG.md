@@ -1,5 +1,10 @@
 # Brackets PHP Code Quality Tools Changelog
 
+## 0.1.3
+* Add Mess Detector to available tools.
+* Retrieve errors from on file on startup.
+* Fix issue with CodeSniffer errors not showing up on Windows.
+
 ## 0.1.2
 * Only collect errors in PHP files.
 
