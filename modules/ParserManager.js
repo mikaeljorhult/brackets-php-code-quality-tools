@@ -20,12 +20,12 @@ define( function( require ) {
 	// Lint path and return found errors.
 	function getErrors( fullPath ) {
 		var filePath = normalizePath( fullPath ),
-			phpcsStandards = concatenateArray( preferences.get( 'phpcs-standards' ), ' --standard=' ),
+			phpcsStandards = concatenateArray( prepareStandards( preferences.get( 'phpcs-standards' ) ), ' --standard=' ),
 			phpmdRulesets = concatenateArray( preferences.get( 'phpmd-rulesets' ) ),
 			
 			// Commands.
 			phpcpdCommand = 'php ' + Paths.get( 'phpcpd' ) + ' ' + filePath,
-			phpcsCommand = 'php ' + Paths.get( 'phpcs' ) + phpcsStandards + ' --report-width=200 ' + filePath,
+			phpcsCommand = 'php ' + Paths.get( 'phpcs' ) + phpcsStandards + ' --report-width=300 ' + filePath,
 			phplCommand = 'php ' + ' -d display_errors=1 -d error_reporting=-1 -l ' + filePath,
 			phpmdCommand = 'php ' + Paths.get( 'phpmd' ) + ' ' + filePath + ' text ' + phpmdRulesets;
 		
@@ -55,6 +55,24 @@ define( function( require ) {
 				command: phpmdCommand
 			} );
 		}
+	}
+	
+	// Go through and prepare all standards to account for paths.
+	function prepareStandards( standards ) {
+		var standard;
+		
+		// Make sure standards are available.
+		if ( standards ) {
+			// Go through each standard.
+			for ( standard in standards ) {
+				// Check if standard name is a path.
+				if ( standards[ standard ].indexOf( '/' ) > -1 ) {
+					standards[ standard ] = normalizePath( Paths.get( 'base', true ) + 'phpcs/' + standards[ standard ] );
+				}
+			}
+		}
+		
+		return standards;
 	}
 	
 	// Concatenate a array of values to a comma separated string.

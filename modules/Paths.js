@@ -7,6 +7,7 @@ define( function( require, exports, module ) {
 		// Variables.
 		basePath = ExtensionUtils.getModulePath( module, 'vendor/' ),
 		_paths = {
+			base: basePath,
 			phpcpd: basePath + 'phpcpd/phpcpd.phar',
 			phpcs: basePath + 'phpcs/phpcs.phar',
 			phpmd: basePath + 'phpmd/phpmd.phar'
@@ -22,8 +23,10 @@ define( function( require, exports, module ) {
 		return path;
 	}
 	
-	function get( path ) {
-		return escapePath( _paths[ path ] );
+	function get( path, unescaped ) {
+		var returnPath = ( unescaped === true ? _paths[ path ] : escapePath( _paths[ path ] ) );
+		
+		return returnPath;
 	}
 	
 	// Return paths object.
