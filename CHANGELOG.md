@@ -1,5 +1,8 @@
 # Brackets PHP Code Quality Tools Changelog
 
+## 0.1.4
+* Show longer error messages from CodeSniffer.
+
 ## 0.1.3
 * Add Mess Detector to available tools.
 * Retrieve errors from on file on startup.
