@@ -55,7 +55,7 @@ define( function( require, exports ) {
 	
 	// Parse message returned from CodeSniffer for errors.
 	function phpcs( data ) {
-		var regularExpression = /(\d+)\s\|\s(.*)\s\|.*] (.*)/g,
+		var regularExpression = /(\d+)\s\|\s(.*)\s\|(.*)/g,
 			matches,
 			type;
 		
@@ -68,7 +68,7 @@ define( function( require, exports ) {
 				pos: {
 					line: parseInt( matches[ 1 ], 10 ) - 1
 				},
-				message: matches[ 3 ],
+				message: matches[ 3 ].replace( /\s?\[.?\]\s?/, '' ),
 				type: type
 			} );
 		}
