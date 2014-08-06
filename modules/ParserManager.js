@@ -25,7 +25,7 @@ define( function( require ) {
 			
 			// Commands.
 			phpcpdCommand = 'php ' + Paths.get( 'phpcpd' ) + ' ' + filePath,
-			phpcsCommand = 'php ' + Paths.get( 'phpcs' ) + phpcsStandards + ' ' + filePath,
+			phpcsCommand = 'php ' + Paths.get( 'phpcs' ) + phpcsStandards + ' --report-width=200 ' + filePath,
 			phplCommand = 'php ' + ' -d display_errors=1 -d error_reporting=-1 -l ' + filePath,
 			phpmdCommand = 'php ' + Paths.get( 'phpmd' ) + ' ' + filePath + ' text ' + phpmdRulesets;
 		
