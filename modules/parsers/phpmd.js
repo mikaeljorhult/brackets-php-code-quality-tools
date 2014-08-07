@@ -16,6 +16,10 @@ define( function( require ) {
 			.replace( '{{rulesets}}', rulesets );
 	}
 	
+	PHPMD.shouldRun = function() {
+		return this._preferences.get( 'phpmd-rulesets' ) !== false;
+	}
+	
 	PHPMD.callback = function( data ) {
 		var regularExpression = /(?:.*):(\d+)\s+(.*)/g,
 			matches;

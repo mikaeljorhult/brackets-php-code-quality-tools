@@ -28,7 +28,7 @@ define( function( require ) {
 		this._errors = [];
 		
 		// Run tool if it's enabled in settings.
-		if ( enabledTools.indexOf( this._abbreviation ) !== -1 ) {
+		if ( enabledTools.indexOf( this._abbreviation ) !== -1 && this.shouldRun() ) {
 			this.run( this.buildCommand( file ) );
 		}
 	}
@@ -37,6 +37,10 @@ define( function( require ) {
 		var callback = this.callback;
 		
 		CommandRunner.run( command, callback );
+	}
+	
+	Parser.prototype.shouldRun = function() {
+		return true;
 	}
 	
 	Parser.prototype.setCommand = function( command ) {

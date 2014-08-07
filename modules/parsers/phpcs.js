@@ -34,6 +34,10 @@ define( function( require ) {
 		return standards;
 	}
 	
+	PHPCS.shouldRun = function() {
+		return this._preferences.get( 'phpcs-standards' ) !== false;
+	}
+	
 	PHPCS.callback = function( data ) {
 		var regularExpression = /(\d+)\s\|\s(.*)\s\|(.*)/g,
 			matches,
