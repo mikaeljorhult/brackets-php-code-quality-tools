@@ -94,6 +94,11 @@ define( function( require ) {
 				$( DocumentManager ).on( 'documentSaved.phpCodeQualityTools', getErrorsFromDocument );
 				$( EditorManager ).on( 'activeEditorChange.phpCodeQualityTools', getErrorsFromEditor );
 				AppInit.appReady( getErrorsFromEditor );
+				
+				// Run parsers if preferences are changed.
+				preferences.on( 'change', function() {
+					getErrorsFromEditor();
+				} );
 			}
 		} );
 	}
