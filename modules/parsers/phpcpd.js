@@ -3,7 +3,7 @@ define( function( require ) {
 	
 	// Get module dependencies.
 	var Parser = require( 'modules/parsers/base' ),
-		PHPCPD = new Parser( 'phpcpd' );
+		PHPCPD = new Parser( 'phpcpd', 'PHP Copy/Paste Detector' );
 	
 	PHPCPD.callback = function( data ) {
 		var regularExpression = /-\s(?:.*):((\d+)-(\d+))[\s\S]\s+(?:.*):((\d+)-(\d+))/g,

@@ -10,9 +10,10 @@ define( function( require ) {
 		Paths = require( 'modules/Paths' ),
 		preferences = PreferencesManager.getExtensionPrefs( 'mikaeljorhult.bracketsPHPLintTools' );
 		
-	function Parser( name ) {
+	function Parser( abbreviation, name ) {
+		this._abbreviation = abbreviation;
 		this._name = name;
-		this._path = Paths.get( name );
+		this._path = Paths.get( abbreviation );
 		this._command = 'php {{path}} {{file}}';
 		this._errors = [];
 		
@@ -27,7 +28,7 @@ define( function( require ) {
 		this._errors = [];
 		
 		// Run tool if it's enabled in settings.
-		if ( enabledTools.indexOf( this._name ) !== -1 ) {
+		if ( enabledTools.indexOf( this._abbreviation ) !== -1 ) {
 			this.run( this.buildCommand( file ) );
 		}
 	}
@@ -48,8 +49,16 @@ define( function( require ) {
 			.replace( '{{file}}', file );
 	}
 	
-	Parser.prototype.getErrors = function() {
+	Parser.prototype.abbreviation = function() {
+		return this._abbreviation;
+	}
+	
+	Parser.prototype.errors = function() {
 		return this._errors;
+	}
+	
+	Parser.prototype.name = function() {
+		return this._name;
 	}
 	
 	Parser.prototype.requestRun = function() {

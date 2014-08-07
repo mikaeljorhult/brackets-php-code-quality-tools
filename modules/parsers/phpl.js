@@ -3,7 +3,7 @@ define( function( require ) {
 	
 	// Get module dependencies.
 	var Parser = require( 'modules/parsers/base' ),
-		PHPL = new Parser( 'phpl' );
+		PHPL = new Parser( 'phpl', 'PHP Lint' );
 	
 	PHPL.setCommand( 'php -d display_errors=1 -d error_reporting=-1 -l {{file}}' );
 	

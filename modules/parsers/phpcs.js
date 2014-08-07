@@ -4,7 +4,7 @@ define( function( require ) {
 	// Get module dependencies.
 	var Parser = require( 'modules/parsers/base' ),
 		Paths = require( 'modules/Paths' ),
-		PHPCS = new Parser( 'phpcs' );
+		PHPCS = new Parser( 'phpcs', 'PHP CodeSniffer' );
 	
 	PHPCS.setCommand( 'php {{path}} --standard={{standards}} --report-width=300 {{file}}' );
 	

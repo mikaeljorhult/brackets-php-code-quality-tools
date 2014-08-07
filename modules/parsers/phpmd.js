@@ -3,7 +3,7 @@ define( function( require ) {
 	
 	// Get module dependencies.
 	var Parser = require( 'modules/parsers/base' ),
-		PHPMD = new Parser( 'phpmd' );
+		PHPMD = new Parser( 'phpmd', 'PHP Mess Detector' );
 	
 	PHPMD.setCommand( 'php {{path}} {{file}} text {{rulesets}}' );
 	

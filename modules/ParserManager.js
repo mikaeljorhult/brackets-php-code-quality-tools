@@ -43,7 +43,8 @@ define( function( require ) {
 	function registerEvents() {
 		// Test for PHP.
 		CommandRunner.run( 'php -v', function( data ) {
-			var phpAvailable = data.indexOf( 'PHP' ) > -1;
+			var phpAvailable = data.indexOf( 'PHP' ) > -1,
+				parser;
 			
 			// Save PHP state
 			preferences.set( 'php-available', phpAvailable );
@@ -53,37 +54,37 @@ define( function( require ) {
 			if ( phpAvailable ) {
 				// Register linting service.
 				CodeInspection.register( 'php', {
-					name: 'PHP Copy/Paste Detector',
+					name: phpcpd.name(),
 					scanFile: function() {
 						return {
-							errors: phpcpd.getErrors()
+							errors: phpcpd.errors()
 						};
 					}
 				} );
 				
 				CodeInspection.register( 'php', {
-					name: 'PHP CodeSniffer',
+					name: phpcs.name(),
 					scanFile: function() {
 						return {
-							errors: phpcs.getErrors()
+							errors: phpcs.errors()
 						};
 					}
 				} );
 				
 				CodeInspection.register( 'php', {
-					name: 'PHP Lint',
+					name: phpl.name(),
 					scanFile: function() {
 						return {
-							errors: phpl.getErrors()
+							errors: phpl.errors()
 						};
 					}
 				} );
 				
 				CodeInspection.register( 'php', {
-					name: 'PHP Mess Detector',
+					name: phpmd.name(),
 					scanFile: function() {
 						return {
-							errors: phpmd.getErrors()
+							errors: phpmd.errors()
 						};
 					}
 				} );
