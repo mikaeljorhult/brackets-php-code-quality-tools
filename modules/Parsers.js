@@ -12,8 +12,7 @@ define( function( require, exports ) {
 		// Variables.
 		errors = {
 			phpcs: [],
-			phpl: [],
-			phpmd: []
+			phpl: []
 		};
 	
 	// Run tool.
@@ -77,27 +76,6 @@ define( function( require, exports ) {
 		CodeInspection.requestRun();
 	}
 	
-	// Parse message returned from Mess Detector for errors.
-	function phpmd( data ) {
-		var regularExpression = /(?:.*):(\d+)\s+(.*)/g,
-			matches;
-		
-		// Go through all matching rows in result.
-		while ( ( matches = regularExpression.exec( data ) ) !== null ) {
-			// Add each error to array of errors.
-			errors.phpmd.push( {
-				pos: {
-					line: parseInt( matches[ 1 ], 10 ) - 1
-				},
-				message: matches[ 2 ],
-				type: CodeInspection.Type.ERROR
-			} );
-		}
-		
-		// Run CodeInspection.
-		CodeInspection.requestRun();
-	}
-	
 	function returnErrors() {
 		return errors;
 	}
@@ -105,6 +83,5 @@ define( function( require, exports ) {
 	exports.errors = returnErrors;
 	exports.phpcs = phpcs;
 	exports.phpl = phpl;
-	exports.phpmd = phpmd;
 	exports.run = runTool;
 } );

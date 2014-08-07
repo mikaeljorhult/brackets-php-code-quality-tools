@@ -17,6 +17,7 @@ define( function( require ) {
 		this._errors = [];
 		
 		this._codeInspection = CodeInspection;
+		this._preferences = preferences;
 	}
 	
 	Parser.prototype.parse = function( file ) {
@@ -54,6 +55,17 @@ define( function( require ) {
 	Parser.prototype.requestRun = function() {
 		// Run CodeInspection.
 		CodeInspection.requestRun();
+	}
+	
+	// Concatenate a array of values to a comma separated string.
+	Parser.prototype.concatenateArray = function( valueArray, prefix ) {
+		var returnValue = false;
+		
+		if ( valueArray.length > 0 ) {
+			returnValue = ( prefix !== undefined ? prefix : '' ) + valueArray.join( ',' );
+		}
+		
+		return returnValue;
 	}
 	
 	return Parser;

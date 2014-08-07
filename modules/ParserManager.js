@@ -19,7 +19,8 @@ define( function( require ) {
 		phpcpd = require( 'modules/parsers/phpcpd' ),
 		phpcs = require( 'modules/parsers/phpcs' ),
 		parsers = [
-			phpcpd
+			phpcpd,
+			phpmd
 		],
 		
 		// Setup extension.
@@ -30,15 +31,13 @@ define( function( require ) {
 		var parser,
 			filePath = normalizePath( fullPath ),
 			phpcsStandards = concatenateArray( prepareStandards( preferences.get( 'phpcs-standards' ) ), ' --standard=' ),
-			phpmdRulesets = concatenateArray( preferences.get( 'phpmd-rulesets' ) ),
 			
 			// Commands.
 			phpcsCommand = 'php ' + Paths.get( 'phpcs' ) + phpcsStandards + ' --report-width=300 ' + filePath,
-			phplCommand = 'php ' + ' -d display_errors=1 -d error_reporting=-1 -l ' + filePath,
-			phpmdCommand = 'php ' + Paths.get( 'phpmd' ) + ' ' + filePath + ' text ' + phpmdRulesets;
+			phplCommand = 'php ' + ' -d display_errors=1 -d error_reporting=-1 -l ' + filePath;
 		
 		// Pass file to parsers.
-		for( parser in parsers ) {
+		for ( parser in parsers ) {
 			parsers[ parser ].parse( filePath );
 		}
 		
@@ -55,14 +54,6 @@ define( function( require ) {
 			name: 'phpl',
 			command: phplCommand
 		} );
-		
-		if ( phpmdRulesets !== false ) {
-			// Only run parser if any CodeSniffer standards has been actived.
-			Parsers.run( {
-				name: 'phpmd',
-				command: phpmdCommand
-			} );
-		}
 	}
 	
 	// Go through and prepare all standards to account for paths.
@@ -83,17 +74,6 @@ define( function( require ) {
 		return standards;
 	}
 	
-	// Concatenate a array of values to a comma separated string.
-	function concatenateArray( valueArray, prefix ) {
-		var returnValue = false;
-		
-		if ( valueArray.length > 0 ) {
-			returnValue = ( prefix !== undefined ? prefix : '' ) + valueArray.join( ',' );
-		}
-		
-		return returnValue;
-	}
-	
 	// Escape paths on different systems.
 	function normalizePath( fullPath ) {
 		if ( brackets.platform === 'win' ) {
@@ -103,6 +83,17 @@ define( function( require ) {
 		}
 		
 		return fullPath;
+	}
+	
+	// Concatenate a array of values to a comma separated string.
+	function concatenateArray( valueArray, prefix ) {
+		var returnValue = false;
+		
+		if ( valueArray.length > 0 ) {
+			returnValue = ( prefix !== undefined ? prefix : '' ) + valueArray.join( ',' );
+		}
+		
+		return returnValue;
 	}
 	
 	// Register event listeners.
@@ -149,7 +140,7 @@ define( function( require ) {
 					name: 'PHP Mess Detector',
 					scanFile: function() {
 						return {
-							errors: Parsers.errors().phpmd
+							errors: phpmd.getErrors()
 						};
 					}
 				} );
