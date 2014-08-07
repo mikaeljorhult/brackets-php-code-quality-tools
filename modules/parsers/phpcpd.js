@@ -25,7 +25,7 @@ define( function( require ) {
 		
 		// Run CodeInspection.
 		PHPCPD.requestRun();
-	}
+	};
 	
 	return PHPCPD;
 } );

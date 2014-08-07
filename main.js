@@ -16,7 +16,7 @@ define( function( require, exports, module ) {
 		
 		// Extension Modules.
 		Defaults = require( 'modules/Defaults' ),
-		ParserManager = require( 'modules/ParserManager' ),
+		ParserManager = require( 'modules/ParserManager' ), // jshint ignore:line
 		SettingsDialog = require( 'modules/SettingsDialog' ),
 		Strings = require( 'modules/Strings' ),
 		

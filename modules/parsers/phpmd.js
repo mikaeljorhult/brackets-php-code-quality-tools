@@ -14,11 +14,11 @@ define( function( require ) {
 			.replace( '{{path}}', this._path )
 			.replace( '{{file}}', file )
 			.replace( '{{rulesets}}', rulesets );
-	}
+	};
 	
 	PHPMD.shouldRun = function() {
 		return this._preferences.get( 'phpmd-rulesets' ) !== false;
-	}
+	};
 	
 	PHPMD.callback = function( data ) {
 		var regularExpression = /(?:.*):(\d+)\s+(.*)/g,
@@ -38,7 +38,7 @@ define( function( require ) {
 		
 		// Run CodeInspection.
 		PHPMD.requestRun();
-	}
+	};
 	
 	return PHPMD;
 } );

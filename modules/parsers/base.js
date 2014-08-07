@@ -31,44 +31,44 @@ define( function( require ) {
 		if ( enabledTools.indexOf( this._abbreviation ) !== -1 && this.shouldRun() ) {
 			this.run( this.buildCommand( file ) );
 		}
-	}
+	};
 	
 	Parser.prototype.run = function( command ) {
 		var callback = this.callback;
 		
 		CommandRunner.run( command, callback );
-	}
+	};
 	
 	Parser.prototype.shouldRun = function() {
 		return true;
-	}
+	};
 	
 	Parser.prototype.setCommand = function( command ) {
 		this._command = command;
-	}
+	};
 	
 	Parser.prototype.buildCommand = function( file ) {
 		return this._command
 			.replace( '{{path}}', this._path )
 			.replace( '{{file}}', file );
-	}
+	};
 	
 	Parser.prototype.abbreviation = function() {
 		return this._abbreviation;
-	}
+	};
 	
 	Parser.prototype.errors = function() {
 		return this._errors;
-	}
+	};
 	
 	Parser.prototype.name = function() {
 		return this._name;
-	}
+	};
 	
 	Parser.prototype.requestRun = function() {
 		// Run CodeInspection.
 		CodeInspection.requestRun();
-	}
+	};
 	
 	// Concatenate a array of values to a comma separated string.
 	Parser.prototype.concatenateArray = function( valueArray, prefix ) {
@@ -79,7 +79,7 @@ define( function( require ) {
 		}
 		
 		return returnValue;
-	}
+	};
 	
 	return Parser;
 } );

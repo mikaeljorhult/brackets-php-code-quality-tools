@@ -35,7 +35,9 @@ define( function( require ) {
 		
 		// Pass file to each parser.
 		for ( parser in parsers ) {
-			parsers[ parser ].parse( filePath );
+			if ( parsers.hasOwnProperty( parser ) ) {
+				parsers[ parser ].parse( filePath );
+			}
 		}
 	}
 	
@@ -43,8 +45,7 @@ define( function( require ) {
 	function registerEvents() {
 		// Test for PHP.
 		CommandRunner.run( 'php -v', function( data ) {
-			var phpAvailable = data.indexOf( 'PHP' ) > -1,
-				parser;
+			var phpAvailable = data.indexOf( 'PHP' ) > -1;
 			
 			// Save PHP state
 			preferences.set( 'php-available', phpAvailable );

@@ -15,7 +15,7 @@ define( function( require ) {
 			.replace( '{{path}}', this._path )
 			.replace( '{{file}}', file )
 			.replace( '{{standards}}', standards );
-	}
+	};
 	
 	PHPCS.prepareStandards = function( standards ) {
 		var standard;
@@ -32,11 +32,11 @@ define( function( require ) {
 		}
 		
 		return standards;
-	}
+	};
 	
 	PHPCS.shouldRun = function() {
 		return this._preferences.get( 'phpcs-standards' ) !== false;
-	}
+	};
 	
 	PHPCS.callback = function( data ) {
 		var regularExpression = /(\d+)\s\|\s(.*)\s\|(.*)/g,
@@ -59,7 +59,7 @@ define( function( require ) {
 		
 		// Run CodeInspection.
 		PHPCS.requestRun();
-	}
+	};
 	
 	return PHPCS;
 } );

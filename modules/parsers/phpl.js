@@ -28,7 +28,7 @@ define( function( require ) {
 		
 		// Run CodeInspection.
 		PHPL.requestRun();
-	}
+	};
 	
 	return PHPL;
 } );
