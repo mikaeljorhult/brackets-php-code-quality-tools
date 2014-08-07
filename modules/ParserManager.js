@@ -11,7 +11,6 @@ define( function( require ) {
 		// Extension Modules.
 		CommandRunner = require( 'modules/CommandRunner' ),
 		Events = require( 'modules/Events' ),
-		Parsers = require( 'modules/Parsers' ),
 		Paths = require( 'modules/Paths' ),
 		
 		// Parsers.
@@ -22,6 +21,7 @@ define( function( require ) {
 		parsers = [
 			phpl,
 			phpcpd,
+			phpcs,
 			phpmd
 		],
 		
@@ -30,66 +30,13 @@ define( function( require ) {
 	
 	// Lint path and return found errors.
 	function getErrors( fullPath ) {
-		var parser,
-			filePath = normalizePath( fullPath ),
-			phpcsStandards = concatenateArray( prepareStandards( preferences.get( 'phpcs-standards' ) ), ' --standard=' ),
-			
-			// Commands.
-			phpcsCommand = 'php ' + Paths.get( 'phpcs' ) + phpcsStandards + ' --report-width=300 ' + filePath;
+		var filePath = Paths.escape( fullPath ),
+			parser;
 		
-		// Pass file to parsers.
+		// Pass file to each parser.
 		for ( parser in parsers ) {
 			parsers[ parser ].parse( filePath );
 		}
-		
-		// Pass command to parser.
-		if ( phpcsStandards !== false ) {
-			// Only run parser if any CodeSniffer standards has been actived.
-			Parsers.run( {
-				name: 'phpcs',
-				command: phpcsCommand
-			} );
-		}
-	}
-	
-	// Go through and prepare all standards to account for paths.
-	function prepareStandards( standards ) {
-		var standard;
-		
-		// Make sure standards are available.
-		if ( standards ) {
-			// Go through each standard.
-			for ( standard in standards ) {
-				// Check if standard name is a path.
-				if ( standards[ standard ].indexOf( '/' ) > -1 ) {
-					standards[ standard ] = normalizePath( Paths.get( 'base', true ) + 'phpcs/' + standards[ standard ] );
-				}
-			}
-		}
-		
-		return standards;
-	}
-	
-	// Escape paths on different systems.
-	function normalizePath( fullPath ) {
-		if ( brackets.platform === 'win' ) {
-			fullPath = '"' + fullPath + '"';
-		} else {
-			fullPath = fullPath.replace( new RegExp( ' ', 'g' ), '\\ ' );
-		}
-		
-		return fullPath;
-	}
-	
-	// Concatenate a array of values to a comma separated string.
-	function concatenateArray( valueArray, prefix ) {
-		var returnValue = false;
-		
-		if ( valueArray.length > 0 ) {
-			returnValue = ( prefix !== undefined ? prefix : '' ) + valueArray.join( ',' );
-		}
-		
-		return returnValue;
 	}
 	
 	// Register event listeners.
@@ -118,7 +65,7 @@ define( function( require ) {
 					name: 'PHP CodeSniffer',
 					scanFile: function() {
 						return {
-							errors: Parsers.errors().phpcs
+							errors: phpcs.getErrors()
 						};
 					}
 				} );

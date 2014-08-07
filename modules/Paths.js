@@ -32,6 +32,7 @@ define( function( require, exports, module ) {
 	
 	// Return paths object.
 	return {
+		escape: escapePath,
 		get: get
 	};
 } );
