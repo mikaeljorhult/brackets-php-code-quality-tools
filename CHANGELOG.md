@@ -1,5 +1,9 @@
 # Brackets PHP Code Quality Tools Changelog
 
+## 0.1.5
+* Retrieve errors when preferences are updated.
+* Better structure for parser modules.
+
 ## 0.1.4
 * Show longer error messages from CodeSniffer.
 
