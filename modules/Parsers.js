@@ -11,7 +11,6 @@ define( function( require, exports ) {
 		
 		// Variables.
 		errors = {
-			phpcpd: [],
 			phpcs: [],
 			phpl: [],
 			phpmd: []
@@ -28,29 +27,6 @@ define( function( require, exports ) {
 		if ( enabledTools.indexOf( tool.name ) !== -1 ) {
 			CommandRunner.run( tool.command, exports[ tool.name ] );
 		}
-	}
-	
-	// Parse message returned from Copy/Paste Detector for errors.
-	function phpcpd( data ) {
-		var regularExpression = /-\s(?:.*):((\d+)-(\d+))[\s\S]\s+(?:.*):((\d+)-(\d+))/g,
-			matches;
-		
-		// Go through all matching rows in result.
-		while ( ( matches = regularExpression.exec( data ) ) !== null ) {
-			var message = 'Code duplication on lines ' + matches[ 1 ] + ' and ' + matches[ 4 ] + '.';
-			
-			// Add each error to array of errors.
-			errors.phpcpd.push( {
-				pos: {
-					line: parseInt( matches[ 1 ], 10 ) - 1
-				},
-				message: message,
-				type: CodeInspection.Type.WARNING
-			} );
-		}
-		
-		// Run CodeInspection.
-		CodeInspection.requestRun();
 	}
 	
 	// Parse message returned from CodeSniffer for errors.
@@ -127,7 +103,6 @@ define( function( require, exports ) {
 	}
 	
 	exports.errors = returnErrors;
-	exports.phpcpd = phpcpd;
 	exports.phpcs = phpcs;
 	exports.phpl = phpl;
 	exports.phpmd = phpmd;

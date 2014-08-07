@@ -14,20 +14,33 @@ define( function( require ) {
 		Parsers = require( 'modules/Parsers' ),
 		Paths = require( 'modules/Paths' ),
 		
+		// Parsers.
+		phpmd = require( 'modules/parsers/phpmd' ),
+		phpcpd = require( 'modules/parsers/phpcpd' ),
+		phpcs = require( 'modules/parsers/phpcs' ),
+		parsers = [
+			phpcpd
+		],
+		
 		// Setup extension.
 		preferences = PreferencesManager.getExtensionPrefs( 'mikaeljorhult.bracketsPHPLintTools' );
 	
 	// Lint path and return found errors.
 	function getErrors( fullPath ) {
-		var filePath = normalizePath( fullPath ),
+		var parser,
+			filePath = normalizePath( fullPath ),
 			phpcsStandards = concatenateArray( prepareStandards( preferences.get( 'phpcs-standards' ) ), ' --standard=' ),
 			phpmdRulesets = concatenateArray( preferences.get( 'phpmd-rulesets' ) ),
 			
 			// Commands.
-			phpcpdCommand = 'php ' + Paths.get( 'phpcpd' ) + ' ' + filePath,
 			phpcsCommand = 'php ' + Paths.get( 'phpcs' ) + phpcsStandards + ' --report-width=300 ' + filePath,
 			phplCommand = 'php ' + ' -d display_errors=1 -d error_reporting=-1 -l ' + filePath,
 			phpmdCommand = 'php ' + Paths.get( 'phpmd' ) + ' ' + filePath + ' text ' + phpmdRulesets;
+		
+		// Pass file to parsers.
+		for( parser in parsers ) {
+			parsers[ parser ].parse( filePath );
+		}
 		
 		// Pass command to parser.
 		if ( phpcsStandards !== false ) {
@@ -37,11 +50,6 @@ define( function( require ) {
 				command: phpcsCommand
 			} );
 		}
-		
-		Parsers.run( {
-			name: 'phpcpd',
-			command: phpcpdCommand
-		} );
 		
 		Parsers.run( {
 			name: 'phpl',
@@ -114,7 +122,7 @@ define( function( require ) {
 					name: 'PHP Copy/Paste Detector',
 					scanFile: function() {
 						return {
-							errors: Parsers.errors().phpcpd
+							errors: phpcpd.getErrors()
 						};
 					}
 				} );

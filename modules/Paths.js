@@ -10,6 +10,7 @@ define( function( require, exports, module ) {
 			base: basePath,
 			phpcpd: basePath + 'phpcpd/phpcpd.phar',
 			phpcs: basePath + 'phpcs/phpcs.phar',
+			phpl: '',
 			phpmd: basePath + 'phpmd/phpmd.phar'
 		};
 		
