@@ -15,10 +15,12 @@ define( function( require ) {
 		Paths = require( 'modules/Paths' ),
 		
 		// Parsers.
+		phpl = require( 'modules/parsers/phpl' ),
 		phpmd = require( 'modules/parsers/phpmd' ),
 		phpcpd = require( 'modules/parsers/phpcpd' ),
 		phpcs = require( 'modules/parsers/phpcs' ),
 		parsers = [
+			phpl,
 			phpcpd,
 			phpmd
 		],
@@ -33,8 +35,7 @@ define( function( require ) {
 			phpcsStandards = concatenateArray( prepareStandards( preferences.get( 'phpcs-standards' ) ), ' --standard=' ),
 			
 			// Commands.
-			phpcsCommand = 'php ' + Paths.get( 'phpcs' ) + phpcsStandards + ' --report-width=300 ' + filePath,
-			phplCommand = 'php ' + ' -d display_errors=1 -d error_reporting=-1 -l ' + filePath;
+			phpcsCommand = 'php ' + Paths.get( 'phpcs' ) + phpcsStandards + ' --report-width=300 ' + filePath;
 		
 		// Pass file to parsers.
 		for ( parser in parsers ) {
@@ -49,11 +50,6 @@ define( function( require ) {
 				command: phpcsCommand
 			} );
 		}
-		
-		Parsers.run( {
-			name: 'phpl',
-			command: phplCommand
-		} );
 	}
 	
 	// Go through and prepare all standards to account for paths.
@@ -131,7 +127,7 @@ define( function( require ) {
 					name: 'PHP Lint',
 					scanFile: function() {
 						return {
-							errors: Parsers.errors().phpl
+							errors: phpl.getErrors()
 						};
 					}
 				} );
