@@ -12,6 +12,10 @@
 	margin: 0 0 .25em;
 }
 
+.dark .php-lint-settings-dialog legend {
+    color: #dddddd;
+}
+
 .php-lint-settings-dialog input {
 	vertical-align: middle;
 	margin-bottom: 0;
