@@ -4,6 +4,7 @@ define( function( require, exports, module ) {
 	module.exports = {
 		root: true,
 		sv: true,
-		fr: true
+		fr: true,
+		it: true
 	};
 } );
