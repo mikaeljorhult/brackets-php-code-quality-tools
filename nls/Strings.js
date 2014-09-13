@@ -3,8 +3,8 @@ define( function( require, exports, module ) {
 	
 	module.exports = {
 		root: true,
-		sv: true,
 		fr: true,
-		it: true
+		it: true,
+		sv: true
 	};
 } );

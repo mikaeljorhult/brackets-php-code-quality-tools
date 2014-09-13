@@ -1,5 +1,9 @@
 # Brackets PHP Code Quality Tools Changelog
 
+## 0.1.6 - Unreleased
+* French translation. Thanks to rainje (@rainje).
+* Italian translation. Thanks to Christopher Pecoraro (@chrispecoraro).
+
 ## 0.1.5
 * Retrieve errors when preferences are updated.
 * Better structure for parser modules.

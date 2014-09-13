@@ -31,7 +31,7 @@
 		"brackets": ">=0.37.0"
 	},
 	"i18n": [
-		"en", "sv"
+		"en", "fr", "it", "sv"
 	],
 	"devDependencies": {
 		"gulp": "^3.8.6",
