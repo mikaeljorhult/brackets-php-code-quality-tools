@@ -13,7 +13,7 @@
 }
 
 .dark .php-lint-settings-dialog legend {
-    color: #dddddd;
+    color: inherit;
 }
 
 .php-lint-settings-dialog input {
