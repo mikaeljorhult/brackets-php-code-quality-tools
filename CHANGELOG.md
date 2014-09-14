@@ -1,6 +1,9 @@
 # Brackets PHP Code Quality Tools Changelog
+All notable changes to this project will be documented in this file.
 
-## 0.1.6 - Unreleased
+## 0.1.6 - 2014-09-14
+* Update Mess Detector to version 2.1.1.
+* Support for dark themes. Thanks to Andrew MacKenzie (@mackenza).
 * French translation. Thanks to rainje (@rainje).
 * Italian translation. Thanks to Christopher Pecoraro (@chrispecoraro).
 
