@@ -1,7 +1,10 @@
 # Brackets PHP Code Quality Tools Changelog
 All notable changes to this project will be documented in this file.
 
-## 0.1.7 - Unreleased
+## 0.1.8 - Unreleased
+* MediaWiki coding standards.
+
+## 0.1.7 - 2014-09-16
 * WordPress and Drupal coding standards.
 
 ## 0.1.6 - 2014-09-14
