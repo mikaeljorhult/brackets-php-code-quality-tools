@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 ## 0.1.8 - Unreleased
 * MediaWiki coding standards.
 * Update Mess Detector to version 2.1.3.
+* Update CodeSniffer to version 2.1.0.
 
 ## 0.1.7 - 2014-09-16
 * WordPress and Drupal coding standards.
