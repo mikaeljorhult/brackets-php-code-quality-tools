@@ -27,7 +27,7 @@ class Drupal_Sniffs_Functions_DiscouragedFunctionsSniff extends Generic_Sniffs_P
      *
      * @var array(string => string|null)
      */
-    protected $forbiddenFunctions = array(
+    public $forbiddenFunctions = array(
                                      // Devel module debugging functions.
                                      'dargs'               => null,
                                      'dcp'                 => null,
