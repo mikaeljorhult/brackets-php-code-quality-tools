@@ -20,7 +20,21 @@ class WordPress_Tests_Arrays_ArrayKeySpacingRestrictionsUnitTest extends Abstrac
 	 */
 	public function getErrorList()
 	{
-		return array();
+		return array(
+			4 => 1,
+			5 => 1,
+			6 => 1,
+			11 => 1,
+			12 => 1,
+			13 => 1,
+			16 => 1,
+			17 => 1,
+			18 => 2,
+			23 => 1,
+			26 => 1,
+			29 => 1,
+			31 => 1,
+		);
 	}//end getErrorList()
 
 
@@ -34,19 +48,7 @@ class WordPress_Tests_Arrays_ArrayKeySpacingRestrictionsUnitTest extends Abstrac
 	 */
 	public function getWarningList()
 	{
-		return array(
-			4 => 1,
-			5 => 1,
-			6 => 1,
-			11 => 1,
-			12 => 1,
-			13 => 1,
-			16 => 1,
-			17 => 1,
-			18 => 2,
-			23 => 1,
-			26 => 1,
-		);
+		return array();
 	}//end getWarningList()
 
 
