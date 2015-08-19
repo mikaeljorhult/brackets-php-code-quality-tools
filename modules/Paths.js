@@ -9,7 +9,7 @@ define( function( require, exports, module ) {
 		_paths = {
 			base: basePath,
 			phpcpd: basePath + 'phpcpd/phpcpd.phar',
-			phpcs: basePath + 'phpcs/phpcs.phar',
+			phpcs: 'phpcs.phar',
 			phpl: '',
 			phpmd: basePath + 'phpmd/phpmd.phar'
 		};
