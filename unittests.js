@@ -76,7 +76,7 @@ define( function( require, exports, module ) {
 				var response = null;
 				
 				runs( function() {
-					CommandRunner.run( 'php -v', function( data ) {
+					CommandRunner.run( 'php -v', {}, function( data ) {
 						response = data;
 					} );
 				} );
@@ -97,7 +97,10 @@ define( function( require, exports, module ) {
 				var response = null;
 				
 				runs( function() {
-					CommandRunner.run( 'php ' + Paths.get( 'phpcs' ) + ' --version', function( data ) {
+					var options = {
+						cwd: Paths.get( 'base', true ) + 'phpcs'
+					};
+					CommandRunner.run( 'php ' + Paths.get( 'phpcs' ) + ' --version', options, function( data ) {
 						response = data;
 					} );
 				} );
@@ -118,7 +121,7 @@ define( function( require, exports, module ) {
 				var response = null;
 				
 				runs( function() {
-					CommandRunner.run( 'php ' + Paths.get( 'phpcpd' ) + ' --version', function( data ) {
+					CommandRunner.run( 'php ' + Paths.get( 'phpcpd' ) + ' --version', {}, function( data ) {
 						response = data;
 					} );
 				} );
@@ -139,7 +142,7 @@ define( function( require, exports, module ) {
 				var response = null;
 				
 				runs( function() {
-					CommandRunner.run( 'php ' + Paths.get( 'phpmd' ) + ' --version', function( data ) {
+					CommandRunner.run( 'php ' + Paths.get( 'phpmd' ) + ' --version', {}, function( data ) {
 						response = data;
 					} );
 				} );
