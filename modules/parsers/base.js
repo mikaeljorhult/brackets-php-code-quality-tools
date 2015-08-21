@@ -13,6 +13,7 @@ define( function( require ) {
 	function Parser( abbreviation, name ) {
 		this._abbreviation = abbreviation;
 		this._name = name;
+		this._basePath = Paths.get( 'base', true ) + abbreviation;
 		this._path = Paths.get( abbreviation );
 		this._command = 'php {{path}} {{file}}';
 		this._errors = [];
@@ -29,14 +30,14 @@ define( function( require ) {
 		
 		// Run tool if it's enabled in settings.
 		if ( enabledTools.indexOf( this._abbreviation ) !== -1 && this.shouldRun() ) {
-			this.run( this.buildCommand( file ) );
+			this.run( this.buildCommand( file ), this.buildOptions() );
 		}
 	};
 	
-	Parser.prototype.run = function( command ) {
+	Parser.prototype.run = function( command, options ) {
 		var callback = this.callback;
 		
-		CommandRunner.run( command, callback );
+		CommandRunner.run( command, options, callback );
 	};
 	
 	Parser.prototype.shouldRun = function() {
@@ -51,6 +52,10 @@ define( function( require ) {
 		return this._command
 			.replace( '{{path}}', this._path )
 			.replace( '{{file}}', file );
+	};
+	
+	Parser.prototype.buildOptions = function() {
+		return {};
 	};
 	
 	Parser.prototype.abbreviation = function() {

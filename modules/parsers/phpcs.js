@@ -3,13 +3,12 @@ define( function( require ) {
 	
 	// Get module dependencies.
 	var Parser = require( 'modules/parsers/base' ),
-		Paths = require( 'modules/Paths' ),
 		PHPCS = new Parser( 'phpcs', 'PHP CodeSniffer' );
 	
 	PHPCS.setCommand( 'php {{path}} --standard={{standards}} --report-width=300 {{file}}' );
 	
 	PHPCS.buildCommand = function( file ) {
-		var standards = this.concatenateArray( this.prepareStandards( this._preferences.get( 'phpcs-standards' ) ) );
+		var standards = this.concatenateArray( this._preferences.get( 'phpcs-standards' ) );
 		
 		return this._command
 			.replace( '{{path}}', this._path )
@@ -17,21 +16,10 @@ define( function( require ) {
 			.replace( '{{standards}}', standards );
 	};
 	
-	PHPCS.prepareStandards = function( standards ) {
-		var standard;
-		
-		// Make sure standards are available.
-		if ( standards ) {
-			// Go through each standard.
-			for ( standard in standards ) {
-				// Check if standard name is a path.
-				if ( standards[ standard ].indexOf( '/' ) > -1 ) {
-					standards[ standard ] = Paths.escape( Paths.get( 'base', true ) + 'phpcs/' + standards[ standard ] );
-				}
-			}
-		}
-		
-		return standards;
+	PHPCS.buildOptions = function() {
+		return {
+			cwd: this._basePath
+		};
 	};
 	
 	PHPCS.shouldRun = function() {

@@ -12,8 +12,8 @@
 		manager.registerCommand( 'phplinttools', 'commander', commander, true );
 	};
 	
-	function commander( exec, cb ) {
-		childProcess.exec( exec, function( err, stdout, stderr ) {
+	function commander( exec, options, cb ) {
+		childProcess.exec( exec, options, function( err, stdout, stderr ) {
 			cb( null, stderr + stdout );
 		} );
 	}

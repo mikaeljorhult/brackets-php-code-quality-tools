@@ -44,7 +44,7 @@ define( function( require ) {
 	// Register event listeners.
 	function registerEvents() {
 		// Test for PHP.
-		CommandRunner.run( 'php -v', function( data ) {
+		CommandRunner.run( 'php -v', {}, function( data ) {
 			var phpAvailable = data.indexOf( 'PHP' ) > -1;
 			
 			// Save PHP state

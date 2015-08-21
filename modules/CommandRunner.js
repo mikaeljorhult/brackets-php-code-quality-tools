@@ -14,8 +14,8 @@ define( function( require, exports, module ) {
 		initialized = false;
 	
 	// Run commands.
-	function run( command, callback ) {
-		nodeConnection.domains.phplinttools.commander( command ).done( callback );
+	function run( command, options, callback ) {
+		nodeConnection.domains.phplinttools.commander( command, options ).done( callback );
 	}
 	
 	// Return initialization status.

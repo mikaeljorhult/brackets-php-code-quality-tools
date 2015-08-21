@@ -14,12 +14,34 @@ if ( true ) {
 }
 
 // bad
-if ( 'update' === $option_operation['operation'] )
+if  ( 'update' === $option_operation['operation'] )
 {
 	update_option( $option_operation['option_name'], $option_operation['old_value'] );
+
 }
 
 // good
 if ( 'update' === $option_operation['operation'] ) {
 	update_option( $option_operation['option_name'], $option_operation['old_value'] );
 }
+
+// bad
+if(true){}
+
+
+if ( true ) {
+    while ( false ) {
+
+        echo 'OK';
+
+    }
+
+}
+
+if ( false ):
+else:
+endif;
+
+if ( false ) :
+else :
+endif;

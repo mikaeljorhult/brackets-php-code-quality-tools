@@ -1,34 +1,30 @@
 <?php
 /**
- * Unit test class for the PhpIndent sniff.
+ * Unit test class for the StrictComparisons sniff.
  *
  * PHP version 5
  *
  * @category  PHP
  * @package   PHP_CodeSniffer
- * @author    Akeda Bagus <akeda@x-team.com>
- * @author    Greg Sherwood <gsherwood@squiz.net>
- * @author    Marc McIntyre <mmcintyre@squiz.net>
+ * @author    Matt Robinson
  * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
 
 /**
- * Unit test class for the PhpIndent sniff.
+ * Unit test class for the StrictComparisons sniff.
  *
  * A sniff unit test checks a .inc file for expected violations of a single
  * coding standard. Expected errors and warnings are stored in this class.
  *
  * @category  PHP
  * @package   PHP_CodeSniffer
- * @author    Akeda Bagus <akeda@x-team.com>
- * @author    Greg Sherwood <gsherwood@squiz.net>
- * @author    Marc McIntyre <mmcintyre@squiz.net>
+ * @author    Matt Robinson
  * @license   https://github.com/squizlabs/PHP_CodeSniffer/blob/master/licence.txt BSD Licence
  * @version   Release: @package_version@
  * @link      http://pear.php.net/package/PHP_CodeSniffer
  */
-class WordPress_Tests_WhiteSpace_PhpIndentUnitTest extends AbstractSniffUnitTest
+class WordPress_Tests_PHP_StrictComparisonsUnitTest extends AbstractSniffUnitTest
 {
 
 
@@ -58,12 +54,12 @@ class WordPress_Tests_WhiteSpace_PhpIndentUnitTest extends AbstractSniffUnitTest
     public function getWarningList()
     {
         return array(
-                 5 => 1
-                );
+            3 => 1,
+            10 => 1,
+            12 => 1,
+        );
 
     }//end getWarningList()
 
 
 }//end class
-
-?>
