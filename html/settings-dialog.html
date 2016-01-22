@@ -22,7 +22,7 @@
 			
 			<p>{{ Strings.SETTINGS_DIALOG_STANDARDS }}</p>
 			
-			<p class="columns">
+			<p class="columns clearfix">
 				<label>
 					<input type="checkbox" name="phpcs-standards[]" value="MySource" />
 					MySource
@@ -61,10 +61,15 @@
 			
 			<p>{{ Strings.SETTINGS_DIALOG_CUSTOM_STANDARDS }}</p>
 			
-			<p class="columns">
+			<p class="columns clearfix">
 				<label>
 					<input type="checkbox" name="phpcs-standards[]" value="Drupal" />
 					Drupal
+				</label>
+				
+				<label>
+					<input type="checkbox" name="phpcs-standards[]" value="DrupalPractice" />
+					Drupal Best Practices
 				</label>
 				
 				<label>
@@ -127,7 +132,7 @@
 			</p>
 			
 			<label>Rulesets</label>
-			<p class="columns">
+			<p class="columns clearfix">
 				<label>
 					<input type="checkbox" name="phpmd-rulesets[]" value="cleancode" />
 					Clean Code

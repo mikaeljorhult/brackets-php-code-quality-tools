@@ -18,9 +18,9 @@
 	margin-bottom: 0;
 }
 
-.php-lint-settings-dialog .columns {
-	-webkit-columns: 3;
-	columns: 3;
+.php-lint-settings-dialog .columns label {
+	width: 33.333%;
+	float: left;
 }
 
 .php-lint-settings-dialog .error {
