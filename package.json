@@ -17,7 +17,7 @@
 		"analysis"
 	],
 	"homepage": "https://github.com/mikaeljorhult/brackets-php-code-quality-tools",
-	"version": "0.1.7",
+	"version": "0.1.8",
 	"author": "Mikael Jorhult <mikael@jorhult.se> (http://jorhult.se)",
 	"repository": {
 		"type": "git",

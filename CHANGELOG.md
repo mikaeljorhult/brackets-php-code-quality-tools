@@ -1,10 +1,12 @@
 # Brackets PHP Code Quality Tools Changelog
 All notable changes to this project will be documented in this file.
 
-## 0.1.8 - Unreleased
+## 0.1.8 - 2016-01-22
 * MediaWiki coding standards.
+* Update Drupal coding standards.
 * Update Mess Detector to version 2.1.3.
-* Update CodeSniffer to version 2.1.0.
+* Support all WordPress' coding standards. Thanks to Chris Zarate (@chriszarate).
+* Update CodeSniffer to version 2.3.3. Thanks to Chris Zarate (@chriszarate).
 
 ## 0.1.7 - 2014-09-16
 * WordPress and Drupal coding standards.
