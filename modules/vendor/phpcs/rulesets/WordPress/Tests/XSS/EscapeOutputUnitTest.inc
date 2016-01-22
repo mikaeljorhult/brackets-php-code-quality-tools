@@ -157,3 +157,22 @@ echo sprintf( 'Howdy, %s', esc_html( $name ? $name : __( 'Partner' ) ) ); // OK
 
 _e( 'Something' ); // Bad
 esc_html_e( 'Something' ); // OK
+
+echo $something // Bad
+     . esc_attr( 'baz-' // Rest is OK
+	         . $r
+	         . ( $r === $active_round ? ' foo' : '' )
+	         . ( $r < $active_round ? ' bar' : '' )
+	) . 'something';
+
+echo implode( '<br>', $items ); // Bad
+echo implode( '<br>', urlencode_deep( $items ) ); // OK
+echo implode( '<br>', array_map( 'esc_html', $items ) ); // OK
+echo implode( '<br>', array_map( 'foo', $items ) ); // Bad
+echo join( '<br>', $items ); // Bad
+echo join( '<br>', array_map( 'esc_html', $items ) ); // OK
+
+echo '<option name="' . esc_attr( $name ) . '"' .
+     ( $name === $selected ? ' selected' : '' ) .
+     '>' . esc_html( $value )
+     . '</option>';

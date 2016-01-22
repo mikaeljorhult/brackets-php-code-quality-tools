@@ -115,8 +115,10 @@ abstract class WordPress_Sniff implements PHP_CodeSniffer_Sniff {
 		'comments_popup_link' => true,
 		'comments_popup_script' => true,
 		'comments_rss_link' => true,
+		'count' => true,
 		'delete_get_calendar_cache' => true,
 		'disabled' => true,
+		'do_shortcode' => true,
 		'do_shortcode_tag' => true,
 		'edit_bookmark_link' => true,
 		'edit_comment_link' => true,
@@ -235,10 +237,13 @@ abstract class WordPress_Sniff implements PHP_CodeSniffer_Sniff {
 	 * @var array
 	 */
 	public static $sanitizingFunctions = array(
+		'_wp_handle_upload' => true,
 		'absint' => true,
+		'array_key_exists' => true,
 		'esc_url_raw' => true,
 		'filter_input' => true,
 		'filter_var' => true,
+		'hash_equals' => true,
 		'in_array' => true,
 		'intval' => true,
 		'is_array' => true,
@@ -263,6 +268,8 @@ abstract class WordPress_Sniff implements PHP_CodeSniffer_Sniff {
 		'sanitize_user_field' => true,
 		'sanitize_user' => true,
 		'validate_file' => true,
+		'wp_handle_sideload' => true,
+		'wp_handle_upload' => true,
 		'wp_kses_allowed_html' => true,
 		'wp_kses_data' => true,
 		'wp_kses_post' => true,
@@ -281,6 +288,8 @@ abstract class WordPress_Sniff implements PHP_CodeSniffer_Sniff {
 	 */
 	public static $unslashingSanitizingFunctions = array(
 		'absint' => true,
+		'boolval' => true,
+		'intval' => true,
 		'is_array' => true,
 		'sanitize_key' => true,
 	);
@@ -299,7 +308,11 @@ abstract class WordPress_Sniff implements PHP_CodeSniffer_Sniff {
 	 * @var array
 	 */
 	public static $formattingFunctions = array(
+		'array_fill' => true,
 		'ent2ncr' => true,
+		'implode' => true,
+		'join' => true,
+		'nl2br' => true,
 		'sprintf' => true,
 		'vsprintf' => true,
 		'wp_sprintf' => true,
@@ -328,6 +341,32 @@ abstract class WordPress_Sniff implements PHP_CodeSniffer_Sniff {
 		'user_error' => true,
 		'vprintf' => true,
 		'wp_die' => true,
+		'wp_dropdown_pages' => true,
+	);
+
+	/**
+	 * Functions that escape values for use in SQL queries.
+	 *
+	 * @since 0.9.0
+	 *
+	 * @var array
+	 */
+	public static $SQLEscapingFunctions = array(
+		'absint' => true,
+		'esc_sql' => true,
+		'intval' => true,
+		'like_escape' => true,
+	);
+
+	/**
+	 * Functions whose output is automatically escaped for use in SQL queries.
+	 *
+	 * @since 0.9.0
+	 *
+	 * @var array
+	 */
+	public static $SQLAutoEscapedFunctions = array(
+		'count' => true,
 	);
 
 	/**
@@ -1036,6 +1075,61 @@ abstract class WordPress_Sniff implements PHP_CodeSniffer_Sniff {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Check what type of 'use' statement a token is part of.
+	 *
+	 * The T_USE token has multiple different uses:
+	 *
+	 * 1. In a closure: function () use ( $var ) {}
+	 * 2. In a class, to import a trait: use Trait_Name
+	 * 3. In a namespace, to import a class: use Some\Class;
+	 *
+	 * This function will check the token and return 'closure', 'trait', or 'class',
+	 * based on which of these uses the use is being used for.
+	 *
+	 * @param int $stackPtr The position of the token to check.
+	 *
+	 * @return string The type of use.
+	 */
+	protected function get_use_type( $stackPtr ) {
+
+		// USE keywords inside closures.
+		$next = $this->phpcsFile->findNext( T_WHITESPACE, $stackPtr + 1, null, true );
+
+		if ( T_OPEN_PARENTHESIS === $this->tokens[ $next ]['code'] ) {
+			return 'closure';
+		}
+
+		// USE keywords for traits.
+		if ( $this->phpcsFile->hasCondition( $stackPtr, array( T_CLASS, T_TRAIT ) ) ) {
+			return 'trait';
+		}
+
+		// USE keywords for classes to import to a namespace.
+		return 'class';
+	}
+
+	/**
+	 * Get the interpolated variable names from a string.
+	 *
+	 * Check if '$' is followed by a valid variable name, and that it is not preceded by an escape sequence.
+	 *
+	 * @param string $string A T_DOUBLE_QUOTED_STRING token.
+	 *
+	 * @return array Variable names (without '$' sigil).
+	 */
+	protected function get_interpolated_variables( $string ) {
+		$variables = array();
+		if ( preg_match_all( '/(?P<backslashes>\\\\*)\$(?P<symbol>\w+)/', $string, $match_sets, PREG_SET_ORDER ) ) {
+			foreach ( $match_sets as $matches ) {
+				if ( strlen( $matches['backslashes'] ) % 2 === 0 ) {
+					$variables[] = $matches['symbol'];
+				}
+			}
+		}
+		return $variables;
 	}
 }
 
