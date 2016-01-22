@@ -23,6 +23,16 @@ class Drupal_Sniffs_WhiteSpace_ScopeClosingBraceSniff implements PHP_CodeSniffer
 {
 
     /**
+     * A list of tokenizers this sniff supports.
+     *
+     * @var array
+     */
+    public $supportedTokenizers = array(
+                                   'PHP',
+                                   'JS',
+                                  );
+
+    /**
      * The number of spaces code should be indented.
      *
      * @var int
@@ -61,8 +71,8 @@ class Drupal_Sniffs_WhiteSpace_ScopeClosingBraceSniff implements PHP_CodeSniffer
             return;
         }
 
-        $scopeStart  = $tokens[$stackPtr]['scope_opener'];
-        $scopeEnd    = $tokens[$stackPtr]['scope_closer'];
+        $scopeStart = $tokens[$stackPtr]['scope_opener'];
+        $scopeEnd   = $tokens[$stackPtr]['scope_closer'];
 
         // If the scope closer doesn't think it belongs to this scope opener
         // then the opener is sharing its closer ith other tokens. We only
@@ -84,7 +94,7 @@ class Drupal_Sniffs_WhiteSpace_ScopeClosingBraceSniff implements PHP_CodeSniffer
 
         // We found a new line, now go forward and find the first non-whitespace
         // token.
-        $lineStart= $phpcsFile->findNext(
+        $lineStart = $phpcsFile->findNext(
             array(T_WHITESPACE),
             ($lineStart + 1),
             null,
@@ -104,36 +114,56 @@ class Drupal_Sniffs_WhiteSpace_ScopeClosingBraceSniff implements PHP_CodeSniffer
         if ($tokens[$lastContent]['line'] === $tokens[$scopeEnd]['line']) {
             // Only allow empty classes and methods.
             if (($tokens[$tokens[$scopeEnd]['scope_condition']]['code'] !== T_CLASS
-                && !in_array(T_CLASS, $tokens[$scopeEnd]['conditions']))
-                || $tokens[$lastContent]['code'] !== T_OPEN_CURLY_BRACKET)
-            {
+                && $tokens[$tokens[$scopeEnd]['scope_condition']]['code'] !== T_INTERFACE
+                && !in_array(T_CLASS, $tokens[$scopeEnd]['conditions'])
+                && !in_array(T_INTERFACE, $tokens[$scopeEnd]['conditions']))
+                || $tokens[$lastContent]['code'] !== T_OPEN_CURLY_BRACKET
+            ) {
                 $error = 'Closing brace must be on a line by itself';
-                $phpcsFile->addError($error, $scopeEnd);
+                $fix   = $phpcsFile->addFixableError($error, $scopeEnd, 'Line');
+                if ($fix === true) {
+                    $phpcsFile->fixer->addNewlineBefore($scopeEnd);
+                }
             }
+
             return;
         }
 
         // Check now that the closing brace is lined up correctly.
-        $braceIndent   = $tokens[$scopeEnd]['column'];
-        if (in_array($tokens[$stackPtr]['code'], array(T_CASE, T_DEFAULT)) === true) {
+        $fix         = false;
+        $braceIndent = ($tokens[$scopeEnd]['column'] - 1);
+        if ($tokens[$stackPtr]['code'] === T_CASE
+            || $tokens[$stackPtr]['code'] === T_DEFAULT
+        ) {
             // BREAK statements should be indented n spaces from the
             // CASE or DEFAULT statement.
-            if ($braceIndent !== ($startColumn + $this->indent)) {
+            $expectedIndent = ($startColumn + $this->indent - 1);
+            if ($braceIndent !== $expectedIndent) {
                 $error = 'Case breaking statement indented incorrectly; expected %s spaces, found %s';
                 $data  = array(
-                          ($startColumn + $this->indent - 1),
-                          ($braceIndent - 1),
+                          $expectedIndent,
+                          $braceIndent,
                          );
-                $phpcsFile->addError($error, $scopeEnd, 'BreakIdent', $data);
+                $fix   = $phpcsFile->addFixableError($error, $scopeEnd, 'BreakIdent', $data);
             }
         } else {
-            if ($braceIndent !== $startColumn) {
+            $expectedIndent = ($startColumn - 1);
+            if ($braceIndent !== $expectedIndent) {
                 $error = 'Closing brace indented incorrectly; expected %s spaces, found %s';
                 $data  = array(
-                          ($startColumn - 1),
-                          ($braceIndent - 1),
+                          $expectedIndent,
+                          $braceIndent,
                          );
-                $phpcsFile->addError($error, $scopeEnd, 'Indent', $data);
+                $fix   = $phpcsFile->addFixableError($error, $scopeEnd, 'Indent', $data);
+            }
+        }//end if
+
+        if ($fix === true && $phpcsFile->fixer->enabled === true) {
+            $spaces = str_repeat(' ', $expectedIndent);
+            if ($braceIndent === 0) {
+                $phpcsFile->fixer->addContentBefore($scopeEnd, $spaces);
+            } else {
+                $phpcsFile->fixer->replaceToken(($scopeEnd - 1), $spaces);
             }
         }
 
@@ -141,5 +171,3 @@ class Drupal_Sniffs_WhiteSpace_ScopeClosingBraceSniff implements PHP_CodeSniffer
 
 
 }//end class
-
-?>

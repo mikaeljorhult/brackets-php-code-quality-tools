@@ -10,8 +10,8 @@
  */
 
 /**
- * Checks that constants introduced with define() in module files start with the
- * module's name.
+ * Checks that constants introduced with define() in module or install files start
+ * with the module's name.
  *
  * @category PHP
  * @package  PHP_CodeSniffer
@@ -38,11 +38,11 @@ class Drupal_Sniffs_Semantics_ConstantNameSniff extends Drupal_Sniffs_Semantics_
      *
      * @param PHP_CodeSniffer_File $phpcsFile
      *   The file being scanned.
-     * @param int $stackPtr
+     * @param int                  $stackPtr
      *   The position of the function call in the stack.
-     * @param int $openBracket
+     * @param int                  $openBracket
      *   The position of the opening parenthesis in the stack.
-     * @param int $closeBracket
+     * @param int                  $closeBracket
      *   The position of the closing parenthesis in the stack.
      *
      * @return void
@@ -53,9 +53,10 @@ class Drupal_Sniffs_Semantics_ConstantNameSniff extends Drupal_Sniffs_Semantics_
         $openBracket,
         $closeBracket
     ) {
-        $fileExtension = strtolower(substr($phpcsFile->getFilename(), -6));
+        $nameParts     = explode('.', basename($phpcsFile->getFilename()));
+        $fileExtension = end($nameParts);
         // Only check in *.module files.
-        if ($fileExtension !== 'module') {
+        if ($fileExtension !== 'module' && $fileExtension !== 'install') {
             return;
         }
 
@@ -66,16 +67,16 @@ class Drupal_Sniffs_Semantics_ConstantNameSniff extends Drupal_Sniffs_Semantics_
             return;
         }
 
-        $moduleName    = substr(basename($phpcsFile->getFilename()), 0, -7);
+        $moduleName    = reset($nameParts);
         $expectedStart = strtoupper($moduleName);
         // Remove the quotes around the string litral.
         $constant = substr($tokens[$argument['start']]['content'], 1, -1);
         if (strpos($constant, $expectedStart) !== 0) {
             $warning = 'All constants defined by a module must be prefixed with the module\'s name, expected "%s" but found "%s"';
-            $data  = array(
-                      $expectedStart."_$constant",
-                      $constant,
-                     );
+            $data    = array(
+                        $expectedStart."_$constant",
+                        $constant,
+                       );
             $phpcsFile->addWarning($warning, $stackPtr, 'ConstantStart', $data);
         }
 
@@ -83,5 +84,3 @@ class Drupal_Sniffs_Semantics_ConstantNameSniff extends Drupal_Sniffs_Semantics_
 
 
 }//end class
-
-?>

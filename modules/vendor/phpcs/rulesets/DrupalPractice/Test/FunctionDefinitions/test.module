@@ -1,0 +1,28 @@
+<?php
+
+/**
+ * Implements hook_init().
+ */
+function test_init() {
+  drupal_add_css('somefile.css');
+}
+
+/**
+ * Implements hook_page_build().
+ */
+function test_page_build($page) {
+  drupal_add_css('somefile.css');
+}
+
+/**
+ * Implements hook_menu().
+ */
+function test_menu() {
+  $items['admin/secret/stuff'] = array(
+    'title' => 'Secret stuff',
+    'page callback' => 'test_page_callback',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}

@@ -12,6 +12,9 @@
 /**
  * Ensure that there are no white spaces before and after the object operator.
  *
+ * Largely copied from Squiz_Sniffs_WhiteSpace_ObjectOperatorSpacingSniff but
+ * modified to not throw errors on multi line statements.
+ *
  * @category PHP
  * @package  PHP_CodeSniffer
  * @link     http://pear.php.net/package/PHP_CodeSniffer
@@ -44,25 +47,48 @@ class Drupal_Sniffs_WhiteSpace_ObjectOperatorSpacingSniff implements PHP_CodeSni
     public function process(PHP_CodeSniffer_File $phpcsFile, $stackPtr)
     {
         $tokens = $phpcsFile->getTokens();
-
-        $prevToken = $phpcsFile->findPrevious(PHP_CodeSniffer_Tokens::$emptyTokens, $stackPtr - 1, null, true);
-        // Line breaks are allowed before an object operator.
-        if ($tokens[$stackPtr]['line'] === $tokens[$prevToken]['line']
-            && $prevToken < ($stackPtr - 1)
-        ) {
-            $error = 'Space found before object operator';
-            $phpcsFile->addError($error, $stackPtr, 'Before');
+        if ($tokens[($stackPtr - 1)]['code'] !== T_WHITESPACE) {
+            $before = 0;
+        } else {
+            if ($tokens[($stackPtr - 2)]['line'] !== $tokens[$stackPtr]['line']) {
+                $before = 'newline';
+            } else {
+                $before = $tokens[($stackPtr - 1)]['length'];
+            }
         }
 
-        $nextType = $tokens[($stackPtr + 1)]['code'];
-        if (in_array($nextType, PHP_CodeSniffer_Tokens::$emptyTokens) === true) {
+        if ($tokens[($stackPtr + 1)]['code'] !== T_WHITESPACE) {
+            $after = 0;
+        } else {
+            if ($tokens[($stackPtr + 2)]['line'] !== $tokens[$stackPtr]['line']) {
+                $after = 'newline';
+            } else {
+                $after = $tokens[($stackPtr + 1)]['length'];
+            }
+        }
+
+        $phpcsFile->recordMetric($stackPtr, 'Spacing before object operator', $before);
+        $phpcsFile->recordMetric($stackPtr, 'Spacing after object operator', $after);
+
+        $prevToken = $phpcsFile->findPrevious(PHP_CodeSniffer_Tokens::$emptyTokens, ($stackPtr - 1), null, true);
+        // Line breaks are allowed before an object operator.
+        if ($before !== 0 && $tokens[$stackPtr]['line'] === $tokens[$prevToken]['line']) {
+            $error = 'Space found before object operator';
+            $fix   = $phpcsFile->addFixableError($error, $stackPtr, 'Before');
+            if ($fix === true) {
+                $phpcsFile->fixer->replaceToken(($stackPtr - 1), '');
+            }
+        }
+
+        if ($after !== 0) {
             $error = 'Space found after object operator';
-            $phpcsFile->addError($error, $stackPtr, 'After');
+            $fix   = $phpcsFile->addFixableError($error, $stackPtr, 'After');
+            if ($fix === true) {
+                $phpcsFile->fixer->replaceToken(($stackPtr + 1), '');
+            }
         }
 
     }//end process()
 
 
 }//end class
-
-?>

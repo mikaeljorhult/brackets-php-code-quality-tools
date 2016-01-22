@@ -46,11 +46,11 @@ class Drupal_Sniffs_Semantics_PregSecuritySniff extends Drupal_Sniffs_Semantics_
      *
      * @param PHP_CodeSniffer_File $phpcsFile
      *   The file being scanned.
-     * @param int $stackPtr
+     * @param int                  $stackPtr
      *   The position of the function call in the stack.
-     * @param int $openBracket
+     * @param int                  $openBracket
      *   The position of the opening parenthesis in the stack.
-     * @param int $closeBracket
+     * @param int                  $closeBracket
      *   The position of the closing parenthesis in the stack.
      *
      * @return void
@@ -75,13 +75,13 @@ class Drupal_Sniffs_Semantics_PregSecuritySniff extends Drupal_Sniffs_Semantics_
         }
 
         $pattern = $tokens[$argument['start']]['content'];
-        $quote = substr($pattern, 0, 1);
+        $quote   = substr($pattern, 0, 1);
         // Check that the pattern is a string.
         if ($quote == '"' || $quote == "'") {
             // Get the delimiter - first char after the enclosing quotes.
             $delimiter = preg_quote(substr($pattern, 1, 1), '/');
             // Check if there is the evil e flag.
-            if (preg_match('/' . $delimiter . '[\w]{0,}e[\w]{0,}$/', substr($pattern, 0, -1))) {
+            if (preg_match('/'.$delimiter.'[\w]{0,}e[\w]{0,}$/', substr($pattern, 0, -1))) {
                 $warn = 'Using the e flag in %s is a possible security risk. For details see http://drupal.org/node/750148';
                 $phpcsFile->addError(
                     $warn,
@@ -92,9 +92,8 @@ class Drupal_Sniffs_Semantics_PregSecuritySniff extends Drupal_Sniffs_Semantics_
                 return;
             }
         }
+
     }//end processFunctionCall()
 
 
 }//end class
-
-?>

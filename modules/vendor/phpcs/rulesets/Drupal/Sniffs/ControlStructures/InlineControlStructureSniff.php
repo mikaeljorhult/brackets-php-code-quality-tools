@@ -4,9 +4,9 @@
  *
  * PHP version 5
  *
- * @category  PHP
- * @package   PHP_CodeSniffer
- * @link      http://pear.php.net/package/PHP_CodeSniffer
+ * @category PHP
+ * @package  PHP_CodeSniffer
+ * @link     http://pear.php.net/package/PHP_CodeSniffer
  */
 
 /**
@@ -17,13 +17,14 @@
  * syntax for control structures. See
  * http://www.php.net/manual/en/control-structures.alternative-syntax.php
  *
- * @category  PHP
- * @package   PHP_CodeSniffer
- * @link      http://pear.php.net/package/PHP_CodeSniffer
+ * @category PHP
+ * @package  PHP_CodeSniffer
+ * @link     http://pear.php.net/package/PHP_CodeSniffer
  */
 class Drupal_Sniffs_ControlStructures_InlineControlStructureSniff
 extends Generic_Sniffs_ControlStructures_InlineControlStructureSniff
 {
+
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -44,6 +45,7 @@ extends Generic_Sniffs_ControlStructures_InlineControlStructureSniff
         } else {
             $start = $stackPtr;
         }
+
         $scopeOpener = $phpcsFile->findNext(T_WHITESPACE, ($start + 1), null, true);
         if ($tokens[$scopeOpener]['code'] === T_COLON) {
             return;
@@ -55,5 +57,3 @@ extends Generic_Sniffs_ControlStructures_InlineControlStructureSniff
 
 
 }//end class
-
-?>

@@ -38,11 +38,11 @@ class Drupal_Sniffs_Semantics_FunctionTSniff extends Drupal_Sniffs_Semantics_Fun
      *
      * @param PHP_CodeSniffer_File $phpcsFile
      *   The file being scanned.
-     * @param int $stackPtr
+     * @param int                  $stackPtr
      *   The position of the function call in the stack.
-     * @param int $openBracket
+     * @param int                  $openBracket
      *   The position of the opening parenthesis in the stack.
-     * @param int $closeBracket
+     * @param int                  $closeBracket
      *   The position of the closing parenthesis in the stack.
      *
      * @return void
@@ -74,6 +74,18 @@ class Drupal_Sniffs_Semantics_FunctionTSniff extends Drupal_Sniffs_Semantics_Fun
             $warning = 'Do not pass empty strings to t()';
             $phpcsFile->addWarning($warning, $argument['start'], 'EmptyString');
             return;
+        }
+
+        $concatAfter = $phpcsFile->findNext(PHP_CodeSniffer_Tokens::$emptyTokens, ($closeBracket + 1), null, true, null, true);
+        if ($concatAfter !== false && $tokens[$concatAfter]['code'] === T_STRING_CONCAT) {
+            $stringAfter = $phpcsFile->findNext(PHP_CodeSniffer_Tokens::$emptyTokens, ($concatAfter + 1), null, true, null, true);
+            if ($stringAfter !== false
+                && $tokens[$stringAfter]['code'] === T_CONSTANT_ENCAPSED_STRING
+                && strpos($tokens[$stringAfter]['content'], '<') === false
+            ) {
+                $warning = 'Do not concatenate strings to translatable strings, they should be part of the t() argument and you should use placeholders';
+                $phpcsFile->addWarning($warning, $stringAfter, 'ConcatString');
+            }
         }
 
         $lastChar = substr($string, -1);
@@ -112,5 +124,3 @@ class Drupal_Sniffs_Semantics_FunctionTSniff extends Drupal_Sniffs_Semantics_Fun
 
 
 }//end class
-
-?>

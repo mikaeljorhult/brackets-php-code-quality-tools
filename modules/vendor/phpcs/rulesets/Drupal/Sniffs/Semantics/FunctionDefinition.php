@@ -61,10 +61,10 @@ abstract class Drupal_Sniffs_Semantics_FunctionDefinition implements PHP_CodeSni
     /**
      * Process this function definition.
      *
-     * @param PHP_CodeSniffer_File $phpcsFile    The file being scanned.
-     * @param int                  $stackPtr     The position of the function
+     * @param PHP_CodeSniffer_File $phpcsFile   The file being scanned.
+     * @param int                  $stackPtr    The position of the function name in the stack.
      *                                           name in the stack.
-     * @param int                  $functionPtr  The position of the function
+     * @param int                  $functionPtr The position of the function keyword in the stack.
      *                                           keyword in the stack.
      *
      * @return void
@@ -73,5 +73,3 @@ abstract class Drupal_Sniffs_Semantics_FunctionDefinition implements PHP_CodeSni
 
 
 }//end class
-
-?>

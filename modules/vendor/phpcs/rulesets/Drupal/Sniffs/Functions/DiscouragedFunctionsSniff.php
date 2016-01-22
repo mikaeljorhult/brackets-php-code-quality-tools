@@ -27,25 +27,26 @@ class Drupal_Sniffs_Functions_DiscouragedFunctionsSniff extends Generic_Sniffs_P
      *
      * @var array(string => string|null)
      */
-    protected $forbiddenFunctions = array(
+    public $forbiddenFunctions = array(
                                      // Devel module debugging functions.
-                                     'dargs'               => null,
-                                     'dcp'                 => null,
-                                     'dd'                  => null,
-                                     'dfb'                 => null,
-                                     'dfbt'                => null,
-                                     'dpm'                 => null,
-                                     'dpq'                 => null,
-                                     'dpr'                 => null,
-                                     'dprint_r'            => null,
-                                     'drupal_debug'        => null,
-                                     'dsm'                 => null,
-                                     'dvm'                 => null,
-                                     'dvr'                 => null,
-                                     'kdevel_print_object' => null,
-                                     'kpr'                 => null,
-                                     'kprint_r'            => null,
-                                    );
+                                  'dargs'               => null,
+                                  'dcp'                 => null,
+                                  'dd'                  => null,
+                                  'dfb'                 => null,
+                                  'dfbt'                => null,
+                                  'dpm'                 => null,
+                                  'dpq'                 => null,
+                                  'dpr'                 => null,
+                                  'dprint_r'            => null,
+                                  'drupal_debug'        => null,
+                                  'dsm'                 => null,
+                                  'dvm'                 => null,
+                                  'dvr'                 => null,
+                                  'kdevel_print_object' => null,
+                                  'kpr'                 => null,
+                                  'kprint_r'            => null,
+                                  'sdpm'                => null,
+                                 );
 
     /**
      * If true, an error will be thrown; otherwise a warning.
@@ -55,5 +56,3 @@ class Drupal_Sniffs_Functions_DiscouragedFunctionsSniff extends Generic_Sniffs_P
     public $error = false;
 
 }//end class
-
-?>

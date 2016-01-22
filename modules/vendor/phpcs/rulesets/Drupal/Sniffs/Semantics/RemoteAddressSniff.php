@@ -54,5 +54,3 @@ class Drupal_Sniffs_Semantics_RemoteAddressSniff implements PHP_CodeSniffer_Snif
 
 
 }//end class
-
-?>

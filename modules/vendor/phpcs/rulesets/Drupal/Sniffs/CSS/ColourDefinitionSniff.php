@@ -62,12 +62,13 @@ class Drupal_Sniffs_CSS_ColourDefinitionSniff implements PHP_CodeSniffer_Sniff
                       $expected,
                       $colour,
                      );
-            $phpcsFile->addError($error, $stackPtr, 'NotLower', $data);
+            $fix   = $phpcsFile->addFixableError($error, $stackPtr, 'NotLower', $data);
+            if ($fix === true) {
+                $phpcsFile->fixer->replaceToken($stackPtr, $expected);
+            }
         }
 
     }//end process()
 
 
 }//end class
-
-?>

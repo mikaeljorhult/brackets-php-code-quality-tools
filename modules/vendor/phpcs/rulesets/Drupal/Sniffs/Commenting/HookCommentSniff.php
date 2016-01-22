@@ -19,6 +19,7 @@
 class Drupal_Sniffs_Commenting_HookCommentSniff implements PHP_CodeSniffer_Sniff
 {
 
+
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -96,17 +97,17 @@ class Drupal_Sniffs_Commenting_HookCommentSniff implements PHP_CodeSniffer_Sniff
                 // @return documentation.
                 foreach ($tokens[$commentStart]['comment_tags'] as $pos => $tag) {
                     if ($tokens[$tag]['content'] === '@param') {
-                        $warn     = 'Hook implementations should not duplicate @param documentation';
+                        $warn = 'Hook implementations should not duplicate @param documentation';
                         $phpcsFile->addWarning($warn, $tag, 'HookParamDoc');
                     }
+
                     if ($tokens[$tag]['content'] === '@return') {
-                        $warn     = 'Hook implementations should not duplicate @return documentation';
+                        $warn = 'Hook implementations should not duplicate @return documentation';
                         $phpcsFile->addWarning($warn, $tag, 'HookReturnDoc');
                     }
                 }
             }//end if
         }//end if
-
 
     }//end process()
 

@@ -44,11 +44,33 @@ class Drupal_Sniffs_NamingConventions_ValidVariableNameSniff
 
         $memberName = ltrim($tokens[$stackPtr]['content'], '$');
 
-        if (strpos($memberName, '_') !== false) {
-            $error = 'Class property %s should use lowerCamel naming without underscores';
-            $data  = array($tokens[$stackPtr]['content']);
-            $phpcsFile->addError($error, $stackPtr, 'LowerCamelName', $data);
+        if (strpos($memberName, '_') === false) {
+            return;
         }
+
+        // Check if the class extends another class and get the name of the class
+        // that is extended.
+        if (empty($tokens[$stackPtr]['conditions']) === false) {
+            $classPtr = key($tokens[$stackPtr]['conditions']);
+            $extendsPtr = $phpcsFile->findNext(T_EXTENDS, ($classPtr + 1), $tokens[$classPtr]['scope_opener']);
+            if ($extendsPtr !== false) {
+                $extendsNamePtr = $phpcsFile->findNext(T_STRING, ($extendsPtr + 1), $tokens[$classPtr]['scope_opener']);
+
+                // Special case config entities: those are allowed to have
+                // underscores in their class property names. If a class extends
+                // something like ConfigEntityBase then we consider it a config
+                // entity class and allow underscores.
+                if ($extendsNamePtr !== false
+                    && strpos($tokens[$extendsNamePtr]['content'], 'ConfigEntityBase') !== false
+                ) {
+                    return;
+                }
+            }
+        }
+
+        $error = 'Class property %s should use lowerCamel naming without underscores';
+        $data  = array($tokens[$stackPtr]['content']);
+        $phpcsFile->addError($error, $stackPtr, 'LowerCamelName', $data);
 
     }//end processMemberVar()
 
@@ -113,5 +135,3 @@ class Drupal_Sniffs_NamingConventions_ValidVariableNameSniff
 
 
 }//end class
-
-?>

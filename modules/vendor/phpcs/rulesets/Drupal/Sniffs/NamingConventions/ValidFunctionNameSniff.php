@@ -4,38 +4,25 @@
  *
  * PHP version 5
  *
- * @category  PHP
- * @package   PHP_CodeSniffer
- * @author    Serge Shirokov <bolter.fire@gmail.com>
- * @author    Greg Sherwood <gsherwood@squiz.net>
- * @author    Marc McIntyre <mmcintyre@squiz.net>
- * @copyright 2006 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
- * @link      http://pear.php.net/package/PHP_CodeSniffer
+ * @category PHP
+ * @package  PHP_CodeSniffer
+ * @link     http://pear.php.net/package/PHP_CodeSniffer
  */
-
-if (class_exists('PHP_CodeSniffer_Standards_AbstractScopeSniff', true) === false) {
-    throw new PHP_CodeSniffer_Exception('Class PHP_CodeSniffer_Standards_AbstractScopeSniff not found');
-}
 
 /**
  * Drupal_Sniffs_NamingConventions_ValidFunctionNameSniff.
  *
- * Ensures method names are correct depending on whether they are public
- * or private, and that functions are named correctly.
+ * Extends Generic_Sniffs_NamingConventions_CamelCapsFunctionNameSniff to also check
+ * global function names outside the scope of classes and to not allow methods
+ * beginning with an underscore.
  *
- * @category  PHP
- * @package   PHP_CodeSniffer
- * @author    Serge Shirokov <bolter.fire@gmail.com>
- * @author    Greg Sherwood <gsherwood@squiz.net>
- * @author    Marc McIntyre <mmcintyre@squiz.net>
- * @copyright 2006 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
- * @version   Release: 1.2.0RC3
- * @link      http://pear.php.net/package/PHP_CodeSniffer
+ * @category PHP
+ * @package  PHP_CodeSniffer
+ * @link     http://pear.php.net/package/PHP_CodeSniffer
  */
-class Drupal_Sniffs_NamingConventions_ValidFunctionNameSniff extends PEAR_Sniffs_NamingConventions_ValidFunctionNameSniff
+class Drupal_Sniffs_NamingConventions_ValidFunctionNameSniff extends Generic_Sniffs_NamingConventions_CamelCapsFunctionNameSniff
 {
+
 
     /**
      * Processes the tokens within the scope.
@@ -61,31 +48,34 @@ class Drupal_Sniffs_NamingConventions_ValidFunctionNameSniff extends PEAR_Sniffs
         // Is this a magic method. i.e., is prefixed with "__" ?
         if (preg_match('|^__|', $methodName) !== 0) {
             $magicPart = strtolower(substr($methodName, 2));
-            if (in_array($magicPart, $this->magicMethods) === false) {
-                 $error = 'Method name "%s" is invalid; only PHP magic methods should be prefixed with a double underscore';
-                 $phpcsFile->addError($error, $stackPtr, 'MethodDoubleUnderscore', $errorData);
+            if (isset($this->magicMethods[$magicPart]) === false
+                && isset($this->methodsDoubleUnderscore[$magicPart]) === false
+            ) {
+                $error = 'Method name "%s" is invalid; only PHP magic methods should be prefixed with a double underscore';
+                $phpcsFile->addError($error, $stackPtr, 'MethodDoubleUnderscore', $errorData);
             }
 
             return;
         }
 
-        $methodProps    = $phpcsFile->getMethodProperties($stackPtr);
-        $scope          = $methodProps['scope'];
-        $scopeSpecified = $methodProps['scope_specified'];
+        $methodProps = $phpcsFile->getMethodProperties($stackPtr);
+        if (PHP_CodeSniffer::isCamelCaps($methodName, false, true, $this->strict) === false) {
+            if ($methodProps['scope_specified'] === true) {
+                $error = '%s method name "%s" is not in lowerCamel format';
+                $data  = array(
+                          ucfirst($methodProps['scope']),
+                          $errorData[0],
+                         );
+                $phpcsFile->addError($error, $stackPtr, 'ScopeNotCamelCaps', $data);
+            } else {
+                $error = 'Method name "%s" is not in lowerCamel format';
+                $phpcsFile->addError($error, $stackPtr, 'NotCamelCaps', $errorData);
+            }
 
-        // Methods should not contain underscores.
-        if (strpos($methodName, '_') !== false) {
-          if ($scopeSpecified === true) {
-              $error = '%s method name "%s" is not in lowerCamel format, it must not contain underscores';
-              $data  = array(
-              ucfirst($scope),
-              $errorData[0],
-              );
-              $phpcsFile->addError($error, $stackPtr, 'ScopeNotLowerCamel', $data);
-          } else {
-              $error = 'Method name "%s" is not in lowerCamel format, it must not contain underscores';
-              $phpcsFile->addError($error, $stackPtr, 'NotLowerCamel', $errorData);
-          }
+            $phpcsFile->recordMetric($stackPtr, 'CamelCase method name', 'no');
+            return;
+        } else {
+            $phpcsFile->recordMetric($stackPtr, 'CamelCase method name', 'yes');
         }
 
     }//end processTokenWithinScope()
@@ -102,11 +92,23 @@ class Drupal_Sniffs_NamingConventions_ValidFunctionNameSniff extends PEAR_Sniffs
      */
     protected function processTokenOutsideScope(PHP_CodeSniffer_File $phpcsFile, $stackPtr)
     {
-        // Empty override, does not apply to Drupal.
+        $functionName = $phpcsFile->getDeclarationName($stackPtr);
+        if ($functionName === null) {
+            // Ignore closures.
+            return;
+        }
+
+        if ($functionName !== strtolower($functionName)) {
+            $expected = strtolower(preg_replace('/([^_])([A-Z])/', '$1_$2', $functionName));
+            $error    = 'Invalid function name, expected %s but found %s';
+            $data     = array(
+                         $expected,
+                         $functionName,
+                        );
+            $phpcsFile->addError($error, $stackPtr, 'InvalidName', $data);
+        }
 
     }//end processTokenOutsideScope()
 
 
 }//end class
-
-?>

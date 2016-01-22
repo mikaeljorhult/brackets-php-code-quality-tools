@@ -60,20 +60,18 @@ class Drupal_Sniffs_WhiteSpace_EmptyLinesSniff implements PHP_CodeSniffer_Sniff
     {
         $tokens = $phpcsFile->getTokens();
         if ($tokens[$stackPtr]['content'] === $phpcsFile->eolChar
-            && isset($tokens[$stackPtr + 1]) === true
-            && $tokens[$stackPtr + 1]['content'] === $phpcsFile->eolChar
-            && isset($tokens[$stackPtr + 2]) === true
-            && $tokens[$stackPtr + 2]['content'] === $phpcsFile->eolChar
-            && isset($tokens[$stackPtr + 3]) === true
-            && $tokens[$stackPtr + 3]['content'] === $phpcsFile->eolChar
+            && isset($tokens[($stackPtr + 1)]) === true
+            && $tokens[($stackPtr + 1)]['content'] === $phpcsFile->eolChar
+            && isset($tokens[($stackPtr + 2)]) === true
+            && $tokens[($stackPtr + 2)]['content'] === $phpcsFile->eolChar
+            && isset($tokens[($stackPtr + 3)]) === true
+            && $tokens[($stackPtr + 3)]['content'] === $phpcsFile->eolChar
         ) {
             $error = 'More than 2 empty lines are not allowed';
-            $phpcsFile->addError($error, $stackPtr + 3, 'EmptyLines');
+            $phpcsFile->addError($error, ($stackPtr + 3), 'EmptyLines');
         }
 
     }//end process()
 
 
 }//end class
-
-?>

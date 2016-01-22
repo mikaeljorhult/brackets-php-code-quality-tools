@@ -37,11 +37,11 @@ class Drupal_Sniffs_Semantics_LStringTranslatableSniff extends Drupal_Sniffs_Sem
      *
      * @param PHP_CodeSniffer_File $phpcsFile
      *   The file being scanned.
-     * @param int $stackPtr
+     * @param int                  $stackPtr
      *   The position of the function call in the stack.
-     * @param int $openBracket
+     * @param int                  $openBracket
      *   The position of the opening parenthesis in the stack.
-     * @param int $closeBracket
+     * @param int                  $closeBracket
      *   The position of the closing parenthesis in the stack.
      *
      * @return void
@@ -55,7 +55,10 @@ class Drupal_Sniffs_Semantics_LStringTranslatableSniff extends Drupal_Sniffs_Sem
         $tokens = $phpcsFile->getTokens();
         // Get the first argument passed to l().
         $argument = $this->getArgument(1);
-        if ($tokens[$argument['start']]['code'] === T_CONSTANT_ENCAPSED_STRING) {
+        if ($tokens[$argument['start']]['code'] === T_CONSTANT_ENCAPSED_STRING
+            // If the string starts with a HTML tag we don't complain.
+            && $tokens[$argument['start']]['content']{1} !== '<'
+        ) {
             $error = 'The $text argument to l() should be enclosed within t() so that it is translatable';
             $phpcsFile->addError($error, $stackPtr, 'LArg');
         }
@@ -64,5 +67,3 @@ class Drupal_Sniffs_Semantics_LStringTranslatableSniff extends Drupal_Sniffs_Sem
 
 
 }//end class
-
-?>

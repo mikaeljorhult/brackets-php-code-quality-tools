@@ -104,6 +104,5 @@ class Drupal_Sniffs_Formatting_MultiLineAssignmentSniff implements PHP_CodeSniff
 
     }//end process()
 
-}//end class
 
-?>
+}//end class

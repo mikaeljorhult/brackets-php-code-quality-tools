@@ -4,13 +4,9 @@
  *
  * PHP version 5
  *
- * @category  PHP
- * @package   PHP_CodeSniffer
- * @author    Greg Sherwood <gsherwood@squiz.net>
- * @author    Marc McIntyre <mmcintyre@squiz.net>
- * @copyright 2006 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
- * @link      http://pear.php.net/package/PHP_CodeSniffer
+ * @category PHP
+ * @package  PHP_CodeSniffer
+ * @link     http://pear.php.net/package/PHP_CodeSniffer
  */
 
 /**
@@ -18,16 +14,11 @@
  *
  * Checks the declaration of the class is correct.
  *
- * @category  PHP
- * @package   PHP_CodeSniffer
- * @author    Greg Sherwood <gsherwood@squiz.net>
- * @author    Marc McIntyre <mmcintyre@squiz.net>
- * @copyright 2006 Squiz Pty Ltd (ABN 77 084 670 600)
- * @license   http://matrix.squiz.net/developer/tools/php_cs/licence BSD Licence
- * @version   Release: 1.2.0RC3
- * @link      http://pear.php.net/package/PHP_CodeSniffer
+ * @category PHP
+ * @package  PHP_CodeSniffer
+ * @link     http://pear.php.net/package/PHP_CodeSniffer
  */
-class Drupal_Sniffs_Classes_ClassDeclarationSniff implements PHP_CodeSniffer_Sniff
+class Drupal_Sniffs_Classes_ClassDeclarationSniff extends PSR2_Sniffs_Classes_ClassDeclarationSniff
 {
 
 
@@ -41,6 +32,7 @@ class Drupal_Sniffs_Classes_ClassDeclarationSniff implements PHP_CodeSniffer_Sni
         return array(
                 T_CLASS,
                 T_INTERFACE,
+                T_TRAIT,
                );
 
     }//end register()
@@ -50,66 +42,140 @@ class Drupal_Sniffs_Classes_ClassDeclarationSniff implements PHP_CodeSniffer_Sni
      * Processes this test, when one of its tokens is encountered.
      *
      * @param PHP_CodeSniffer_File $phpcsFile The file being scanned.
-     * @param int                  $stackPtr  The position of the current token in the
+     * @param integer              $stackPtr  The position of the current token in the
      *                                        stack passed in $tokens.
      *
      * @return void
      */
     public function process(PHP_CodeSniffer_File $phpcsFile, $stackPtr)
     {
-        $tokens = $phpcsFile->getTokens();
+        $tokens    = $phpcsFile->getTokens();
+        $errorData = array(strtolower($tokens[$stackPtr]['content']));
 
         if (isset($tokens[$stackPtr]['scope_opener']) === false) {
-            $error  = 'Possible parse error: ';
-            $error .= $tokens[$stackPtr]['content'];
-            $error .= ' missing opening or closing brace';
-            $phpcsFile->addWarning($error, $stackPtr);
+            $error = 'Possible parse error: %s missing opening or closing brace';
+            $phpcsFile->addWarning($error, $stackPtr, 'MissingBrace', $errorData);
             return;
         }
 
-        $curlyBrace  = $tokens[$stackPtr]['scope_opener'];
-        $lastContent = $phpcsFile->findPrevious(T_WHITESPACE, ($curlyBrace - 1), $stackPtr, true);
-        $classLine   = $tokens[$lastContent]['line'];
-        $braceLine   = $tokens[$curlyBrace]['line'];
-        if ($braceLine != $classLine) {
-            $error  = 'Opening brace of a ';
-            $error .= $tokens[$stackPtr]['content'];
-            $error .= ' must be on the same line as the definition';
-            $phpcsFile->addError($error, $curlyBrace);
-            return;
-        } /* else if ($braceLine > ($classLine + 1)) {
-            $difference  = ($braceLine - $classLine - 1);
-            $difference .= ($difference === 1) ? ' line' : ' lines';
-            $error       = 'Opening brace of a ';
-            $error      .= $tokens[$stackPtr]['content'];
-            $error      .= ' must be on the line following the ';
-            $error      .= $tokens[$stackPtr]['content'];
-            $error      .= ' declaration; found '.$difference;
-            $phpcsFile->addError($error, $curlyBrace);
-            return;
-        } */
+        $openingBrace = $tokens[$stackPtr]['scope_opener'];
 
-        if ($tokens[($curlyBrace + 1)]['content'] !== $phpcsFile->eolChar && $tokens[($curlyBrace + 1)]['code'] !== T_CLOSE_CURLY_BRACKET) {
-            $type  = strtolower($tokens[$stackPtr]['content']);
-            $error = "Opening $type brace must be on a line by itself";
-            $phpcsFile->addError($error, $curlyBrace);
+        $next = $phpcsFile->findNext(T_WHITESPACE, ($openingBrace + 1), null, true);
+        if ($tokens[$next]['line'] === $tokens[$openingBrace]['line'] && $tokens[$next]['code'] !== T_CLOSE_CURLY_BRACKET) {
+            $error = 'Opening brace must be the last content on the line';
+            $fix   = $phpcsFile->addFixableError($error, $openingBrace, 'ContentAfterBrace');
+            if ($fix === true) {
+                $phpcsFile->fixer->addNewline($openingBrace);
+            }
         }
 
-        if ($tokens[($curlyBrace - 1)]['code'] != T_WHITESPACE) {
-            $prevContent = $tokens[($curlyBrace - 1)]['content'];
-            if ($prevContent !== $phpcsFile->eolChar) {
-                $blankSpace = substr($prevContent, strpos($prevContent, $phpcsFile->eolChar));
-                $spaces     = strlen($blankSpace);
-                if ($spaces !== 0) {
-                    $error = "Expected 1 space before opening brace; $spaces found";
-                    $phpcsFile->addError($error, $curlyBrace);
+        $previous        = $phpcsFile->findPrevious(T_WHITESPACE, ($openingBrace - 1), null, true);
+        $decalrationLine = $tokens[$previous]['line'];
+        $braceLine       = $tokens[$openingBrace]['line'];
+
+        $lineDifference = ($braceLine - $decalrationLine);
+
+        if ($lineDifference > 0) {
+            $error = 'Opening brace should be on the same line as the declaration';
+            $fix   = $phpcsFile->addFixableError($error, $openingBrace, 'BraceOnNewLine');
+            if ($fix === true) {
+                $phpcsFile->fixer->beginChangeset();
+                for ($i = ($previous + 1); $i < $openingBrace; $i++) {
+                    $phpcsFile->fixer->replaceToken($i, '');
+                }
+
+                $phpcsFile->fixer->addContent($previous, ' ');
+                $phpcsFile->fixer->endChangeset();
+            }
+
+            return;
+        }
+
+        $openingBrace = $tokens[$stackPtr]['scope_opener'];
+        if ($tokens[($openingBrace - 1)]['code'] !== T_WHITESPACE) {
+            $length = 0;
+        } else if ($tokens[($openingBrace - 1)]['content'] === "\t") {
+            $length = '\t';
+        } else {
+            $length = strlen($tokens[($openingBrace - 1)]['content']);
+        }
+
+        if ($length !== 1) {
+            $error = 'Expected 1 space before opening brace; found %s';
+            $data  = array($length);
+            $fix   = $phpcsFile->addFixableError($error, $openingBrace, 'SpaceBeforeBrace', $data);
+            if ($fix === true) {
+                if ($length === 0) {
+                    $phpcsFile->fixer->replaceToken(($openingBrace), ' {');
+                } else {
+                    $phpcsFile->fixer->replaceToken(($openingBrace - 1), ' ');
                 }
             }
         }
 
+        // Now call the open spacing method from PSR2.
+        $this->processOpen($phpcsFile, $stackPtr);
+
+        $this->processClose($phpcsFile, $stackPtr);
+
     }//end process()
 
 
-}//end class
+    /**
+     * Processes the closing section of a class declaration.
+     *
+     * @param PHP_CodeSniffer_File $phpcsFile The file being scanned.
+     * @param int                  $stackPtr  The position of the current token
+     *                                        in the stack passed in $tokens.
+     *
+     * @return void
+     */
+    public function processClose(PHP_CodeSniffer_File $phpcsFile, $stackPtr)
+    {
+        $tokens = $phpcsFile->getTokens();
 
-?>
+        // Just in case.
+        if (isset($tokens[$stackPtr]['scope_closer']) === false) {
+            return;
+        }
+
+        // Check that the closing brace comes right after the code body.
+        $closeBrace  = $tokens[$stackPtr]['scope_closer'];
+        $prevContent = $phpcsFile->findPrevious(T_WHITESPACE, ($closeBrace - 1), null, true);
+        if ($prevContent !== $tokens[$stackPtr]['scope_opener']
+            && $tokens[$prevContent]['line'] !== ($tokens[$closeBrace]['line'] - 2)
+            // If the class only contains a comment no extra line is needed.
+            && isset(PHP_CodeSniffer_Tokens::$commentTokens[$tokens[$prevContent]['code']]) === false
+        ) {
+            $error = 'The closing brace for the %s must have an empty line before it';
+            $data  = array($tokens[$stackPtr]['content']);
+            $fix   = $phpcsFile->addFixableError($error, $closeBrace, 'CloseBraceAfterBody', $data);
+
+            if ($fix === true) {
+                $phpcsFile->fixer->beginChangeset();
+                for ($i = ($prevContent + 1); $i < $closeBrace; $i++) {
+                    $phpcsFile->fixer->replaceToken($i, '');
+                }
+
+                $phpcsFile->fixer->replaceToken($closeBrace, $phpcsFile->eolChar.$phpcsFile->eolChar.$tokens[$closeBrace]['content']);
+
+                $phpcsFile->fixer->endChangeset();
+            }
+        }//end if
+
+        // Check the closing brace is on it's own line, but allow
+        // for comments like "//end class".
+        $nextContent = $phpcsFile->findNext(T_COMMENT, ($closeBrace + 1), null, true);
+        if ($tokens[$nextContent]['content'] !== $phpcsFile->eolChar
+            && $tokens[$nextContent]['line'] === $tokens[$closeBrace]['line']
+        ) {
+            $type  = strtolower($tokens[$stackPtr]['content']);
+            $error = 'Closing %s brace must be on a line by itself';
+            $data  = array($tokens[$stackPtr]['content']);
+            $phpcsFile->addError($error, $closeBrace, 'CloseBraceSameLine', $data);
+        }
+
+    }//end processClose()
+
+
+}//end class

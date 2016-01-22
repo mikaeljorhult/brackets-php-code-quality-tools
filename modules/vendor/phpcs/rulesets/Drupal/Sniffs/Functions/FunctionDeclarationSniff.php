@@ -62,5 +62,3 @@ class Drupal_Sniffs_Functions_FunctionDeclarationSniff implements PHP_CodeSniffe
 
 
 }//end class
-
-?>

@@ -55,5 +55,3 @@ class Drupal_Sniffs_Classes_InterfaceNameSniff implements PHP_CodeSniffer_Sniff
 
 
 }//end class
-
-?>

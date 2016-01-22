@@ -1,0 +1,13 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the Test module.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function test_requirements() {
+  // t() should not be used directly.
+  $message = t('Message');
+}

@@ -81,7 +81,7 @@ class Drupal_Sniffs_Strings_UnnecessaryStringConcatSniff extends Generic_Sniffs_
                 // the line length limit.
                 $lineLengthLimitSniff = new Drupal_Sniffs_Files_LineLengthSniff;
 
-                $lineLenght = $lineLengthLimitSniff->getLineLength($phpcsFile, $tokens[$prev]['line']);
+                $lineLenght   = $lineLengthLimitSniff->getLineLength($phpcsFile, $tokens[$prev]['line']);
                 $stringLength = ($lineLenght + strlen($tokens[$next]['content']) - 4);
                 if ($stringLength > $lineLengthLimitSniff->lineLimit) {
                     return;
@@ -100,5 +100,3 @@ class Drupal_Sniffs_Strings_UnnecessaryStringConcatSniff extends Generic_Sniffs_
 
 
 }//end class
-
-?>

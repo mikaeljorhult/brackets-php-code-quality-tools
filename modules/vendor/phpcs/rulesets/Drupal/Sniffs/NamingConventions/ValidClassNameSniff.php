@@ -80,6 +80,3 @@ class Drupal_Sniffs_NamingConventions_ValidClassNameSniff implements PHP_CodeSni
 
 
 }//end class
-
-
-?>

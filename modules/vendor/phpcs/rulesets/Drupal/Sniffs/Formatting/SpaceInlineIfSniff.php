@@ -10,7 +10,7 @@
  */
 
 /**
- * Checks short if caluses with "?" and ":" operator spacing.
+ * Checks that there is no space between "?" and ":" inline if/else statements.
  *
  * @category PHP
  * @package  PHP_CodeSniffer
@@ -27,10 +27,7 @@ class Drupal_Sniffs_Formatting_SpaceInlineIfSniff implements PHP_CodeSniffer_Sni
      */
     public function register()
     {
-        return array(
-                T_INLINE_THEN,
-                T_INLINE_ELSE,
-               );
+        return array(T_INLINE_ELSE);
 
     }//end register()
 
@@ -46,8 +43,7 @@ class Drupal_Sniffs_Formatting_SpaceInlineIfSniff implements PHP_CodeSniffer_Sni
      */
     public function process(PHP_CodeSniffer_File $phpcsFile, $stackPtr)
     {
-        $tokens   = $phpcsFile->getTokens();
-        $operator = $tokens[$stackPtr]['content'];
+        $tokens = $phpcsFile->getTokens();
 
         // Handle the short ternary operator (?:) introduced in PHP 5.3.
         $previous = $phpcsFile->findPrevious(T_WHITESPACE, ($stackPtr - 1), null, true);
@@ -56,48 +52,9 @@ class Drupal_Sniffs_Formatting_SpaceInlineIfSniff implements PHP_CodeSniffer_Sni
                 $error = 'There must be no space between ? and :';
                 $phpcsFile->addError($error, $stackPtr, 'SpaceInlineElse');
             }
-
-            if ($tokens[($stackPtr + 1)]['code'] !== T_WHITESPACE) {
-                $error = "Expected 1 space after \"$operator\"; 0 found";
-                $phpcsFile->addError($error, $stackPtr, 'NoSpaceAfter');
-            } else if (strlen($tokens[($stackPtr + 1)]['content']) !== 1) {
-                $found = strlen($tokens[($stackPtr + 1)]['content']);
-                $error = 'Expected 1 space after "%s"; %s found';
-                $data  = array(
-                          $operator,
-                          $found,
-                         );
-                $phpcsFile->addError($error, $stackPtr, 'SpacingAfter', $data);
-            }
-
-            return;
         }//end if
-
-        $next = $phpcsFile->findNext(T_WHITESPACE, ($stackPtr + 1), null, true);
-        if ($tokens[$next]['code'] === T_INLINE_ELSE) {
-            if ($tokens[($stackPtr - 1)]['code'] !== T_WHITESPACE) {
-                $error = "Expected 1 space before \"$operator\"; 0 found";
-                $phpcsFile->addError($error, $stackPtr, 'NoSpaceBefore');
-            } else if (strlen($tokens[($stackPtr - 1)]['content']) !== 1) {
-                $found = strlen($tokens[($stackPtr - 1)]['content']);
-                $error = 'Expected 1 space before "%s"; %s found';
-                $data  = array(
-                          $operator,
-                          $found,
-                         );
-                $phpcsFile->addError($error, $stackPtr, 'SpacingBefore', $data);
-            }
-
-            return;
-        }
-
-        // Reuse the standard operator sniff now.
-        $sniff = new Squiz_Sniffs_WhiteSpace_OperatorSpacingSniff();
-        $sniff->process($phpcsFile, $stackPtr);
 
     }//end process()
 
 
 }//end class
-
-?>

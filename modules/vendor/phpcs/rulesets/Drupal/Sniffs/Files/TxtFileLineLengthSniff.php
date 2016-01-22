@@ -52,13 +52,13 @@ class Drupal_Sniffs_Files_TxtFileLineLengthSniff implements PHP_CodeSniffer_Snif
         if ($fileExtension === 'txt' || $fileExtension === '.md') {
             $tokens = $phpcsFile->getTokens();
 
-            $content = rtrim($tokens[$stackPtr]['content']);
+            $content    = rtrim($tokens[$stackPtr]['content']);
             $lineLength = mb_strlen($content, 'UTF-8');
             if ($lineLength > 80) {
-                $data = array(
-                         80,
-                         $lineLength,
-                        );
+                $data    = array(
+                            80,
+                            $lineLength,
+                           );
                 $warning = 'Line exceeds %s characters; contains %s characters';
                 $phpcsFile->addWarning($warning, $stackPtr, 'TooLong', $data);
             }
@@ -68,5 +68,3 @@ class Drupal_Sniffs_Files_TxtFileLineLengthSniff implements PHP_CodeSniffer_Snif
 
 
 }//end class
-
-?>

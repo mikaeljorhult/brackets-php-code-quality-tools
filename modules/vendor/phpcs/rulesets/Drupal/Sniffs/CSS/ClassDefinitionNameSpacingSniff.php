@@ -11,8 +11,8 @@
 
 /**
  * Ensure there are no blank lines between the names of classes/IDs. Copied from
- * Squiz_Sniffs_CSS_ClassDefinitionNameSpacingSniff because of this bug:
- * https://pear.php.net/bugs/bug.php?id=19256
+ * Squiz_Sniffs_CSS_ClassDefinitionNameSpacingSniff because we also check for comma
+ * separated selectors on their own line.
  *
  * @category PHP
  * @package  PHP_CodeSniffer
@@ -32,7 +32,7 @@ class Drupal_Sniffs_CSS_ClassDefinitionNameSpacingSniff implements PHP_CodeSniff
     /**
      * Returns the token types that this sniff is interested in.
      *
-     * @return array(int)
+     * @return int[]
      */
     public function register()
     {
@@ -62,17 +62,17 @@ class Drupal_Sniffs_CSS_ClassDefinitionNameSpacingSniff implements PHP_CodeSniff
 
         // Find the first blank line before this opening brace, unless we get
         // to another style definition, comment or the start of the file.
-        $endTokens = array(
-                      T_OPEN_CURLY_BRACKET,
-                      T_CLOSE_CURLY_BRACKET,
-                      T_OPEN_TAG,
-                     );
-        $endTokens = array_merge($endTokens, PHP_CodeSniffer_Tokens::$commentTokens);
+        $endTokens  = array(
+                       T_OPEN_CURLY_BRACKET  => T_OPEN_CURLY_BRACKET,
+                       T_CLOSE_CURLY_BRACKET => T_CLOSE_CURLY_BRACKET,
+                       T_OPEN_TAG            => T_OPEN_TAG,
+                      );
+        $endTokens += PHP_CodeSniffer_Tokens::$commentTokens;
 
         $foundContent = false;
         $currentLine  = $tokens[$stackPtr]['line'];
         for ($i = ($stackPtr - 1); $i >= 0; $i--) {
-            if (in_array($tokens[$i]['code'], $endTokens) === true) {
+            if (isset($endTokens[$tokens[$i]['code']]) === true) {
                 break;
             }
 
@@ -81,19 +81,24 @@ class Drupal_Sniffs_CSS_ClassDefinitionNameSpacingSniff implements PHP_CodeSniff
                 && strpos($tokens[($i + 1)]['content'], $phpcsFile->eolChar) === false
             ) {
                 $error = 'Multiple selectors should each be on a single line';
-                $phpcsFile->addError($error, ($i + 1), 'MultipleSelectors');
+                $fix   = $phpcsFile->addFixableError($error, ($i + 1), 'MultipleSelectors');
+                if ($fix === true) {
+                    $phpcsFile->fixer->addNewline($i);
+                }
             }
 
             // Selectors must be on the same line.
             if ($tokens[$i]['code'] === T_WHITESPACE
                 && strpos($tokens[$i]['content'], $phpcsFile->eolChar) !== false
-                && in_array($tokens[($i - 1)]['code'], $endTokens) === false
-                && in_array($tokens[($i - 1)]['code'], array(T_WHITESPACE, T_COMMA)) == false
+                && isset($endTokens[$tokens[($i - 1)]['code']]) === false
+                && in_array($tokens[($i - 1)]['code'], array(T_WHITESPACE, T_COMMA)) === false
             ) {
                 $error = 'Selectors must be on a single line';
-                $phpcsFile->addError($error, $i, 'SeletorSingleLine');
+                $fix   = $phpcsFile->addFixableError($error, $i, 'SeletorSingleLine');
+                if ($fix === true) {
+                    $phpcsFile->fixer->replaceToken($i, str_replace($phpcsFile->eolChar, ' ', $tokens[$i]['content']));
+                }
             }
-
 
             if ($tokens[$i]['line'] === $currentLine) {
                 if ($tokens[$i]['code'] !== T_WHITESPACE) {
@@ -109,11 +114,15 @@ class Drupal_Sniffs_CSS_ClassDefinitionNameSpacingSniff implements PHP_CodeSniff
                 // at a gap before the style definition.
                 $prev = $phpcsFile->findPrevious(T_WHITESPACE, $i, null, true);
                 if ($prev !== false
-                    && in_array($tokens[$prev]['code'], $endTokens) === false
+                    && isset($endTokens[$tokens[$prev]['code']]) === false
                 ) {
                     $error = 'Blank lines are not allowed between class names';
-                    $phpcsFile->addError($error, ($i + 1), 'BlankLinesFound');
+                    $fix   = $phpcsFile->addFixableError($error, ($i + 1), 'BlankLinesFound');
+                    if ($fix === true) {
+                        $phpcsFile->fixer->replaceToken(($i + 1), '');
+                    }
                 }
+
                 break;
             }
 

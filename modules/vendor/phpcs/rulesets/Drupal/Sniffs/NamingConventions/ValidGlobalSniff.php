@@ -98,7 +98,7 @@ class Drupal_Sniffs_NamingConventions_ValidGlobalSniff implements PHP_CodeSniffe
         // Find variable names until we hit a semicolon.
         $ignore   = PHP_CodeSniffer_Tokens::$emptyTokens;
         $ignore[] = T_SEMICOLON;
-        while ($varToken = $phpcsFile->findNext($ignore, $varToken + 1, null, true, null, true)) {
+        while ($varToken = $phpcsFile->findNext($ignore, ($varToken + 1), null, true, null, true)) {
             if ($tokens[$varToken]['code'] === T_VARIABLE
                 && in_array($tokens[$varToken]['content'], $this->coreGlobals) === false
                 && $tokens[$varToken]['content']{1} !== '_'
@@ -112,5 +112,3 @@ class Drupal_Sniffs_NamingConventions_ValidGlobalSniff implements PHP_CodeSniffe
 
 
 }//end class
-
-?>

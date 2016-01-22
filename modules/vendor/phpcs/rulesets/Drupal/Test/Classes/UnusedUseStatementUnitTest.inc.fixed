@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * @file
+ */
+
+use Thing\Fail\ActuallyUsed;
+use Test\TraitTest;
+use Thing\DifferentName as UsedOtherName;
+
+/**
+ * Bla.
+ */
+class Pum {
+  use TraitTest;
+  use Test\AnotherTrait;
+
+  /**
+   * Description.
+   */
+  protected function test(ActuallyUsed $x, UsedOtherName $y) {
+
+  }
+
+  /**
+   * Description.
+   */
+  protected function test2(\Thing\NotUsed $x) {
+
+  }
+
+}

@@ -176,7 +176,7 @@ abstract class Drupal_Sniffs_Semantics_FunctionCall implements PHP_CodeSniffer_S
         }
 
         // End token of the last argument.
-        $end = $this->phpcsFile->findPrevious(PHP_CodeSniffer_Tokens::$emptyTokens, ($this->closeBracket - 1), null, true);
+        $end           = $this->phpcsFile->findPrevious(PHP_CodeSniffer_Tokens::$emptyTokens, ($this->closeBracket - 1), null, true);
         $lastArgEnd    = $end;
         $nextSeperator = $this->openBracket;
         $counter       = 1;

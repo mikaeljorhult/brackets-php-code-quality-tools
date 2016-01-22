@@ -1,0 +1,12 @@
+name = Bad2
+description = Bad example of an info file.
+core = 7.x
+; Specifying a lower PHP version than Drupal core requires anyway.
+php = "5.1"
+
+; Information added by Drupal.org packaging script on 2015-11-26
+version = "8.x-2.5"
+core = "8.x"
+project = "coder"
+datestamp = "1448530148"
+

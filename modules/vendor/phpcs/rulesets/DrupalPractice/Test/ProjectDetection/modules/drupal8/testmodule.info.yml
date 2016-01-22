@@ -1,0 +1,13 @@
+name: Test module
+type: module
+description: 'Test.'
+# core: 8.x
+configure: node.overview_types
+dependencies:
+- text
+
+# Information added by Drupal.org packaging script on 2015-11-26
+version: '8.x-2.5'
+core: '8.x'
+project: 'coder'
+datestamp: 1448530148

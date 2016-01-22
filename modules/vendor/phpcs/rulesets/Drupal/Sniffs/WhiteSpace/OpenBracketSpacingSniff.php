@@ -41,6 +41,7 @@ class Drupal_Sniffs_WhiteSpace_OpenBracketSpacingSniff implements PHP_CodeSniffe
         return array(
                 T_OPEN_CURLY_BRACKET,
                 T_OPEN_PARENTHESIS,
+                T_OPEN_SHORT_ARRAY,
                );
 
     }//end register()
@@ -69,19 +70,23 @@ class Drupal_Sniffs_WhiteSpace_OpenBracketSpacingSniff implements PHP_CodeSniffe
         if (isset($tokens[($stackPtr + 1)]) === true
             && $tokens[($stackPtr + 1)]['code'] === T_WHITESPACE
             && strpos($tokens[($stackPtr + 1)]['content'], $phpcsFile->eolChar) === false
+            // Allow spaces in template files where the PHP close tag is used.
+            && isset($tokens[($stackPtr + 2)]) === true
+            && $tokens[($stackPtr + 2)]['code'] !== T_CLOSE_TAG
         ) {
             $error = 'There should be no white space after an opening "%s"';
-            $phpcsFile->addError(
+            $fix   = $phpcsFile->addFixableError(
                 $error,
                 ($stackPtr + 1),
                 'OpeningWhitespace',
                 array($tokens[$stackPtr]['content'])
             );
+            if ($fix === true) {
+                $phpcsFile->fixer->replaceToken(($stackPtr + 1), '');
+            }
         }
 
     }//end process()
 
 
 }//end class
-
-?>

@@ -1,0 +1,11 @@
+; core appears twice here.
+core = 7.x
+name = Test
+core = 7.x
+
+; Information added by Drupal.org packaging script on 2015-11-26
+version = "8.x-2.5"
+core = "8.x"
+project = "coder"
+datestamp = "1448530148"
+

@@ -54,5 +54,3 @@ class Drupal_Sniffs_NamingConventions_KeywordLowerCaseSniff implements PHP_CodeS
 
 
 }//end class
-
-?>
