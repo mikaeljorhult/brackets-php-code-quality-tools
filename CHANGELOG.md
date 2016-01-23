@@ -1,6 +1,12 @@
 # Brackets PHP Code Quality Tools Changelog
 All notable changes to this project will be documented in this file.
 
+## 0.1.9 - Unreleased
+* Update WordPress coding standards.
+* Update Copy/Paste Detector to version 2.0.2.
+* Update Mess Detector to version 2.3.2.
+* Update CodeSniffer to version 2.5.1.
+
 ## 0.1.8 - 2016-01-22
 * MediaWiki coding standards.
 * Update Drupal coding standards.

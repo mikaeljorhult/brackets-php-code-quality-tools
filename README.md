@@ -49,3 +49,4 @@ View > PHP Code Quality Tools.
 * PHP syntax check (php -l)
 * [PHP CodeSniffer](http://pear.php.net/package/PHP_CodeSniffer)
 * [PHP Copy/Paste Detector](https://github.com/sebastianbergmann/phpcpd)
+* [PHP Mess Detector](http://phpmd.org)
