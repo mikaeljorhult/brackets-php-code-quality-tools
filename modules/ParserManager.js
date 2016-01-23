@@ -91,8 +91,8 @@ define( function( require ) {
 				} );
 				
 				// Run CodeInspection when a file is saved, a file gets focus or on startup.
-				$( DocumentManager ).on( 'documentSaved.phpCodeQualityTools', getErrorsFromDocument );
-				$( EditorManager ).on( 'activeEditorChange.phpCodeQualityTools', getErrorsFromEditor );
+				DocumentManager.on( 'documentSaved.phpCodeQualityTools', getErrorsFromDocument );
+				EditorManager.on( 'activeEditorChange.phpCodeQualityTools', getErrorsFromEditor );
 				AppInit.appReady( getErrorsFromEditor );
 				
 				// Run parsers if preferences are changed.
