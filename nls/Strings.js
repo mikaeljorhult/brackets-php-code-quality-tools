@@ -5,6 +5,7 @@ define( function( require, exports, module ) {
 		root: true,
 		fr: true,
 		it: true,
-		sv: true
+		sv: true,
+		pt: true
 	};
 } );
