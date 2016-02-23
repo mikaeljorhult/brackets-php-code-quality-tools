@@ -1,6 +1,10 @@
 # Brackets PHP Code Quality Tools Changelog
 All notable changes to this project will be documented in this file.
 
+## 0.1.10 - 2016-02-23
+* Symfony2 coding standards. Thanks to João Campos (@samura).
+* Portuguese translation. Thanks to João Campos (@samura).
+
 ## 0.1.9 - 2016-01-24
 * Update WordPress coding standards.
 * Update Copy/Paste Detector to version 2.0.2.
