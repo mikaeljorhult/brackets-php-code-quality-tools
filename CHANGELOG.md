@@ -1,6 +1,9 @@
 # Brackets PHP Code Quality Tools Changelog
 All notable changes to this project will be documented in this file.
 
+## 0.1.11 - 2016-04-23
+* Update Mess Detector to version 2.4.2.
+
 ## 0.1.10 - 2016-02-23
 * Symfony2 coding standards. Thanks to João Campos (@samura).
 * Portuguese translation. Thanks to João Campos (@samura).
