@@ -50,3 +50,4 @@ View > PHP Code Quality Tools.
 * [PHP CodeSniffer](http://pear.php.net/package/PHP_CodeSniffer)
 * [PHP Copy/Paste Detector](https://github.com/sebastianbergmann/phpcpd)
 * [PHP Mess Detector](http://phpmd.org)
+* [PHP Coding Standards Fixer](http://cs.sensiolabs.org/)
