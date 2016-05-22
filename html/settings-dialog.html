@@ -103,6 +103,41 @@
 				</label>
 			</p>
 		</fieldset>
+
+		<fieldset class="tool tool-phpcsfixer">
+			<legend>PHP Coding Standards Fixer</legend>
+			
+			<p>
+				<label>
+					<input type="checkbox" name="enabled[]" value="phpcs" />
+					{{ Strings.SETTINGS_DIALOG_ENABLE }}
+				</label>
+			</p>
+			
+			<p>{{ Strings.SETTINGS_DIALOG_STANDARDS }}</p>
+			
+			<p class="columns clearfix">						
+				<label>
+					<input type="checkbox" name="phpcsfixer-standards[]" value="PSR0" />
+					PHPCS
+				</label>
+				
+				<label>
+					<input type="checkbox" name="phpcsfixer-standards[]" value="PSR1" />
+					PSR-1
+				</label>
+				
+				<label>
+					<input type="checkbox" name="phpcsfixer-standards[]" value="PSR2" />
+					PSR-2
+				</label>
+				
+				<label>
+					<input type="checkbox" name="phpcsfixer-standards[]" value="Symfony" />
+					Squiz
+				</label>
+			</p>
+		</fieldset>
 		
 		<fieldset class="tool tool-phpcpd">
 			<legend>Copy/Paste Detector</legend>
