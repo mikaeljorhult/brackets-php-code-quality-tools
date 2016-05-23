@@ -31,6 +31,7 @@ define( function( require, exports, module ) {
 	preferences.definePreference( 'php-available', 'boolean', false );
 	preferences.definePreference( 'enabled-tools', 'array', Defaults.enabledTools );
 	preferences.definePreference( 'phpcs-standards', 'array', Defaults.phpcsStandards );
+	preferences.definePreference( 'phpcsfixer-level', 'array', Defaults.phpcsfixerLevel );
 	preferences.definePreference( 'phpmd-rulesets', 'array', Defaults.phpmdRulesets );
 	
 	// Register extension.

@@ -5,15 +5,15 @@ define( function( require ) {
 	var Parser = require( 'modules/parsers/base' ),
 		PHPCSF = new Parser( 'phpcsfixer', 'PHP Coding Standards Fixer' );
 	
-	PHPCSF.setCommand( 'php fix {{path}} {{file}} --level={{standards}} --verbose' );
+	PHPCSF.setCommand( 'php {{path}} fix {{file}} --level={{level}} --verbose' );
 	
 	PHPCSF.buildCommand = function( file ) {
-		var standards = this.concatenateArray( this._preferences.get( 'phpcsfixer-standards' ) );
+		var level = this.concatenateArray( this._preferences.get( 'phpcsfixer-level' ) );
 		
 		return this._command
 			.replace( '{{path}}', this._path )
 			.replace( '{{file}}', file )
-			.replace( '{{standards}}', standards );
+			.replace( '{{level}}', level );
 	};
 	
 	PHPCSF.buildOptions = function() {
@@ -23,7 +23,7 @@ define( function( require ) {
 	};
 	
 	PHPCSF.shouldRun = function() {
-		return this._preferences.get( 'phpcs-standards' ) !== false;
+		return this._preferences.get( 'phpcsfixer-level' ) !== false;
 	};
 	
 	PHPCSF.callback = function( data ) {

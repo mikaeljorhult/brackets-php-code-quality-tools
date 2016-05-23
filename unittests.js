@@ -136,6 +136,28 @@ define( function( require, exports, module ) {
 					expect( response ).toMatch( 'Bergmann' );
 				} );
 			} );
+
+			// Run Coding Standards Fixer.
+			it( 'should be able to run Coding Standards Fixer through PHP', function() {
+				var response = null;
+				
+				runs( function() {
+					CommandRunner.run( 'php ' + Paths.get( 'phpcsfixer' ) + ' --version', {}, function( data ) {
+						response = data;
+					} );
+				} );
+				
+				waitsFor( function() {
+					return ( response !== null );
+				}, 'Command output should be returned.', 100 );
+				
+				// Run expectations on returned comments.
+				runs( function() {
+					expect( response ).toEqual( jasmine.any( String ) );
+					expect( response ).toMatch( 'PHP_CS_Fixer' );
+				} );
+			} );
+
 			
 			// Run Mess Detector.
 			it( 'should be able to run Mess Detetctor through PHP', function() {

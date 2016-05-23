@@ -32,6 +32,7 @@ define( function( require, exports ) {
 		var values = {
 			enabledTools: getCheckboxArray( 'enabled' ),
 			phpcsStandards: getCheckboxArray( 'phpcs-standards' ),
+			phpcsfixerLevel: getCheckboxArray( 'phpcsfixer-level' ),
 			phpmdRulesets: getCheckboxArray( 'phpmd-rulesets' )
 		};
 		
@@ -54,6 +55,7 @@ define( function( require, exports ) {
 	function setValues( values ) {
 		setCheckboxesFromArray( 'enabled', values.enabledTools );
 		setCheckboxesFromArray( 'phpcs-standards', values.phpcsStandards );
+		setCheckboxesFromArray( 'phpcsfixer-level', values.phpcsfixerLevel );
 		setCheckboxesFromArray( 'phpmd-rulesets', values.phpmdRulesets );
 	}
 	
@@ -77,6 +79,7 @@ define( function( require, exports ) {
 		var values = {
 			enabledTools: preferences.get( 'enabled-tools' ),
 			phpcsStandards: preferences.get( 'phpcs-standards' ),
+			phpcsfixerLevel: preferences.get('phpcsfixer-level'),
 			phpmdRulesets: preferences.get( 'phpmd-rulesets' )
 		};
 		
@@ -117,6 +120,7 @@ define( function( require, exports ) {
 				
 				preferences.set( 'enabled-tools', values.enabledTools );
 				preferences.set( 'phpcs-standards', values.phpcsStandards );
+				preferences.set( 'phpcsfixer-level', values.phpcsfixerLevel);
 				preferences.set( 'phpmd-rulesets', values.phpmdRulesets );
 				
 				preferences.save();
