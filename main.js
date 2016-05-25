@@ -1,5 +1,5 @@
 /*!
- * Brackets PHP Code Quality Tools 0.1.14
+ * Brackets PHP Code Quality Tools 0.1.12
  * Lint PHP using several code analysis tools.
  *
  * @author Mikael Jorhult
