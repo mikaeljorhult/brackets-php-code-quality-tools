@@ -109,7 +109,7 @@
 			
 			<p>
 				<label>
-					<input type="checkbox" name="enabled[]" value="phpcs" />
+					<input type="checkbox" name="enabled[]" value="phpcsfixer" />
 					{{ Strings.SETTINGS_DIALOG_ENABLE }}
 				</label>
 			</p>
@@ -117,6 +117,11 @@
 			<p>{{ Strings.SETTINGS_DIALOG_STANDARDS }}</p>
 			
 			<p class="columns clearfix">						
+				<label>
+					<input type="checkbox" name="phpcsfixer-level[]" value="all" />
+					All
+				</label>
+				
 				<label>
 					<input type="checkbox" name="phpcsfixer-level[]" value="PSR0" />
 					PSR-0
@@ -149,6 +154,19 @@
 				</label>
 			</p>
 		</fieldset>
+
+
+		<fieldset class="tool tool-phpsa">
+			<legend>PHP Static Analysis</legend>
+			
+			<p>
+				<label>
+					<input type="checkbox" name="enabled[]" value="phpsa" />
+					{{ Strings.SETTINGS_DIALOG_ENABLE }}
+				</label>
+			</p>
+		</fieldset
+
 		
 		<fieldset class="tool tool-phpl">
 			<legend>PHP Lint</legend>

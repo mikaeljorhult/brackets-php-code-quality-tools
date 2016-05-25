@@ -12,6 +12,7 @@ define( function( require, exports, module ) {
 			phpcs: 'phpcs.phar',
 			phpcsfixer: basePath + 'phpcsfixer/php-cs-fixer.phar',
 			phpl: '',
+			phpsa: basePath + 'phpsa/phpsa.phar',
 			phpmd: basePath + 'phpmd/phpmd.phar'
 		};
 		

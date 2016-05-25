@@ -51,3 +51,4 @@ View > PHP Code Quality Tools.
 * [PHP Copy/Paste Detector](https://github.com/sebastianbergmann/phpcpd)
 * [PHP Mess Detector](http://phpmd.org)
 * [PHP Coding Standards Fixer](http://cs.sensiolabs.org/)
+* [PHP Static Analysis](https://phpsa.dmtry.me/)
