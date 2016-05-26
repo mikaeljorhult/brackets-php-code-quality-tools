@@ -1,13 +1,16 @@
 {
 	"name": "mikaeljorhult.brackets-php-lint-tools",
 	"title": "PHP Code Quality Tools",
-	"description": "Analyze and lint PHP using several code analysis tools. Please note that this extension needs PHP to be installed on your machine to work properly.",
+	"description": "Analyze, lint and fix PHP using several code analysis tools. Please note that this extension needs PHP to be installed on your machine to work properly.",
 	"keywords": [
 		"php",
 		"codequality",
 		"phpcs",
 		"phpcpd",
 		"phpmd",
+		"php-cs-fixer",
+		"phpsa",
+		"standards",
 		"codesniffer",
 		"messdetector",
 		"lint",
@@ -17,7 +20,7 @@
 		"analysis"
 	],
 	"homepage": "https://github.com/mikaeljorhult/brackets-php-code-quality-tools",
-	"version": "0.1.11",
+	"version": "0.1.12",
 	"author": "Mikael Jorhult <mikael@jorhult.se> (http://jorhult.se)",
 	"repository": {
 		"type": "git",

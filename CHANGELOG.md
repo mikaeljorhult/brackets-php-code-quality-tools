@@ -1,6 +1,10 @@
 # Brackets PHP Code Quality Tools Changelog
 All notable changes to this project will be documented in this file.
 
+## 0.1.12 - 2016-05-28
+* PHP Coding Standards Fixer (v1.11.2). Thanks to Lawrence Meckan (@absalomedia).
+* Static Analysis for PHP (0.5 alpha). Thanks to Lawrence Meckan (@absalomedia).
+
 ## 0.1.11 - 2016-04-23
 * Update Mess Detector to version 2.4.2.
 

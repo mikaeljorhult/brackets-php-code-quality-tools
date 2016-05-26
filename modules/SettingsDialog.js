@@ -32,6 +32,7 @@ define( function( require, exports ) {
 		var values = {
 			enabledTools: getCheckboxArray( 'enabled' ),
 			phpcsStandards: getCheckboxArray( 'phpcs-standards' ),
+			phpcsfixerLevel: getCheckboxArray( 'phpcsfixer-level' ),
 			phpmdRulesets: getCheckboxArray( 'phpmd-rulesets' )
 		};
 		
@@ -47,13 +48,41 @@ define( function( require, exports ) {
 			return this.value;
 		} ).get();
 	}
-	
+
+	/**
+	 * Make sure CS Fixer only has one checkbox checked at any one time.
+	 */
+
+	function fixerCheck() {
+		if ( $('#phpcsfixer-level[]').val() === 'all') {
+			$('#phpcsfixer-level[!value="all"]').prop('checked', false);
+		} 
+
+		if ( $('#phpcsfixer-level[]').val() === 'psr0') {
+			$('#phpcsfixer-level[!value="prs0"]').prop('checked', false);
+		} 
+
+		if ( $('#phpcsfixer-level[]').val() === 'psr1') {
+			$('#phpcsfixer-level[!value="prs1"]').prop('checked', false);
+		} 
+
+		if ( $('#phpcsfixer-level[]').val() === 'psr2') {
+			$('#phpcsfixer-level[!value="prs2"]').prop('checked', false);
+		}
+
+		if ( $('#phpcsfixer-level[]').val() === 'symfony') {
+			$('#phpcsfixer-level[!value="symfony"]').prop('checked', false);
+		}
+
+	}
+
 	/**
 	 * Set each value of the preferences in dialog.
 	 */
 	function setValues( values ) {
 		setCheckboxesFromArray( 'enabled', values.enabledTools );
 		setCheckboxesFromArray( 'phpcs-standards', values.phpcsStandards );
+		setCheckboxesFromArray( 'phpcsfixer-level', values.phpcsfixerLevel );
 		setCheckboxesFromArray( 'phpmd-rulesets', values.phpmdRulesets );
 	}
 	
@@ -77,6 +106,7 @@ define( function( require, exports ) {
 		var values = {
 			enabledTools: preferences.get( 'enabled-tools' ),
 			phpcsStandards: preferences.get( 'phpcs-standards' ),
+			phpcsfixerLevel: preferences.get('phpcsfixer-level'),
 			phpmdRulesets: preferences.get( 'phpmd-rulesets' )
 		};
 		
@@ -117,6 +147,7 @@ define( function( require, exports ) {
 				
 				preferences.set( 'enabled-tools', values.enabledTools );
 				preferences.set( 'phpcs-standards', values.phpcsStandards );
+				preferences.set( 'phpcsfixer-level', values.phpcsfixerLevel);
 				preferences.set( 'phpmd-rulesets', values.phpmdRulesets );
 				
 				preferences.save();

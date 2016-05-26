@@ -18,11 +18,15 @@ define( function( require ) {
 		phpmd = require( 'modules/parsers/phpmd' ),
 		phpcpd = require( 'modules/parsers/phpcpd' ),
 		phpcs = require( 'modules/parsers/phpcs' ),
+		phpcsfixer = require( 'modules/parsers/phpcsfixer' ),
+		phpsa = require( 'modules/parsers/phpsa' ),
 		parsers = [
 			phpl,
 			phpcpd,
 			phpcs,
-			phpmd
+			phpcsfixer,
+			phpmd,
+			phpsa
 		],
 		
 		// Setup extension.
