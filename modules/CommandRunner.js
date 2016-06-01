@@ -6,16 +6,25 @@ define( function( require, exports, module ) {
 		ExtensionUtils = brackets.getModule( 'utils/ExtensionUtils' ),
 		NodeConnection = brackets.getModule( 'utils/NodeConnection' ),
 		nodeConnection = new NodeConnection(),
+        PreferencesManager = brackets.getModule( 'preferences/PreferencesManager' ),
 		
 		// Extension modules.
 		Events = require( 'modules/Events' ),
+        preferences = PreferencesManager.getExtensionPrefs( 'mikaeljorhult.bracketsPHPLintTools' ),
 		
 		// Variables.
 		initialized = false;
 	
 	// Run commands.
 	function run( command, options, callback ) {
-		nodeConnection.domains.phplinttools.commander( command, options ).done( callback );
+        if(command.substr(0,4) === 'php ') {
+            var php_loc = preferences.get('php-location');
+            
+            if(php_loc) {
+                command = php_loc + ' ' + command.substr(4);
+            }
+        }
+        nodeConnection.domains.phplinttools.commander( command, options ).done( callback );
 	}
 	
 	// Return initialization status.

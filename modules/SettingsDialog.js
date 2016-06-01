@@ -7,6 +7,7 @@ define( function( require, exports ) {
 		// Extension Modules.
 		Defaults = require( 'modules/Defaults' ),
 		Strings = require( 'modules/Strings' ),
+        ParserManager = require( 'modules/ParserManager' ),
 		
 		// Templates.
 		settingsDialogTemplate = require( 'text!../html/settings-dialog.html' ),
@@ -29,7 +30,10 @@ define( function( require, exports ) {
 	 * Retrieve all values from settings dialog.
 	 */
 	function getValues() {
+        var phpLocation = $dialog.find( 'input[ name="php_location" ]' ).val();
+        
 		var values = {
+            PHPLocation: ParserManager.sanitizePHPLocation( phpLocation ),
 			enabledTools: getCheckboxArray( 'enabled' ),
 			phpcsStandards: getCheckboxArray( 'phpcs-standards' ),
 			phpmdRulesets: getCheckboxArray( 'phpmd-rulesets' )
@@ -55,6 +59,7 @@ define( function( require, exports ) {
 		setCheckboxesFromArray( 'enabled', values.enabledTools );
 		setCheckboxesFromArray( 'phpcs-standards', values.phpcsStandards );
 		setCheckboxesFromArray( 'phpmd-rulesets', values.phpmdRulesets );
+        $dialog.find( 'input[ name="php_location" ]' ).val( values.PHPLocation );
 	}
 	
 	/**
@@ -77,7 +82,8 @@ define( function( require, exports ) {
 		var values = {
 			enabledTools: preferences.get( 'enabled-tools' ),
 			phpcsStandards: preferences.get( 'phpcs-standards' ),
-			phpmdRulesets: preferences.get( 'phpmd-rulesets' )
+			phpmdRulesets: preferences.get( 'phpmd-rulesets' ),
+            PHPLocation: preferences.get( 'php-location' ),
 		};
 		
 		setValues( values );
@@ -106,6 +112,31 @@ define( function( require, exports ) {
 			.on( 'click', '.reset-preferences', function() {
 				resetValues();
 			} );
+        
+        // Check PHP Location
+        $dialog.find( '.input-php-location' ).on( 'input', function()
+            {
+                var location = $(this).val(),
+                    ok_btn = $dialog.find('[data-button-id="ok"]'),
+                    error_elem = $dialog.find('.php-location-error');
+                
+                error_elem.hide();
+                
+                if(location) {
+                    ok_btn.attr('disabled', true);
+                    
+                    ParserManager.checkPHPLocation( location, function(phpAvailable) {
+                        if(phpAvailable) {
+                            ok_btn.attr('disabled', false);
+                        } else {
+                            error_elem.show();
+                        }
+                    } );
+                } else {
+                    ok_btn.attr('disabled', false);
+                }
+            } );
+        $dialog.find('.input-php-location').trigger('input');
 		
 		// Open dialog.
 		dialog.done( function( buttonId ) {
@@ -118,8 +149,11 @@ define( function( require, exports ) {
 				preferences.set( 'enabled-tools', values.enabledTools );
 				preferences.set( 'phpcs-standards', values.phpcsStandards );
 				preferences.set( 'phpmd-rulesets', values.phpmdRulesets );
+                preferences.set( 'php-location', values.PHPLocation );
 				
 				preferences.save();
+                
+                ParserManager.registerEvents();
 			}
 		} );
 	};

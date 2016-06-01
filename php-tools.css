@@ -27,6 +27,11 @@
 	color: #c95353;
 }
 
-.php-lint-settings-dialog.error .tool {
-	display: none;
+.php-lint-settings-dialog .input-php-location {
+    width: 100%;
+}
+
+.php-lint-settings-dialog .php-location-error {
+    font-size: 0.9em;
+    color: #a33;
 }

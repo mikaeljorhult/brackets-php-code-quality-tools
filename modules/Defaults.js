@@ -4,6 +4,7 @@ define( function() {
 	return {
 		enabledTools: [ 'phpcs', 'phpcpd', 'phpl', 'phpmd' ],
 		phpcsStandards: [ 'PSR1', 'PSR2' ],
-		phpmdRulesets: [ 'codesize', 'unusedcode', 'naming' ]
+		phpmdRulesets: [ 'codesize', 'unusedcode', 'naming' ],
+        PHPDirectory: ''
 	};
 } );
