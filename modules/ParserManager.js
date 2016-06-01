@@ -40,23 +40,23 @@ define( function( require ) {
 			}
 		}
 	}
-    
-    // Sanitize PHP location
-    function sanitizePHPLocation( php_location ) {
-        return php_location
-            .replace(/\"/g, '')
-            .replace(/\\/g, '/');
-    }
-    
-    // Check if PHP location is valid
-    function checkPHPLocation( php_location, callback ) {
-        php_location = sanitizePHPLocation( php_location );
-        
-        CommandRunner.run( '"' + php_location + '" -v', {}, function(data) {
-            var phpAvailable = data.indexOf( 'PHP' ) === 0;
-            callback(phpAvailable);
-        } );
-    }
+	
+	// Sanitize PHP location
+	function sanitizePHPLocation( php_location ) {
+		return php_location
+			.replace(/\"/g, '')
+			.replace(/\\/g, '/');
+	}
+	
+	// Check if PHP location is valid
+	function checkPHPLocation( php_location, callback ) {
+		php_location = sanitizePHPLocation( php_location );
+		
+		CommandRunner.run( '"' + php_location + '" -v', {}, function(data) {
+			var phpAvailable = data.indexOf( 'PHP' ) === 0;
+			callback(phpAvailable);
+		} );
+	}
 	
 	// Register event listeners.
 	function registerEvents() {
@@ -74,7 +74,7 @@ define( function( require ) {
 				CodeInspection.register( 'php', {
 					name: phpcpd.name(),
 					scanFile: function() {
-                        return {
+						return {
 							errors: phpcpd.errors()
 						};
 					}
@@ -142,11 +142,11 @@ define( function( require ) {
 	} else {
 		Events.subscribe( 'node:connected', registerEvents );
 	}
-    
-    // To register events again
-    return {
-        registerEvents: registerEvents,
-        checkPHPLocation: checkPHPLocation,
-        sanitizePHPLocation: sanitizePHPLocation
-    };
+	
+	// To register events again
+	return {
+		registerEvents: registerEvents,
+		checkPHPLocation: checkPHPLocation,
+		sanitizePHPLocation: sanitizePHPLocation
+	};
 } );

@@ -13,7 +13,7 @@ define( {
 	SETTINGS_DIALOG_STANDARDS:         'Standards de código',
 	SETTINGS_DIALOG_CUSTOM_STANDARDS:  'Standards de código personalizados',
 	SETTINGS_DIALOG_NOT_AVAILABLE:     'O PHP não está disponível na sua máquina. A extenção não irá correr qualquer ferramenta.',
-    SETTINGS_DIALOG_PHPLOCATION_TITLE: 'Caminho do PHP',
-    SETTINGS_DIALOG_PHPLOCATION_INFO:  'Deixe em branco para usar o caminho padrão do PHP.',
-    SETTINGS_DIALOG_PHPLOCATION_ERROR: 'O caminho que você especificou para o PHP é inválido.'
+	SETTINGS_DIALOG_PHPLOCATION_TITLE: 'Caminho do PHP',
+	SETTINGS_DIALOG_PHPLOCATION_INFO:  'Deixe em branco para usar o caminho padrão do PHP.',
+	SETTINGS_DIALOG_PHPLOCATION_ERROR: 'O caminho que você especificou para o PHP é inválido.'
 } );

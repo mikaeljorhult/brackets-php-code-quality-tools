@@ -1,4 +1,4 @@
-/*--- SETTINGS DIALOG ---*/
+    /*--- SETTINGS DIALOG ---*/
 .php-lint-settings-dialog label {
 	width: 100%;
 	display: inline-block;
@@ -28,10 +28,10 @@
 }
 
 .php-lint-settings-dialog .input-php-location {
-    width: 100%;
+	width: 100%;
 }
 
 .php-lint-settings-dialog .php-location-error {
-    font-size: 0.9em;
-    color: #a33;
+	font-size: 0.9em;
+	color: #a33;
 }

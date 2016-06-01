@@ -32,7 +32,7 @@ define( function( require, exports, module ) {
 	preferences.definePreference( 'enabled-tools', 'array', Defaults.enabledTools );
 	preferences.definePreference( 'phpcs-standards', 'array', Defaults.phpcsStandards );
 	preferences.definePreference( 'phpmd-rulesets', 'array', Defaults.phpmdRulesets );
-    preferences.definePreference( 'php-location', 'string', Defaults.PHPLocation );
+	preferences.definePreference( 'php-location', 'string', Defaults.PHPLocation );
 	
 	// Register extension.
 	CommandManager.register( Strings.EXTENSION_NAME, COMMAND_ID_SETTINGS, showSettingsDialog );
