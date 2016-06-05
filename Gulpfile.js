@@ -1,6 +1,6 @@
 var gulp = require( 'gulp' ),
 	plugins = require( 'gulp-load-plugins' )(),
-	files = [ 'main.js', 'modules/**/*.js' ];
+	files = [ 'main.js', 'modules/**/*.js', '!modules/vendor/**/*.js' ];
 
 gulp.task( 'lint', function() {
 	return gulp.src( files )
