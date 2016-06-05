@@ -114,29 +114,29 @@ define( function( require, exports ) {
 			} );
 		
 		// Check PHP Location
-		$dialog.find( '.input-php-location' ).on( 'input', function()
-			{
-				var location = $(this).val(),
-					ok_btn = $dialog.find('[data-button-id="ok"]'),
-					error_elem = $dialog.find('.php-location-error');
-				
-				error_elem.hide();
-				
-				if(location) {
-					ok_btn.attr('disabled', true);
-					
-					ParserManager.checkPHPLocation( location, function(phpAvailable) {
-						if(phpAvailable) {
-							ok_btn.attr('disabled', false);
-						} else {
-							error_elem.show();
-						}
-					} );
-				} else {
-					ok_btn.attr('disabled', false);
-				}
-			} );
-		$dialog.find('.input-php-location').trigger('input');
+		$dialog.find( '.input-php-location' ).on( 'input', function() {
+			var location = $( this ).val(),
+				okButton = $dialog.find( '[data-button-id="ok"]' ),
+				errorElement = $dialog.find( '.php-location-error' );
+
+			errorElement.hide();
+
+			if ( location ) {
+				okButton.attr( 'disabled', true );
+
+				ParserManager.checkPHPLocation( location, function( phpAvailable ) {
+					if ( phpAvailable ) {
+						okButton.attr( 'disabled', false );
+					} else {
+						errorElement.show();
+					}
+				} );
+			} else {
+				okButton.attr( 'disabled', false );
+			}
+		} );
+
+		$dialog.find( '.input-php-location' ).trigger( 'input' );
 		
 		// Open dialog.
 		dialog.done( function( buttonId ) {

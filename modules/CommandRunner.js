@@ -17,13 +17,14 @@ define( function( require, exports, module ) {
 	
 	// Run commands.
 	function run( command, options, callback ) {
-		if(command.substr(0,4) === 'php ') {
-			var php_loc = preferences.get('php-location');
+		if ( command.substr( 0, 4 ) === 'php ' ) {
+			var phpLocation = preferences.get( 'php-location' );
 			
-			if(php_loc) {
-				command = php_loc + ' ' + command.substr(4);
+			if ( phpLocation ) {
+				command = phpLocation + ' ' + command.substr( 4 );
 			}
 		}
+
 		nodeConnection.domains.phplinttools.commander( command, options ).done( callback );
 	}
 	

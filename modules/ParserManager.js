@@ -42,19 +42,19 @@ define( function( require ) {
 	}
 	
 	// Sanitize PHP location
-	function sanitizePHPLocation( php_location ) {
-		return php_location
-			.replace(/\"/g, '')
-			.replace(/\\/g, '/');
+	function sanitizePHPLocation( phpLocation ) {
+		return phpLocation
+			.replace( /\"/g, '' )
+			.replace( /\\/g, '/' );
 	}
 	
 	// Check if PHP location is valid
-	function checkPHPLocation( php_location, callback ) {
-		php_location = sanitizePHPLocation( php_location );
+	function checkPHPLocation( phpLocation, callback ) {
+		phpLocation = sanitizePHPLocation( phpLocation );
 		
-		CommandRunner.run( '"' + php_location + '" -v', {}, function(data) {
+		CommandRunner.run( '"' + phpLocation + '" -v', {}, function( data ) {
 			var phpAvailable = data.indexOf( 'PHP' ) === 0;
-			callback(phpAvailable);
+			callback( phpAvailable );
 		} );
 	}
 	
