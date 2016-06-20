@@ -103,7 +103,77 @@
 				</label>
 			</p>
 		</fieldset>
-		
+
+		<fieldset class="tool tool-phpcsfixer">
+			<legend>PHP Coding Standards Fixer</legend>
+			
+			<p>
+				<label>
+					<input type="checkbox" name="enabled[]" value="phpcsfixer" />
+					{{ Strings.SETTINGS_DIALOG_ENABLE }}
+				</label>
+			</p>
+			
+			<p>{{ Strings.SETTINGS_DIALOG_STANDARDS }}</p>
+			
+			<p class="columns clearfix">						
+				<label>
+					<input type="checkbox" name="phpcsfixer-level[]" value="all" onclick="fixerCheck();"/>
+					All
+				</label>
+				
+				<label>
+					<input type="checkbox" name="phpcsfixer-level[]" value="psr0" onclick="fixerCheck();"/>
+					PSR-0
+				</label>
+				
+				<label>
+					<input type="checkbox" name="phpcsfixer-level[]" value="psr1" onclick="fixerCheck();"/>
+					PSR-1
+				</label>
+				
+				<label>
+					<input type="checkbox" name="phpcsfixer-level[]" value="psr2" onclick="fixerCheck();"/>
+					PSR-2
+				</label>
+				
+				<label>
+					<input type="checkbox" name="phpcsfixer-level[]" value="symfony" onclick="fixerCheck();"/>
+					Symfony
+				</label>
+			</p>
+		</fieldset>
+	
+		<fieldset class="tool tool-php7cc">
+			<legend>PHP 7 Compatibility Checker</legend>
+			
+			<p>
+				<label>
+					<input type="checkbox" name="enabled[]" value="php7cc" />
+					{{ Strings.SETTINGS_DIALOG_ENABLE }}
+				</label>
+			</p>
+			
+			<p>{{ Strings.SETTINGS_DIALOG_STANDARDS }}</p>
+			
+			<p class="columns clearfix">						
+				<label>
+					<input type="checkbox" name="php7cc-opts[]" value="error" onclick="php7Check();"/>
+					Error
+				</label>
+
+				<label>
+					<input type="checkbox" name="php7cc-opts[]" value="warning" onclick="php7Check();"/>
+					Warning
+				</label>
+				<label>
+
+					<input type="checkbox" name="php7cc-opts[]" value="info" onclick="php7Check();"/>
+					Info
+				</label>
+			</p>
+		</fieldset>
+
 		<fieldset class="tool tool-phpcpd">
 			<legend>Copy/Paste Detector</legend>
 			
@@ -114,6 +184,19 @@
 				</label>
 			</p>
 		</fieldset>
+
+
+		<fieldset class="tool tool-phpsa">
+			<legend>PHP Static Analysis</legend>
+			
+			<p>
+				<label>
+					<input type="checkbox" name="enabled[]" value="phpsa" />
+					{{ Strings.SETTINGS_DIALOG_ENABLE }}
+				</label>
+			</p>
+		</fieldset
+
 		
 		<fieldset class="tool tool-phpl">
 			<legend>PHP Lint</legend>

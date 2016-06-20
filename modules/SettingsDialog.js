@@ -36,6 +36,8 @@ define( function( require, exports ) {
 			PHPLocation: ParserManager.sanitizePHPLocation( phpLocation ),
 			enabledTools: getCheckboxArray( 'enabled' ),
 			phpcsStandards: getCheckboxArray( 'phpcs-standards' ),
+			php7ccOpts: getCheckboxArray( 'php7-opts' ),
+			phpcsfixerLevel: getCheckboxArray( 'phpcsfixer-level' ),
 			phpmdRulesets: getCheckboxArray( 'phpmd-rulesets' )
 		};
 		
@@ -51,13 +53,58 @@ define( function( require, exports ) {
 			return this.value;
 		} ).get();
 	}
-	
+
+	/**
+	 * Make sure CS Fixer only has one checkbox checked at any one time.
+	 */
+
+	function fixerCheck() {
+		if ( $('#phpcsfixer-level[]').val() === 'all') {
+			$('#phpcsfixer-level[!value="all"]').prop('checked', false);
+		} 
+
+		if ( $('#phpcsfixer-level[]').val() === 'psr0') {
+			$('#phpcsfixer-level[!value="prs0"]').prop('checked', false);
+		} 
+
+		if ( $('#phpcsfixer-level[]').val() === 'psr1') {
+			$('#phpcsfixer-level[!value="prs1"]').prop('checked', false);
+		} 
+
+		if ( $('#phpcsfixer-level[]').val() === 'psr2') {
+			$('#phpcsfixer-level[!value="prs2"]').prop('checked', false);
+		}
+
+		if ( $('#phpcsfixer-level[]').val() === 'symfony') {
+			$('#phpcsfixer-level[!value="symfony"]').prop('checked', false);
+		}
+
+	}
+
+	function php7Check() {
+		if ( $('#php7-opts[]').val() === 'error') {
+			$('#php7-opts[!value="error"]').prop('checked', false);
+		} 
+
+		if ( $('#php7-opts[]').val() === 'warning') {
+			$('#php7-opts[!value="warning"]').prop('checked', false);
+		} 
+
+		if ( $('#php7-opts[]').val() === 'info') {
+			$('#php7-opts[!value="info"]').prop('checked', false);
+		} 
+
+	}
+
+
 	/**
 	 * Set each value of the preferences in dialog.
 	 */
 	function setValues( values ) {
 		setCheckboxesFromArray( 'enabled', values.enabledTools );
 		setCheckboxesFromArray( 'phpcs-standards', values.phpcsStandards );
+		setCheckboxesFromArray( 'phpcsfixer-level', values.phpcsfixerLevel );
+		setCheckboxesFromArray( 'php7-opts', values.php7ccOpts );
 		setCheckboxesFromArray( 'phpmd-rulesets', values.phpmdRulesets );
 		$dialog.find( 'input[ name="php_location" ]' ).val( values.PHPLocation );
 	}
@@ -82,6 +129,8 @@ define( function( require, exports ) {
 		var values = {
 			enabledTools: preferences.get( 'enabled-tools' ),
 			phpcsStandards: preferences.get( 'phpcs-standards' ),
+			phpcsfixerLevel: preferences.get('phpcsfixer-level'),
+			php7ccOpts: preferences.get('php7-opts'),
 			phpmdRulesets: preferences.get( 'phpmd-rulesets' ),
 			PHPLocation: preferences.get( 'php-location' ),
 		};
@@ -148,6 +197,8 @@ define( function( require, exports ) {
 				
 				preferences.set( 'enabled-tools', values.enabledTools );
 				preferences.set( 'phpcs-standards', values.phpcsStandards );
+				preferences.set( 'phpcsfixer-level', values.phpcsfixerLevel);
+				preferences.set( 'php7-opts', values.php7ccOpts);
 				preferences.set( 'phpmd-rulesets', values.phpmdRulesets );
 				preferences.set( 'php-location', values.PHPLocation );
 				

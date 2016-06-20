@@ -9,8 +9,11 @@ define( function( require, exports, module ) {
 		_paths = {
 			base: basePath,
 			phpcpd: basePath + 'phpcpd/phpcpd.phar',
+			phpcsfixer: basePath + 'phpcsfixer/php-cs-fixer.phar',
+			php7cc: basePath + 'php7cc/php7cc.phar',
 			phpcs: 'phpcs.phar',
 			phpl: '',
+			phpsa: basePath + 'phpsa/phpsa.phar',
 			phpmd: basePath + 'phpmd/phpmd.phar'
 		};
 		
