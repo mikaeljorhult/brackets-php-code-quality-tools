@@ -1,6 +1,9 @@
 # Brackets PHP Code Quality Tools Changelog
 All notable changes to this project will be documented in this file.
 
+## 0.1.12 - Unreleased
+* German translation. Thanks to Daniel Kratz (@danielkratz).
+
 ## 0.1.11 - 2016-04-23
 * Update Mess Detector to version 2.4.2.
 
