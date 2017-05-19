@@ -1,0 +1,22 @@
+{
+  "extends": "standard",
+  "env": {
+    "amd": true,
+    "browser": true,
+    "jquery": true
+  },
+  "globals": {
+    "brackets": true
+  },
+  "plugins": [
+    "standard",
+    "promise"
+  ],
+  "rules": {
+    "semi": [
+      "error",
+      "always"
+    ],
+    "import/no-webpack-loader-syntax": 0
+  }
+}
