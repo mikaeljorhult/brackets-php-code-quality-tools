@@ -14,6 +14,10 @@
 
   function commander (exec, options, cb) {
     childProcess.exec(exec, options, function (err, stdout, stderr) {
+      if (err) {
+        console.log(err);
+      }
+
       cb(null, stderr + stdout);
     });
   }
