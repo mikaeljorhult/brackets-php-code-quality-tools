@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 
 ## 0.1.12 - Unreleased
+* Update Copy/Paste Detector to version 3.0.0.
+* Update Mess Detector to version 2.6.0.
+* Update CodeSniffer to version 2.9.1.
 * German translation. Thanks to Daniel Kratz (@danielkratz).
 
 ## 0.1.11 - 2016-04-23
