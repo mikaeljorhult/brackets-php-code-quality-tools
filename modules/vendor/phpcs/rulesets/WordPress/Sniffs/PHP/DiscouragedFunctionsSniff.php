@@ -1,75 +1,57 @@
 <?php
 /**
- * WordPress_Sniffs_PHP_DiscouragedFunctionsSniff.
+ * WordPress Coding Standard.
  *
- * PHP version 5
- *
- * @category PHP
- * @package  PHP_CodeSniffer
- * @author   John Godley <john@urbangiraffe.com>
+ * @package WPCS\WordPressCodingStandards
+ * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @license https://opensource.org/licenses/MIT MIT
  */
-
-if (class_exists('Generic_Sniffs_PHP_ForbiddenFunctionsSniff', true) === false) {
-    throw new PHP_CodeSniffer_Exception('Class Generic_Sniffs_PHP_ForbiddenFunctionsSniff not found');
-}
 
 /**
- * WordPress_Sniffs_PHP_DiscouragedFunctionsSniff.
+ * Discourages the use of various native PHP functions and suggests alternatives.
  *
- * Discourages the use of debug functions and suggests deprecated WordPress alternatives
+ * @package    WPCS\WordPressCodingStandards
  *
- * @category PHP
- * @package  PHP_CodeSniffer
- * @author   John Godley <john@urbangiraffe.com>
+ * @since      0.1.0
+ * @since      0.10.0 The checks for the POSIX functions have been replaced by the stand-alone
+ *                    sniff WordPress_Sniffs_PHP_POSIXFunctionsSniff.
+ * @deprecated 0.11.0 The checks for the PHP development functions have been replaced by the
+ *                    stand-alone sniff WordPress_Sniffs_PHP_DevelopmentFunctionsSniff.
+ *                    The checks for the WP deprecated functions have been replaced by the
+ *                    stand-alone sniff WordPress_Sniffs_WP_DeprecatedFunctionsSniff.
+ *                    The checks for the PHP functions which have a WP alternative has been replaced
+ *                    by the stand-alone sniff WordPress_Sniffs_WP_AlternativeFunctionsSniff.
+ *                    The checks for the WP discouraged functions have been replaced by the
+ *                    stand-alone sniff WordPress_Sniffs_WP_DiscouragedFunctionsSniff.
+ *                    The checks for the PHP discouraged functions have been replaced by the
+ *                    stand-alone sniff WordPress_Sniffs_WP_DiscouragedPHPFunctionsSniff.
+ *                    The check for the `register_globals` has been removed as there is no such
+ *                    function. To check for `register_globals` ini directive use
+ *                    PHPCompatibility_Sniffs_PHP_DeprecatedIniDirectivesSniff from wimg/PHPCompatibility.
  */
-class WordPress_Sniffs_PHP_DiscouragedFunctionsSniff extends Generic_Sniffs_PHP_ForbiddenFunctionsSniff
-{
+class WordPress_Sniffs_PHP_DiscouragedFunctionsSniff {
 
-    /**
-     * A list of forbidden functions with their alternatives.
-     *
-     * The value is NULL if no alternative exists. IE, the
-     * function should just not be used.
-     *
-     * @var array(string => string|null)
-     */
-    public $forbiddenFunctions = array(
-		'print_r'                  => null,
-		'debug_print_backtrace'    => null,
-		'ereg_replace'             => 'preg_replace',
-		'ereg'                     => null,
-		'eregi_replace'            => 'preg_replace',
-		'json_encode'              => 'wp_json_encode',
-		'split'                    => null,
-		'spliti'                   => null,
-		'var_dump'                 => null,
-		'var_export'               => null,
-		// WordPress
-		'find_base_dir'            => 'WP_Filesystem::abspath',
-		'get_base_dir'             => 'WP_Filesystem::abspath',
-		'dropdown_categories'      => 'wp_link_category_checklist',
-		'dropdown_link_categories' => 'wp_link_category_checklist',
-		'get_link'                 => 'get_bookmark',
-		'get_catname'              => 'get_cat_name',
-		'register_globals'         => null,
-		'wp_setcookie'             => 'wp_set_auth_cookie',
-		'wp_get_cookie_login'      => null,
-		'wp_login'                 => 'wp_signon',
-		'get_the_attachment_link'  => 'wp_get_attachment_link',
-		'get_attachment_icon_src'  => 'wp_get_attachment_image_src',
-		'get_attachment_icon'      => 'wp_get_attachment_image',
-		'get_attachment_innerHTML' => 'wp_get_attachment_image',
-		'query_posts'              => 'WP_Query',
-		'wp_reset_query'           => 'wp_reset_postdata',
-	);
+	/**
+	 * Don't use.
+	 *
+	 * @deprecated 0.11.0
+	 *
+	 * @return int[]
+	 */
+	public function register() {
+		return array();
+	}
 
-    /**
-     * If true, an error will be thrown; otherwise a warning.
-     *
-     * @var bool
-     */
-    public $error = false;
+	/**
+	 * Don't use.
+	 *
+	 * @deprecated 0.11.0
+	 *
+	 * @param PHP_CodeSniffer_File $phpcsFile A PHP_CodeSniffer file.
+	 * @param int                  $stackPtr  The position of the token.
+	 *
+	 * @return void
+	 */
+	public function process( PHP_CodeSniffer_File $phpcsFile, $stackPtr ) {}
 
-}//end class
-
-?>
+}

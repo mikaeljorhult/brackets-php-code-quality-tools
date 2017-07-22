@@ -1,36 +1,50 @@
 <?php
-
 /**
- * WordPress_Sniffs_CSRF_NonceVerificationSniff.
+ * WordPress Coding Standard.
  *
- * PHP version 5
- *
- * @since 0.5.0
- *
- * @category PHP
- * @package  PHP_CodeSniffer
+ * @package WPCS\WordPressCodingStandards
+ * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @license https://opensource.org/licenses/MIT MIT
  */
 
 /**
  * Checks that nonce verification accompanies form processing.
  *
- * @since 0.5.0
+ * @link    https://developer.wordpress.org/plugins/security/nonces/ Nonces on Plugin Developer Handbook
  *
- * @category PHP
- * @package  PHP_CodeSniffer
- * @author   J.D. Grimes <jdg@codesymphony.co>
- * @link     https://developer.wordpress.org/plugins/security/nonces/ Nonces on Plugin Developer Handbook
+ * @package WPCS\WordPressCodingStandards
+ *
+ * @since   0.5.0
  */
 class WordPress_Sniffs_CSRF_NonceVerificationSniff extends WordPress_Sniff {
+
+	/**
+	 * Superglobals to notify about when not accompanied by an nonce check.
+	 *
+	 * A value of `true` results in an error. A value of `false` in a warning.
+	 *
+	 * @since 0.12.0
+	 *
+	 * @var array
+	 */
+	protected $superglobals = array(
+		'$_POST'    => true,
+		'$_FILE'    => true,
+		'$_GET'     => false,
+		'$_REQUEST' => false,
+	);
 
 	/**
 	 * Superglobals to give an error for when not accompanied by an nonce check.
 	 *
 	 * @since 0.5.0
+	 * @since 0.11.0 Changed visibility from public to protected.
+	 *
+	 * @deprecated 0.12.0 Replaced by $superglobals property.
 	 *
 	 * @var array
 	 */
-	public $errorForSuperGlobals = array( '$_POST', '$_FILE' );
+	protected $errorForSuperGlobals = array();
 
 	/**
 	 * Superglobals to give a warning for when not accompanied by an nonce check.
@@ -38,28 +52,57 @@ class WordPress_Sniffs_CSRF_NonceVerificationSniff extends WordPress_Sniff {
 	 * If the variable is also in the error list, that takes precedence.
 	 *
 	 * @since 0.5.0
+	 * @since 0.11.0 Changed visibility from public to protected.
+	 *
+	 * @deprecated 0.12.0 Replaced by $superglobals property.
 	 *
 	 * @var array
 	 */
-	public $warnForSuperGlobals = array( '$_GET', '$_REQUEST' );
+	protected $warnForSuperGlobals = array();
 
 	/**
 	 * Custom list of functions which verify nonces.
 	 *
 	 * @since 0.5.0
 	 *
-	 * @var array
+	 * @var string|string[]
 	 */
 	public $customNonceVerificationFunctions = array();
 
 	/**
-	 * Whether the custom functions have been added to the default list yet.
+	 * Custom list of functions that sanitize the values passed to them.
+	 *
+	 * @since 0.11.0
+	 *
+	 * @var string|string[]
+	 */
+	public $customSanitizingFunctions = array();
+
+	/**
+	 * Custom sanitizing functions that implicitly unslash the values passed to them.
+	 *
+	 * @since 0.11.0
+	 *
+	 * @var string|string[]
+	 */
+	public $customUnslashingSanitizingFunctions = array();
+
+	/**
+	 * Cache of previously added custom functions.
+	 *
+	 * Prevents having to do the same merges over and over again.
 	 *
 	 * @since 0.5.0
+	 * @since 0.11.0 - Changed from public static to protected non-static.
+	 *               - Changed the format from simple bool to array.
 	 *
-	 * @var bool
+	 * @var array
 	 */
-	public static $addedCustomFunctions = false;
+	protected $addedCustomFunctions = array(
+		'nonce'           => null,
+		'sanitize'        => null,
+		'unslashsanitize' => null,
+	);
 
 	/**
 	 * Returns an array of tokens this test wants to listen for.
@@ -76,35 +119,15 @@ class WordPress_Sniffs_CSRF_NonceVerificationSniff extends WordPress_Sniff {
 	/**
 	 * Processes this test, when one of its tokens is encountered.
 	 *
-	 * @param PHP_CodeSniffer_File $phpcsFile The file being scanned.
-	 * @param int                  $stackPtr  The position of the current token
-	 *                                        in the stack passed in $tokens.
+	 * @param int $stackPtr The position of the current token in the stack.
 	 *
 	 * @return void
 	 */
-	public function process( PHP_CodeSniffer_File $phpcsFile, $stackPtr ) {
+	public function process_token( $stackPtr ) {
 
-		// Merge any custom functions with the defaults, if we haven't already.
-		if ( ! self::$addedCustomFunctions ) {
-			self::$nonceVerificationFunctions = array_merge(
-				self::$nonceVerificationFunctions
-				, array_flip( $this->customNonceVerificationFunctions )
-			);
+		$instance = $this->tokens[ $stackPtr ];
 
-			self::$addedCustomFunctions = true;
-		}
-
-		$this->init( $phpcsFile );
-
-		$tokens = $phpcsFile->getTokens();
-		$instance = $tokens[ $stackPtr ];
-
-		$superglobals = array_merge(
-			$this->errorForSuperGlobals
-			, $this->warnForSuperGlobals
-		);
-
-		if ( ! in_array( $instance['content'], $superglobals ) ) {
+		if ( ! isset( $this->superglobals[ $instance['content'] ] ) ) {
 			return;
 		}
 
@@ -116,6 +139,8 @@ class WordPress_Sniffs_CSRF_NonceVerificationSniff extends WordPress_Sniff {
 			return;
 		}
 
+		$this->mergeFunctionLists();
+
 		if ( $this->is_only_sanitized( $stackPtr ) ) {
 			return;
 		}
@@ -125,16 +150,46 @@ class WordPress_Sniffs_CSRF_NonceVerificationSniff extends WordPress_Sniff {
 		}
 
 		// If we're still here, no nonce-verification function was found.
-		$severity = ( in_array( $instance['content'], $this->errorForSuperGlobals ) ) ? 0 : 'warning';
-
-		$phpcsFile->addError(
-			'Processing form data without nonce verification.'
-			, $stackPtr
-			, 'NoNonceVerification'
-			, array()
-			, $severity
+		$this->addMessage(
+			'Processing form data without nonce verification.',
+			$stackPtr,
+			$this->superglobals[ $instance['content'] ],
+			'NoNonceVerification'
 		);
 
-	} // end process()
+	} // End process_token().
 
-} // end class
+	/**
+	 * Merge custom functions provided via a custom ruleset with the defaults, if we haven't already.
+	 *
+	 * @since 0.11.0 Split out from the `process()` method.
+	 *
+	 * @return void
+	 */
+	protected function mergeFunctionLists() {
+		if ( $this->customNonceVerificationFunctions !== $this->addedCustomFunctions['nonce'] ) {
+			$this->nonceVerificationFunctions = $this->merge_custom_array(
+				$this->customNonceVerificationFunctions,
+				$this->nonceVerificationFunctions
+			);
+			$this->addedCustomFunctions['nonce'] = $this->customNonceVerificationFunctions;
+		}
+
+		if ( $this->customSanitizingFunctions !== $this->addedCustomFunctions['sanitize'] ) {
+			$this->sanitizingFunctions = $this->merge_custom_array(
+				$this->customSanitizingFunctions,
+				$this->sanitizingFunctions
+			);
+			$this->addedCustomFunctions['sanitize'] = $this->customSanitizingFunctions;
+		}
+
+		if ( $this->customUnslashingSanitizingFunctions !== $this->addedCustomFunctions['unslashsanitize'] ) {
+			$this->unslashingSanitizingFunctions = $this->merge_custom_array(
+				$this->customUnslashingSanitizingFunctions,
+				$this->unslashingSanitizingFunctions
+			);
+			$this->addedCustomFunctions['unslashsanitize'] = $this->customUnslashingSanitizingFunctions;
+		}
+	}
+
+} // End class.

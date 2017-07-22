@@ -1,54 +1,54 @@
 <?php
 /**
- * WordPress_Sniffs_VIP_SessionVariableUsageSniff
+ * WordPress Coding Standard.
  *
+ * @package WPCS\WordPressCodingStandards
+ * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @license https://opensource.org/licenses/MIT MIT
+ */
+
+/**
  * Discourages the use of the session variable.
  * Creating a session writes a file to the server and is unreliable in a multi-server environment.
  *
- * @category PHP
- * @package  PHP_CodeSniffer
- * @author   Shady Sharaf <shady@x-team.com>
- * @link     https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/issues/75
+ * @link    https://vip.wordpress.com/documentation/vip/code-review-what-we-look-for/#session_start-and-other-session-related-functions
+ *
+ * @package WPCS\WordPressCodingStandards
+ *
+ * @since   0.3.0
+ * @since   0.10.0 The sniff no longer needlessly extends the Generic_Sniffs_PHP_ForbiddenFunctionsSniff
+ *                 which it didn't use.
+ * @since   0.12.0 This class now extends WordPress_Sniff.
  */
-class WordPress_Sniffs_VIP_SessionVariableUsageSniff extends Generic_Sniffs_PHP_ForbiddenFunctionsSniff
-{
+class WordPress_Sniffs_VIP_SessionVariableUsageSniff extends WordPress_Sniff {
 
 	/**
-     * Returns an array of tokens this test wants to listen for.
-     *
-     * @return array
-     */
-    public function register()
-    {
-        return array(
-               	T_VARIABLE,
-               );
+	 * Returns an array of tokens this test wants to listen for.
+	 *
+	 * @return array
+	 */
+	public function register() {
+		return array(
+			T_VARIABLE,
+		);
 
-    }//end register()
+	}
 
+	/**
+	 * Processes this test, when one of its tokens is encountered.
+	 *
+	 * @param int $stackPtr The position of the current token in the stack.
+	 *
+	 * @return void
+	 */
+	public function process_token( $stackPtr ) {
+		if ( '$_SESSION' === $this->tokens[ $stackPtr ]['content'] ) {
+			$this->phpcsFile->addError(
+				'Usage of $_SESSION variable is prohibited.',
+				$stackPtr,
+				'SessionVarsProhibited'
+			);
+		}
+	}
 
-    /**
-     * Processes this test, when one of its tokens is encountered.
-     *
-     * @param PHP_CodeSniffer_File $phpcsFile The file being scanned.
-     * @param int                  $stackPtr  The position of the current token
-     *                                        in the stack passed in $tokens.
-     *
-     * @todo Allow T_CONSTANT_ENCAPSED_STRING?
-     *
-     * @return void
-     */
-    public function process(PHP_CodeSniffer_File $phpcsFile, $stackPtr)
-    {
-        $tokens = $phpcsFile->getTokens();
-
-        if ( $tokens[$stackPtr]['content'] == '$_SESSION' ) {
-        	$phpcsFile->addError( 'Usage of $_SESSION variable is prohibited.', $stackPtr, 'SessionVarsProhibited' );
-        }
-
-
-    }//end process()
-
-
-
-}//end class
+} // End class.

@@ -1,58 +1,73 @@
 <?php
 /**
- * WordPress_Sniffs_VIP_SessionFunctionsUsageSniff.
+ * WordPress Coding Standard.
  *
- * Discourages the use of session functions
- *
- * @category PHP
- * @package  PHP_CodeSniffer
- * @author   Shady Sharaf <shady@x-team.com>
- * @see  https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/issues/75
+ * @package WPCS\WordPressCodingStandards
+ * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @license https://opensource.org/licenses/MIT MIT
  */
-class WordPress_Sniffs_VIP_SessionFunctionsUsageSniff extends Generic_Sniffs_PHP_ForbiddenFunctionsSniff
-{
 
-    /**
-     * A list of forbidden functions with their alternatives.
-     *
-     * The value is NULL if no alternative exists. IE, the
-     * function should just not be used.
-     *
-     * @var array(string => string|null)
-     */
-    public $forbiddenFunctions = array(
-                                    'session_cache_expire'      => null,
-                                    'session_cache_limiter'     => null,
-                                    'session_commit'            => null,
-                                    'session_decode'            => null,
-                                    'session_destroy'           => null,
-                                    'session_encode'            => null,
-                                    'session_get_cookie_params' => null,
-                                    'session_id'                => null,
-                                    'session_is_registered'     => null,
-                                    'session_module_name'       => null,
-                                    'session_name'              => null,
-                                    'session_regenerate_id'     => null,
-                                    'session_register_shutdown' => null,
-                                    'session_register'          => null,
-                                    'session_save_path'         => null,
-                                    'session_set_cookie_params' => null,
-                                    'session_set_save_handler'  => null,
-                                    'session_start'             => null,
-                                    'session_status'            => null,
-                                    'session_unregister'        => null,
-                                    'session_unset'             => null,
-                                    'session_write_close'       => null,
-                                    );
+/**
+ * Discourages the use of session functions.
+ *
+ * @link    https://vip.wordpress.com/documentation/vip/code-review-what-we-look-for/#session_start-and-other-session-related-functions
+ *
+ * @package WPCS\WordPressCodingStandards
+ *
+ * @since   0.3.0
+ * @since   0.11.0 Extends the WordPress_AbstractFunctionRestrictionsSniff instead of the
+ *                 Generic_Sniffs_PHP_ForbiddenFunctionsSniff.
+ */
+class WordPress_Sniffs_VIP_SessionFunctionsUsageSniff extends WordPress_AbstractFunctionRestrictionsSniff {
 
-    protected function addError( $phpcsFile, $stackPtr, $function, $pattern = null )
-    {
-        $data  = array($function);
-        $error = 'The use of PHP session function %s() is prohibited.';
+	/**
+	 * Groups of functions to restrict.
+	 *
+	 * Example: groups => array(
+	 *  'lambda' => array(
+	 *      'type'      => 'error' | 'warning',
+	 *      'message'   => 'Use anonymous functions instead please!',
+	 *      'functions' => array( 'file_get_contents', 'create_function' ),
+	 *  )
+	 * )
+	 *
+	 * @return array
+	 */
+	public function getGroups() {
+		return array(
+			'session' => array(
+				'type'      => 'error',
+				'message'   => 'The use of PHP session function %s() is prohibited.',
+				'functions' => array(
+					'session_abort',
+					'session_cache_expire',
+					'session_cache_limiter',
+					'session_commit',
+					'session_create_id',
+					'session_decode',
+					'session_destroy',
+					'session_encode',
+					'session_gc',
+					'session_get_cookie_params',
+					'session_id',
+					'session_is_registered',
+					'session_module_name',
+					'session_name',
+					'session_regenerate_id',
+					'session_register_shutdown',
+					'session_register',
+					'session_reset',
+					'session_save_path',
+					'session_set_cookie_params',
+					'session_set_save_handler',
+					'session_start',
+					'session_status',
+					'session_unregister',
+					'session_unset',
+					'session_write_close',
+				),
+			),
+		);
+	} // End getGroups().
 
-        $phpcsFile->addError( $error, $stackPtr, $function, $data );
-
-    }//end addError()
-
-}//end class
-
+} // End class.

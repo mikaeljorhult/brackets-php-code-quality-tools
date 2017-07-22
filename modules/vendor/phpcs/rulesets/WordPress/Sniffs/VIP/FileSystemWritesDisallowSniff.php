@@ -1,52 +1,24 @@
 <?php
 /**
- * Disallow Filesystem writes
+ * WordPress Coding Standard.
  *
- * PHP version 5
- *
- * @category PHP
- * @package  PHP_CodeSniffer
- * @author   Shady Sharaf <shady@x-team.com>
- * @link     https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/issues/69
+ * @package WPCS\WordPressCodingStandards
+ * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @license https://opensource.org/licenses/MIT MIT
  */
-class WordPress_Sniffs_VIP_FileSystemWritesDisallowSniff extends Generic_Sniffs_PHP_ForbiddenFunctionsSniff
-{
 
-	/**
-	 * A list of forbidden functions with their alternatives.
-	 *
-	 * The value is NULL if no alternative exists. IE, the
-	 * function should just not be used.
-	 *
-	 * @var array(string => string|null)
-	 */
-	public $forbiddenFunctions = array(
-										'file_put_contents' => null,
-										'fwrite'            => null,
-										'fputcsv'           => null,
-										'fputs'             => null,
-										'ftruncate'         => null,
-										'link'              => null,
-										'symlink'           => null,
-										'mkdir'             => null,
-										'rename'            => null,
-										'rmdir'             => null,
-										'tempnam'           => null,
-										'touch'             => null,
-										'unlink'            => null,
-										'is_writable'       => null,
-										'is_writeable'      => null,
-										'lchgrp'            => null,
-										'lchown'            => null,
-										'fputcsv'           => null,
-										'delete'            => null,
-										'chmod'             => null,
-										'chown'             => null,
-										'chgrp'             => null,
-										'chmod'             => null,
-										'chmod'             => null,
-										'flock'             => null,
-									);
+/**
+ * Disallow Filesystem writes.
+ *
+ * @link    https://vip.wordpress.com/documentation/vip/code-review-what-we-look-for/#filesystem-writes
+ *
+ * @package WPCS\WordPressCodingStandards
+ *
+ * @since   0.3.0
+ * @since   0.11.0 Extends the WordPress_AbstractFunctionRestrictionsSniff instead of the
+ *                 Generic_Sniffs_PHP_ForbiddenFunctionsSniff.
+ */
+class WordPress_Sniffs_VIP_FileSystemWritesDisallowSniff extends WordPress_AbstractFunctionRestrictionsSniff {
 
 	/**
 	 * If true, an error will be thrown; otherwise a warning.
@@ -56,28 +28,74 @@ class WordPress_Sniffs_VIP_FileSystemWritesDisallowSniff extends Generic_Sniffs_
 	public $error = true;
 
 	/**
-	 * Generates the error or warning for this sniff.
+	 * Groups of functions to restrict.
 	 *
-	 * @param PHP_CodeSniffer_File $phpcsFile The file being scanned.
-	 * @param int                  $stackPtr  The position of the forbidden function
-	 *                                        in the token array.
-	 * @param string               $function  The name of the forbidden function.
-	 * @param string               $pattern   The pattern used for the match.
+	 * Example: groups => array(
+	 *  'lambda' => array(
+	 *      'type'      => 'error' | 'warning',
+	 *      'message'   => 'Use anonymous functions instead please!',
+	 *      'functions' => array( 'file_get_contents', 'create_function' ),
+	 *  )
+	 * )
 	 *
-	 * @return void
+	 * @return array
 	 */
-	protected function addError( $phpcsFile, $stackPtr, $function, $pattern = null )
-	{
-		$data  = array($function);
-		$error = 'Filesystem writes are forbidden, you should not be using %s()';
+	public function getGroups() {
+		$groups = array(
+			'file_ops' => array(
+				'type'      => 'error',
+				'message'   => 'Filesystem writes are forbidden, you should not be using %s()',
+				'functions' => array(
+					'delete',
+					'file_put_contents',
+					'flock',
+					'fputcsv',
+					'fputs',
+					'fwrite',
+					'ftruncate',
+					'is_writable',
+					'is_writeable',
+					'link',
+					'rename',
+					'symlink',
+					'tempnam',
+					'touch',
+					'unlink',
+				),
+			),
+			'directory' => array(
+				'type'      => 'error',
+				'message'   => 'Filesystem writes are forbidden, you should not be using %s()',
+				'functions' => array(
+					'mkdir',
+					'rmdir',
+				),
+			),
+			'chmod' => array(
+				'type'      => 'error',
+				'message'   => 'Filesystem writes are forbidden, you should not be using %s()',
+				'functions' => array(
+					'chgrp',
+					'chown',
+					'chmod',
+					'lchgrp',
+					'lchown',
+				),
+			),
+		);
 
-		if ( $this->error === true ) {
-			$phpcsFile->addError( $error, $stackPtr, 'FileWriteDetected', $data );
-		} else {
-			$phpcsFile->addWarning( $error, $stackPtr, 'FileWriteDetected', $data );
+		/*
+		 * Maintain old behaviour - allow for changing the error type from the ruleset
+		 * using the `error` property.
+		 */
+		if ( false === $this->error ) {
+			foreach ( $groups as $group_name => $details ) {
+				$groups[ $group_name ]['type'] = 'warning';
+			}
 		}
 
-	}//end addError()
+		return $groups;
 
+	} // End getGroups().
 
-}//end class
+} // End class.
