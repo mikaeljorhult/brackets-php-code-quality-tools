@@ -2,6 +2,11 @@
 <ruleset name="WordPress Docs">
 	<description>WordPress Coding Standards for Inline Documentation and Comments</description>
 
+	<!--
+		Handbook: PHP Documentation Standards
+		Ref: https://make.wordpress.org/core/handbook/best-practices/inline-documentation-standards/php/
+	-->
+
 	<rule ref="Squiz.Commenting">
 		<!-- Excluded to allow /* translators: ... */ comments -->
 		<exclude name="Squiz.Commenting.BlockComment.SingleLine"/>
@@ -61,6 +66,8 @@
 
 		<!-- Exclude to allow duplicate hooks to be documented -->
 		<exclude name="Squiz.Commenting.InlineComment.DocBlock"/>
+		<!-- Excluded to allow /* translators: ... */ comments -->
+		<exclude name="Squiz.Commenting.InlineComment.NotCapital"/>
 
 		<!-- Not in Inline Docs standard, and a code smell -->
 		<exclude name="Squiz.Commenting.LongConditionClosingComment"/>
@@ -74,6 +81,16 @@
 		<exclude name="Squiz.Commenting.VariableComment.TagNotAllowed"/>
 		<!-- WP prefers @since first -->
 		<exclude name="Squiz.Commenting.VariableComment.VarOrder"/>
+
+		<!-- It is too early for PHP7 features to be required -->
+		<exclude name="Squiz.Commenting.FunctionComment.ScalarTypeHintMissing"/>
+	</rule>
+
+	<!-- Make this sniff less likely to trigger on end comments. -->
+	<rule ref="Squiz.PHP.CommentedOutCode">
+		<properties>
+			<property name="maxPercentage" value="45"/>
+		</properties>
 	</rule>
 
 	<rule ref="Generic.Commenting">

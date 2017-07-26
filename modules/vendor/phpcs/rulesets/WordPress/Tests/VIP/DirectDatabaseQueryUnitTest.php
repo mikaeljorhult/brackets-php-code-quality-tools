@@ -1,61 +1,60 @@
 <?php
 /**
- * Unit test class for the Direct Database Query.
+ * Unit test class for WordPress Coding Standard.
  *
- * PHP version 5
- *
- * @category  PHP
- * @package   PHP_CodeSniffer
- * @author    Shady Sharaf <shady@x-team.com>
- * @link      http://pear.php.net/package/PHP_CodeSniffer
+ * @package WPCS\WordPressCodingStandards
+ * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @license https://opensource.org/licenses/MIT MIT
  */
 
-class WordPress_Tests_VIP_DirectDatabaseQueryUnitTest extends AbstractSniffUnitTest
-{
-
+/**
+ * Unit test class for the DirectDatabaseQuery sniff.
+ *
+ * @package WPCS\WordPressCodingStandards
+ * @since   0.3.0
+ */
+class WordPress_Tests_VIP_DirectDatabaseQueryUnitTest extends AbstractSniffUnitTest {
 
 	/**
 	 * Returns the lines where errors should occur.
 	 *
-	 * The key of the array should represent the line number and the value
-	 * should represent the number of errors that should occur on that line.
-	 *
-	 * @return array(int => int)
+	 * @return array <int line number> => <int number of errors>
 	 */
-	public function getErrorList()
-	{
+	public function getErrorList() {
 		return array(
-			6  => 1,
-			8  => 1,
-			32 => 1,
-			34 => 1,
-			50 => 1,
-			78 => 1,
-			79 => 1,
-			80 => 1,
-			);
+			6   => 1,
+			8   => 1,
+			32  => 1,
+			34  => 1,
+			50  => 1,
+			78  => 1,
+			79  => 1,
+			80  => 1,
+			170 => 1,
+			178 => 1,
+			190 => 1,
+			250 => 1,
+			257 => 1,
+			274 => ( PHP_VERSION_ID >= 50300 ) ? 1 : 0, // PHPCS on PHP 5.2 does not recognize T_NOWDOC.
+		);
 
-	}//end getErrorList()
-
+	}
 
 	/**
 	 * Returns the lines where warnings should occur.
 	 *
-	 * The key of the array should represent the line number and the value
-	 * should represent the number of warnings that should occur on that line.
-	 *
-	 * @return array(int => int)
+	 * @return array <int line number> => <int number of warnings>
 	 */
-	public function getWarningList()
-	{
+	public function getWarningList() {
 		return array(
-			6  => 1,
-			17 => 1,
-			38 => 1,
-			50 => 1,
-			);
+			6   => 1,
+			17  => 1,
+			38  => 1,
+			50  => 1,
+			112 => 1,
+			250 => 1,
+		);
 
-	}//end getWarningList()
+	}
 
-
-}//end class
+} // End class.

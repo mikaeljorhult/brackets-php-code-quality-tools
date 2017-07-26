@@ -1,19 +1,28 @@
 <?php
+/**
+ * WordPress Coding Standard.
+ *
+ * @package WPCS\WordPressCodingStandards
+ * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards
+ * @license https://opensource.org/licenses/MIT MIT
+ */
 
 /**
- * Flag any non-validated/sanitized input ( _GET / _POST / etc. )
+ * Flag any non-validated/sanitized input ( _GET / _POST / etc. ).
  *
- * PHP version 5
+ * @link    https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/issues/69
  *
- * @category PHP
- * @package  PHP_CodeSniffer
- * @author   Shady Sharaf <shady@x-team.com>
- * @link     https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/issues/69
+ * @package WPCS\WordPressCodingStandards
+ *
+ * @since   0.3.0
+ * @since   0.4.0 This class now extends WordPress_Sniff.
+ * @since   0.5.0 Method getArrayIndexKey() has been moved to WordPress_Sniff.
  */
 class WordPress_Sniffs_VIP_ValidatedSanitizedInputSniff extends WordPress_Sniff {
 
 	/**
-	 * Check for validation functions for a variable within its own parenthesis only
+	 * Check for validation functions for a variable within its own parenthesis only.
+	 *
 	 * @var boolean
 	 */
 	public $check_validation_in_scope_only = false;
@@ -23,7 +32,7 @@ class WordPress_Sniffs_VIP_ValidatedSanitizedInputSniff extends WordPress_Sniff 
 	 *
 	 * @since 0.5.0
 	 *
-	 * @var string[]
+	 * @var string|string[]
 	 */
 	public $customSanitizingFunctions = array();
 
@@ -32,18 +41,25 @@ class WordPress_Sniffs_VIP_ValidatedSanitizedInputSniff extends WordPress_Sniff 
 	 *
 	 * @since 0.5.0
 	 *
-	 * @var string[]
+	 * @var string|string[]
 	 */
 	public $customUnslashingSanitizingFunctions = array();
 
 	/**
-	 * Whether the custom list of functions has been added to the defaults yet.
+	 * Cache of previously added custom functions.
+	 *
+	 * Prevents having to do the same merges over and over again.
 	 *
 	 * @since 0.5.0
+	 * @since 0.11.0 - Changed from static to non-static.
+	 *               - Changed the format from simple bool to array.
 	 *
-	 * @var bool
+	 * @var array
 	 */
-	protected static $addedCustomFunctions = false;
+	protected $addedCustomFunctions = array(
+		'sanitize'        => null,
+		'unslashsanitize' => null,
+	);
 
 	/**
 	 * Returns an array of tokens this test wants to listen for.
@@ -54,59 +70,42 @@ class WordPress_Sniffs_VIP_ValidatedSanitizedInputSniff extends WordPress_Sniff 
 		return array(
 			T_VARIABLE,
 			T_DOUBLE_QUOTED_STRING,
+			T_HEREDOC,
 		);
 	}
 
 	/**
 	 * Processes this test, when one of its tokens is encountered.
 	 *
-	 * @param PHP_CodeSniffer_File $phpcsFile The file being scanned.
-	 * @param int                  $stackPtr  The position of the current token
-	 *                                        in the stack passed in $tokens.
+	 * @param int $stackPtr The position of the current token in the stack.
 	 *
 	 * @return void
 	 */
-	public function process( PHP_CodeSniffer_File $phpcsFile, $stackPtr ) {
+	public function process_token( $stackPtr ) {
 
-		// Merge any custom functions with the defaults, if we haven't already.
-		if ( ! self::$addedCustomFunctions ) {
+		$superglobals = $this->input_superglobals;
 
-			WordPress_Sniff::$sanitizingFunctions = array_merge(
-				WordPress_Sniff::$sanitizingFunctions,
-				array_flip( $this->customSanitizingFunctions )
-			);
-
-			WordPress_Sniff::$unslashingSanitizingFunctions = array_merge(
-				WordPress_Sniff::$unslashingSanitizingFunctions,
-				array_flip( $this->customUnslashingSanitizingFunctions )
-			);
-
-			self::$addedCustomFunctions = true;
-		}
-
-		$this->init( $phpcsFile );
-		$tokens = $phpcsFile->getTokens();
-		$superglobals = WordPress_Sniff::$input_superglobals;
-
-		// Handling string interpolation
-		if ( T_DOUBLE_QUOTED_STRING === $tokens[ $stackPtr ]['code'] ) {
+		// Handling string interpolation.
+		if ( T_DOUBLE_QUOTED_STRING === $this->tokens[ $stackPtr ]['code']
+			|| T_HEREDOC === $this->tokens[ $stackPtr ]['code']
+		) {
 			$interpolated_variables = array_map(
 				create_function( '$symbol', 'return "$" . $symbol;' ), // Replace with closure when 5.3 is minimum requirement for PHPCS.
-				$this->get_interpolated_variables( $tokens[ $stackPtr ]['content'] )
+				$this->get_interpolated_variables( $this->tokens[ $stackPtr ]['content'] )
 			);
 			foreach ( array_intersect( $interpolated_variables, $superglobals ) as $bad_variable ) {
-				$phpcsFile->addError( 'Detected usage of a non-sanitized, non-validated input variable %s: %s', $stackPtr, null, array( $bad_variable, $tokens[ $stackPtr ]['content'] ) );
+				$this->phpcsFile->addError( 'Detected usage of a non-sanitized, non-validated input variable %s: %s', $stackPtr, 'InputNotValidatedNotSanitized', array( $bad_variable, $this->tokens[ $stackPtr ]['content'] ) );
 			}
 
 			return;
 		}
 
 		// Check if this is a superglobal.
-		if ( ! in_array( $tokens[ $stackPtr ]['content'], $superglobals ) ) {
+		if ( ! in_array( $this->tokens[ $stackPtr ]['content'], $superglobals, true ) ) {
 			return;
 		}
 
-		// If we're overriding a superglobal with an assignment, no need to test
+		// If we're overriding a superglobal with an assignment, no need to test.
 		if ( $this->is_assignment( $stackPtr ) ) {
 			return;
 		}
@@ -122,9 +121,11 @@ class WordPress_Sniffs_VIP_ValidatedSanitizedInputSniff extends WordPress_Sniff 
 			return;
 		}
 
+		$error_data = array( $this->tokens[ $stackPtr ]['content'] );
+
 		// Check for validation first.
 		if ( ! $this->is_validated( $stackPtr, $array_key, $this->check_validation_in_scope_only ) ) {
-			$phpcsFile->addError( 'Detected usage of a non-validated input variable: %s', $stackPtr, 'InputNotValidated', array( $tokens[ $stackPtr ]['content'] ) );
+			$this->phpcsFile->addError( 'Detected usage of a non-validated input variable: %s', $stackPtr, 'InputNotValidated', $error_data );
 			// return; // Should we just return and not look for sanitizing functions ?
 		}
 
@@ -137,13 +138,38 @@ class WordPress_Sniffs_VIP_ValidatedSanitizedInputSniff extends WordPress_Sniff 
 			return;
 		}
 
-		// Now look for sanitizing functions
+		$this->mergeFunctionLists();
+
+		// Now look for sanitizing functions.
 		if ( ! $this->is_sanitized( $stackPtr, true ) ) {
-			$phpcsFile->addError( 'Detected usage of a non-sanitized input variable: %s', $stackPtr, 'InputNotSanitized', array( $tokens[ $stackPtr ]['content'] ) );
+			$this->phpcsFile->addError( 'Detected usage of a non-sanitized input variable: %s', $stackPtr, 'InputNotSanitized', $error_data );
 		}
 
-		return;
+	} // End process_token().
 
-	} // end process()
+	/**
+	 * Merge custom functions provided via a custom ruleset with the defaults, if we haven't already.
+	 *
+	 * @since 0.11.0 Split out from the `process()` method.
+	 *
+	 * @return void
+	 */
+	protected function mergeFunctionLists() {
+		if ( $this->customSanitizingFunctions !== $this->addedCustomFunctions['sanitize'] ) {
+			$this->sanitizingFunctions = $this->merge_custom_array(
+				$this->customSanitizingFunctions,
+				$this->sanitizingFunctions
+			);
+			$this->addedCustomFunctions['sanitize'] = $this->customSanitizingFunctions;
+		}
 
-} // end class
+		if ( $this->customUnslashingSanitizingFunctions !== $this->addedCustomFunctions['unslashsanitize'] ) {
+			$this->unslashingSanitizingFunctions = $this->merge_custom_array(
+				$this->customUnslashingSanitizingFunctions,
+				$this->unslashingSanitizingFunctions
+			);
+			$this->addedCustomFunctions['unslashsanitize'] = $this->customUnslashingSanitizingFunctions;
+		}
+	}
+
+} // End class.

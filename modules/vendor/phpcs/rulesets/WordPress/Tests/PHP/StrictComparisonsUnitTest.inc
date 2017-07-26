@@ -1,21 +1,31 @@
 <?php
-// test for 'equals' conditionals
-if ( true == $true ) { // Bad
+// Test for 'equals' conditionals.
+if ( true == $true ) { // Bad.
 	echo 'True';
-} elseif ( false === $true ) { // OK
+} elseif ( false === $true ) { // Ok.
 	echo 'False';
 }
 
-// test for 'not equals' conditionals
-if ( true != $true ) { // Bad
+// Test for 'not equals' conditionals.
+if ( true != $true ) { // Bad.
 	echo 'True';
-} elseif ( true <> $true ) { // Bad
+} elseif ( true <> $true ) { // Bad.
 	echo 'False';
-} elseif ( false !== $true ) { // OK
+} elseif ( false !== $true ) { // Ok.
 	echo 'False';
 }
 
-// test for whitelisting
-if ( true == $true ) { // loose comparison, OK
+// Test for whitelisting.
+if ( true == $true ) { // Loose comparison, OK.
+	echo 'True';
+}
+
+// Test that whitelisting is not too eager.
+if ( true == $true ) {
+	// The line above has a loose comparison, but no whitelist comment.
+	echo 'True';
+}
+
+if ( true == $true ) { // Loose comparisons FTW!
 	echo 'True';
 }
