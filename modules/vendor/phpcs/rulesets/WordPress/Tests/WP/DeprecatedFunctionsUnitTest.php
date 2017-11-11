@@ -7,14 +7,19 @@
  * @license https://opensource.org/licenses/MIT MIT
  */
 
+namespace WordPress\Tests\WP;
+
+use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
+
 /**
  * Unit test class for the WP_DeprecatedFunctions sniff.
  *
  * @package WPCS\WordPressCodingStandards
  *
  * @since   0.11.0
+ * @since   0.13.0 Class name changed: this class is now namespaced.
  */
-class WordPress_Tests_WP_DeprecatedFunctionsUnitTest extends AbstractSniffUnitTest {
+class DeprecatedFunctionsUnitTest extends AbstractSniffUnitTest {
 
 	/**
 	 * Returns the lines where errors should occur.
@@ -27,9 +32,9 @@ class WordPress_Tests_WP_DeprecatedFunctionsUnitTest extends AbstractSniffUnitTe
 
 		// Unset the lines related to version comments.
 		unset(
-			$errors[10],  $errors[12],  $errors[14],  $errors[16],  $errors[29],
-			$errors[55],  $errors[57],  $errors[59],  $errors[73],  $errors[76],
-			$errors[80],  $errors[118], $errors[125], $errors[161], $errors[174],
+			$errors[10], $errors[12], $errors[14], $errors[16], $errors[29],
+			$errors[55], $errors[57], $errors[59], $errors[73], $errors[76],
+			$errors[80], $errors[118], $errors[125], $errors[161], $errors[174],
 			$errors[178], $errors[210], $errors[233], $errors[251], $errors[255],
 			$errors[262], $errors[274], $errors[281], $errors[285], $errors[290],
 			$errors[295], $errors[303]

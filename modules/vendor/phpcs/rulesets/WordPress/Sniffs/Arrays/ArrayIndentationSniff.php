@@ -7,6 +7,12 @@
  * @license https://opensource.org/licenses/MIT MIT
  */
 
+namespace WordPress\Sniffs\Arrays;
+
+use WordPress\Sniff;
+use WordPress\PHPCSHelper;
+use PHP_CodeSniffer_Tokens as Tokens;
+
 /**
  * Enforces WordPress array indentation for multi-line arrays.
  *
@@ -15,11 +21,12 @@
  * @package WPCS\WordPressCodingStandards
  *
  * @since   0.12.0
+ * @since   0.13.0 Class name changed: this class is now namespaced.
  *
  * {@internal This sniff should eventually be pulled upstream as part of a solution
  * for https://github.com/squizlabs/PHP_CodeSniffer/issues/582 }}
  */
-class WordPress_Sniffs_Arrays_ArrayIndentationSniff extends WordPress_Sniff {
+class ArrayIndentationSniff extends Sniff {
 
 	/**
 	 * Should tabs be used for indenting?
@@ -64,7 +71,7 @@ class WordPress_Sniffs_Arrays_ArrayIndentationSniff extends WordPress_Sniff {
 		 *
 		 * Existing heredoc, nowdoc and inline HTML indentation should be respected at all times.
 		 */
-		$this->ignore_tokens = PHP_CodeSniffer_Tokens::$heredocTokens;
+		$this->ignore_tokens = Tokens::$heredocTokens;
 		unset( $this->ignore_tokens[ T_START_HEREDOC ], $this->ignore_tokens[ T_START_NOWDOC ] );
 		$this->ignore_tokens[ T_INLINE_HTML ] = T_INLINE_HTML;
 
@@ -83,13 +90,7 @@ class WordPress_Sniffs_Arrays_ArrayIndentationSniff extends WordPress_Sniff {
 	 */
 	public function process_token( $stackPtr ) {
 		if ( ! isset( $this->tab_width ) ) {
-			$cli_values = $this->phpcsFile->phpcs->cli->getCommandLineValues();
-			if ( ! isset( $cli_values['tabWidth'] ) || 0 === $cli_values['tabWidth'] ) {
-				// We have no idea how wide tabs are, so assume 4 spaces for fixing.
-				$this->tab_width = 4;
-			} else {
-				$this->tab_width = $cli_values['tabWidth'];
-			}
+			$this->tab_width = PHPCSHelper::get_tab_width( $this->phpcsFile );
 		}
 
 		/*
@@ -141,7 +142,7 @@ class WordPress_Sniffs_Arrays_ArrayIndentationSniff extends WordPress_Sniff {
 				 * Otherwise, only report the error, don't try and fix it (yet).
 				 *
 				 * It will get corrected in a future loop of the fixer once the closer
-				 * has been moved to its own line by the `ArrayDeclaration` sniff.
+				 * has been moved to its own line by the `ArrayDeclarationSpacing` sniff.
 				 */
 				$this->phpcsFile->addError(
 					$error,
@@ -178,13 +179,26 @@ class WordPress_Sniffs_Arrays_ArrayIndentationSniff extends WordPress_Sniff {
 				true
 			);
 
+			// Deal with trailing comments.
+			if ( false !== $first_content
+				&& T_COMMENT === $this->tokens[ $first_content ]['code']
+				&& $this->tokens[ $first_content ]['line'] === $this->tokens[ $end_of_previous_item ]['line']
+			) {
+				$first_content = $this->phpcsFile->findNext(
+					array( T_WHITESPACE, T_DOC_COMMENT_WHITESPACE ),
+					( $first_content + 1 ),
+					$end_of_this_item,
+					true
+				);
+			}
+
 			if ( false === $first_content ) {
 				$end_of_previous_item = $end_of_this_item;
 				continue;
 			}
 
 			// Bow out from reporting and fixing mixed multi-line/single-line arrays.
-			// That is handled by the ArrayDeclarationSniff.
+			// That is handled by the ArrayDeclarationSpacingSniff.
 			if ( $this->tokens[ $first_content ]['line'] === $this->tokens[ $end_of_previous_item ]['line']
 				|| ( 1 !== $this->tokens[ $first_content ]['column']
 					&& T_WHITESPACE !== $this->tokens[ ( $first_content - 1 ) ]['code'] )
@@ -223,9 +237,11 @@ class WordPress_Sniffs_Arrays_ArrayIndentationSniff extends WordPress_Sniff {
 
 			// Find first token on second line of the array item.
 			// If the second line is a heredoc/nowdoc, continue on until we find a line with a different token.
+			// Same for the second line of a multi-line text string.
 			for ( $ptr = ( $first_content + 1 ); $ptr <= $item['end']; $ptr++ ) {
 				if ( $this->tokens[ $first_content ]['line'] !== $this->tokens[ $ptr ]['line']
-					&& ! isset( $this->ignore_tokens[ $this->tokens[ $ptr ]['code'] ] )
+					&& 1 === $this->tokens[ $ptr ]['column']
+					&& false === $this->ignore_token( $ptr )
 				) {
 					break;
 				}
@@ -322,8 +338,8 @@ class WordPress_Sniffs_Arrays_ArrayIndentationSniff extends WordPress_Sniff {
 							break;
 						}
 
-						// Ignore lines with heredoc and nowdoc tokens.
-						if ( isset( $this->ignore_tokens[ $this->tokens[ $first_content_on_line ]['code'] ] ) ) {
+						// Ignore lines with heredoc and nowdoc tokens and subsequent lines in multi-line strings.
+						if ( true === $this->ignore_token( $first_content_on_line ) ) {
 							$i = $first_content_on_line;
 							continue;
 						}
@@ -377,6 +393,35 @@ class WordPress_Sniffs_Arrays_ArrayIndentationSniff extends WordPress_Sniff {
 
 	} // End process_token().
 
+
+	/**
+	 * Should the token be ignored ?
+	 *
+	 * This method is only intended to be used with the first token on a line
+	 * for subsequent lines in an multi-line array item.
+	 *
+	 * @param int $ptr Stack pointer to the first token on a line.
+	 *
+	 * @return bool
+	 */
+	protected function ignore_token( $ptr ) {
+		$token_code = $this->tokens[ $ptr ]['code'];
+
+		if ( isset( $this->ignore_tokens[ $token_code ] ) ) {
+			return true;
+		}
+
+		// If it's a subsequent line of a multi-line sting, it will not start with a quote character.
+		if ( ( T_CONSTANT_ENCAPSED_STRING === $token_code
+			|| T_DOUBLE_QUOTED_STRING === $token_code )
+			&& "'" !== $this->tokens[ $ptr ]['content'][0]
+			&& '"' !== $this->tokens[ $ptr ]['content'][0]
+		) {
+			return true;
+		}
+
+		return false;
+	}
 
 	/**
 	 * Determine the line indentation whitespace.
