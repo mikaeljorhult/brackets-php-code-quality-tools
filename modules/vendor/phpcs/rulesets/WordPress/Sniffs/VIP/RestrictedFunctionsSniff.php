@@ -7,6 +7,10 @@
  * @license https://opensource.org/licenses/MIT MIT
  */
 
+namespace WordPress\Sniffs\VIP;
+
+use WordPress\AbstractFunctionRestrictionsSniff;
+
 /**
  * Restricts usage of some functions in VIP context.
  *
@@ -24,8 +28,9 @@
  *                 The check for `parse_url()` and `curl_*` have been moved to the stand-alone sniff
  *                 WordPress_Sniffs_WP_AlternativeFunctionsSniff.
  *                 The check for `eval()` now defers to the upstream Squiz.PHP.Eval sniff.
+ * @since   0.13.0 Class name changed: this class is now namespaced.
  */
-class WordPress_Sniffs_VIP_RestrictedFunctionsSniff extends WordPress_AbstractFunctionRestrictionsSniff {
+class RestrictedFunctionsSniff extends AbstractFunctionRestrictionsSniff {
 
 	/**
 	 * Groups of functions to restrict.
@@ -58,13 +63,11 @@ class WordPress_Sniffs_VIP_RestrictedFunctionsSniff extends WordPress_AbstractFu
 				),
 			),
 
-			'get_term_link' => array(
+			'wpcom_vip_get_term_link' => array(
 				'type'      => 'error',
-				'message'   => '%s() is prohibited, please use wpcom_vip_get_term_link() instead.',
+				'message'   => '%s() is deprecated, please use get_term_link(), get_tag_link(), or get_category_link() instead.',
 				'functions' => array(
-					'get_term_link',
-					'get_tag_link',
-					'get_category_link',
+					'wpcom_vip_get_term_link',
 				),
 			),
 
@@ -84,20 +87,19 @@ class WordPress_Sniffs_VIP_RestrictedFunctionsSniff extends WordPress_AbstractFu
 				),
 			),
 
-			'get_term_by' => array(
+			'wpcom_vip_get_term_by' => array(
 				'type'      => 'error',
-				'message'   => '%s() is prohibited, please use wpcom_vip_get_term_by() instead.',
+				'message'   => '%s() is deprecated, please use get_term_by() or get_cat_ID() instead.',
 				'functions' => array(
-					'get_term_by',
-					'get_cat_ID',
+					'wpcom_vip_get_term_by',
 				),
 			),
 
-			'get_category_by_slug' => array(
+			'wpcom_vip_get_category_by_slug' => array(
 				'type'      => 'error',
-				'message'   => '%s() is prohibited, please use wpcom_vip_get_category_by_slug() instead.',
+				'message'   => '%s() is deprecated, please use get_category_by_slug() instead.',
 				'functions' => array(
-					'get_category_by_slug',
+					'wpcom_vip_get_category_by_slug',
 				),
 			),
 
@@ -214,7 +216,7 @@ class WordPress_Sniffs_VIP_RestrictedFunctionsSniff extends WordPress_AbstractFu
 
 			// @link https://vip.wordpress.com/documentation/vip/code-review-what-we-look-for/#use-wp_safe_redirect-instead-of-wp_redirect
 			'wp_redirect' => array(
-				'type'     => 'warning',
+				'type'      => 'warning',
 				'message'   => '%s() found. Using wp_safe_redirect(), along with the allowed_redirect_hosts filter, can help avoid any chances of malicious redirects within code. It is also important to remember to call exit() after a redirect so that no other unwanted code is executed.',
 				'functions' => array(
 					'wp_redirect',
